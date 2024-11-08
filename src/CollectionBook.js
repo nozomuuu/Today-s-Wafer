@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import './CollectionBook.css';
 import waferImage from './images/wafer3.webp';
 import stickerRevealSound from './sounds/sticker-reveal.mp3';
@@ -10,6 +10,7 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
     const [stickerSlots, setStickerSlots] = useState([]);
 
     useEffect(() => {
+        // 72スロットにランダムにステッカーを割り当てる
         const slots = Array(72).fill(null);
         ownedStickers.forEach((sticker) => {
             let randomIndex;
@@ -21,8 +22,10 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
         setStickerSlots(slots);
     }, [ownedStickers]);
 
-    const cycleCards = useCallback((index) => {
-        new Audio(viewStickersSound).play();
+    const cycleCards = (index) => {
+        const audio = new Audio(viewStickersSound);
+        audio.play();
+
         if (index === 0) {
             setCardIndexes([cardIndexes[1], cardIndexes[2], cardIndexes[0]]);
         } else if (index === 1) {
@@ -30,16 +33,17 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
         } else {
             setCardIndexes([cardIndexes[0], cardIndexes[1], cardIndexes[2]]);
         }
-    }, [cardIndexes]);
+    };
 
-    const handleStickerClick = useCallback((sticker, event) => {
+    const handleStickerClick = (sticker, event) => {
         if (event.target.className === 'sticker-image' && sticker) {
             setSelectedSticker(sticker);
-            new Audio(stickerRevealSound).play();
+            const revealAudio = new Audio(stickerRevealSound);
+            revealAudio.play();
         }
-    }, []);
+    };
 
-    const closePopup = useCallback(() => setSelectedSticker(null), []);
+    const closePopup = () => setSelectedSticker(null);
 
     return (
         <div className="collection-container">
