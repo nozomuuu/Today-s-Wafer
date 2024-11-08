@@ -1,0 +1,19 @@
+.wafer-page {
+    text-align: center;
+    padding: 20px;
+}
+
+.wafer-image {
+    width: 150px;
+    margin: 20px 0;
+}
+
+.back-button {
+    display: inline-block;
+    margin-top: 20px;
+    color: white;
+    background-color: #a56334;
+    padding: 10px;
+    border-radius: 5px;
+    text-decoration: none;
+}

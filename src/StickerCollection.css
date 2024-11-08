@@ -1,0 +1,18 @@
+.collection-page {
+    padding: 20px;
+    text-align: center;
+}
+
+.sticker-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+/* StickerCollection.css */
+.sticker-image {
+    width: 100px; /* 必要に応じて調整 */
+    height: auto;
+    margin: 10px;
+}
+

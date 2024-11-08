@@ -1,0 +1,148 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #FFF5E5;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.app {
+  text-align: center;
+  padding: 20px;
+  background-color: #FAEBD7;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  width: 300px;
+  position: relative; /* レイヤーを意識 */
+  z-index: 1;
+}
+
+.title {
+  font-size: 1.8em;
+  margin-bottom: 10px;
+  color: #6B4226;
+}
+
+.wafer-image {
+  width: 200px;
+  margin: 20px 0;
+  transition: transform 0.2s ease-in-out;
+}
+
+.wafer-image:hover {
+  transform: scale(1.05) rotate(-2deg);
+}
+
+.button {
+  display: inline-block;
+  padding: 12px 25px;
+  margin: 10px;
+  font-size: 1em;
+  color: #FFF;
+  background: linear-gradient(145deg, #6B4226, #8B5742);
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+.button:hover {
+  background: linear-gradient(145deg, #8B5742, #6B4226);
+  transform: translateY(-2px);
+}
+
+.collected-stickers {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.sticker-small {
+  width: 50px;
+  height: 50px;
+  margin: 5px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.sticker-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sticker-popup-content {
+  background-color: #fff0e0;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  max-width: 200px;
+}
+
+.sticker-large {
+  width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.back-button {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 1em;
+  color: #FFF;
+  background: #6B4226;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.back-button:hover {
+  background: #8B5742;
+  transform: translateY(-2px);
+}
+
+.not-owned-label {
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  font-size: 0.8em;
+  color: red;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 2px 5px;
+  border-radius: 3px;
+}
+.sticker-not-owned {
+  position: relative;
+}
+
+.sticker-item.grayscale {
+  filter: grayscale(100%);
+  opacity: 0.6;
+}
+
+.sticker-item {
+  width: 60px;
+  height: 60px;
+  margin: 5px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.sticker-item:hover {
+  transform: scale(1.05);
+}
+
+

@@ -1,0 +1,28 @@
+const stickerImages = {
+    1: require('./images/sticker1.png'),
+    2: require('./images/sticker2.png'),
+    3: require('./images/sticker3.png'),
+    4: require('./images/sticker4.png'),
+    5: require('./images/sticker5.png'),
+    6: require('./images/sticker6.png'),
+    7: require('./images/sticker7.png'),
+    8: require('./images/sticker8.png'),
+    9: require('./images/sticker9.png'),
+    10: require('./images/sticker10.png'),
+    11: require('./images/sticker11.png'),
+    12: require('./images/sticker12.png'),
+    13: require('./images/sticker13.png'),
+    14: require('./images/sticker14.png'),
+    15: require('./images/sticker15.png'),
+    16: require('./images/sticker16.png'),
+    17: require('./images/sticker17.png'),
+    18: require('./images/sticker18.png'),
+    19: require('./images/sticker19.png'),
+    20: require('./images/sticker20.png'),
+    21: require('./images/sticker21.png'),
+    22: require('./images/sticker22.png'),
+    23: require('./images/sticker23.png'),
+    24: require('./images/sticker24.png'),
+};
+
+export default stickerImages;

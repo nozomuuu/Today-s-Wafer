@@ -1,0 +1,28 @@
+const stickersData = [
+    { image: require('./images/sticker1.png') },
+    { image: require('./images/sticker2.png') },
+    { image: require('./images/sticker3.png') },
+    { image: require('./images/sticker4.png') },
+    { image: require('./images/sticker5.png') },
+    { image: require('./images/sticker6.png') },
+    { image: require('./images/sticker7.png') },
+    { image: require('./images/sticker8.png') },
+    { image: require('./images/sticker9.png') },
+    { image: require('./images/sticker10.png') },
+    { image: require('./images/sticker11.png') },
+    { image: require('./images/sticker12.png') },
+    { image: require('./images/sticker13.png') },
+    { image: require('./images/sticker14.png') },
+    { image: require('./images/sticker15.png') },
+    { image: require('./images/sticker16.png') },
+    { image: require('./images/sticker17.png') },
+    { image: require('./images/sticker18.png') },
+    { image: require('./images/sticker19.png') },
+    { image: require('./images/sticker20.png') },
+    { image: require('./images/sticker21.png') },
+    { image: require('./images/sticker22.png') },
+    { image: require('./images/sticker23.png') },
+    { image: require('./images/sticker24.png') },
+];
+
+export default stickersData;
