@@ -1,3 +1,4 @@
+import stickersData from './stickersData';
 import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import './App.css';
 import openSound from './sounds/wafer-open.mp3';
