@@ -1,3 +1,4 @@
+/* Body and App container styling */
 body {
   display: flex;
   justify-content: center;
@@ -8,14 +9,14 @@ body {
   font-family: Arial, sans-serif;
 }
 
-.app {
+.app, .collection-container {
   text-align: center;
   padding: 20px;
   background-color: #FAEBD7;
   border-radius: 15px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   width: 300px;
-  position: relative; /* レイヤーを意識 */
+  position: relative;
   z-index: 1;
 }
 
@@ -25,6 +26,7 @@ body {
   color: #6B4226;
 }
 
+/* Wafer image styles with hover effect */
 .wafer-image {
   width: 200px;
   margin: 20px 0;
@@ -35,7 +37,8 @@ body {
   transform: scale(1.05) rotate(-2deg);
 }
 
-.button {
+/* Button Styling */
+.button, .back-button, .close-popup-button {
   display: inline-block;
   padding: 12px 25px;
   margin: 10px;
@@ -49,71 +52,91 @@ body {
   transition: all 0.2s ease;
 }
 
-.button:hover {
+.button:hover, .back-button:hover, .close-popup-button:hover {
   background: linear-gradient(145deg, #8B5742, #6B4226);
   transform: translateY(-2px);
 }
 
-.collected-stickers {
+/* Sticker grid and small sticker styling */
+.collected-stickers, .sticker-grid {
   display: flex;
   justify-content: center;
   margin-top: 20px;
   flex-wrap: wrap;
+  gap: 10px;
+}
+
+.sticker-small, .sticker-item, .sticker-image {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease;
 }
 
 .sticker-small {
   width: 50px;
   height: 50px;
   margin: 5px;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
-.sticker-popup {
+.sticker-item:hover {
+  transform: scale(1.05);
+}
+
+/* Collection book styling with subtle card variation */
+.collection-book {
+  position: absolute;
+  top: 30px;
+  width: 300px;
+  padding: 20px;
+  background-color: #fdf3e7;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  z-index: 3;
+}
+
+.collection-book:nth-child(1) { background-color: #fdf3e7; }
+.collection-book:nth-child(2) { background-color: #f9e7d4; }
+.collection-book:nth-child(3) { background-color: #f5dcc1; }
+
+.top-card:hover, .collection-book:hover {
+  cursor: pointer;
+}
+
+/* Pop-up styling */
+.popup, .sticker-popup {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
+  width: 100vw;
+  height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  z-index: 10;
 }
 
-.sticker-popup-content {
+.popup-content, .sticker-popup-content {
   background-color: #fff0e0;
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
   text-align: center;
+  width: 200px;
   max-width: 200px;
 }
 
-.sticker-large {
+/* Larger popup image for selected sticker */
+.popup-image, .sticker-large {
   width: 100%;
   height: auto;
   margin-bottom: 10px;
 }
 
-.back-button {
-  display: inline-block;
-  margin-top: 20px;
-  padding: 10px 20px;
-  font-size: 1em;
-  color: #FFF;
-  background: #6B4226;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.back-button:hover {
-  background: #8B5742;
-  transform: translateY(-2px);
-}
-
+/* Utility styling */
 .not-owned-label {
   position: absolute;
   bottom: 5px;
@@ -124,6 +147,7 @@ body {
   padding: 2px 5px;
   border-radius: 3px;
 }
+
 .sticker-not-owned {
   position: relative;
 }
@@ -132,17 +156,3 @@ body {
   filter: grayscale(100%);
   opacity: 0.6;
 }
-
-.sticker-item {
-  width: 60px;
-  height: 60px;
-  margin: 5px;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.sticker-item:hover {
-  transform: scale(1.05);
-}
-
-

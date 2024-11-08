@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import wafer2 from './images/wafer2.png';
+import wafer2 from './images/wafer2.webp';
 
 const Wafer = ({ addSticker }) => {
     const [waferOpened, setWaferOpened] = useState(false);

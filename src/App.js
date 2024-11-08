@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import './App.css';
-import waferClosed from './images/wafer1.png';
-import waferOpened from './images/wafer2.png';
+import waferClosed from './images/wafer1.webp';
+import waferOpened from './images/wafer2.webp';
 import stickersData from './stickersData';
-import CollectionBook from './CollectionBook';
 import openSound from './sounds/wafer-open.mp3';
 import revealSound from './sounds/sticker-reveal.mp3';
 import viewStickersSound from './sounds/view-stickers.mp3';
+
+const CollectionBook = lazy(() => import('./CollectionBook'));
 
 function App() {
     const [isOpened, setIsOpened] = useState(false);
@@ -44,7 +45,7 @@ function App() {
         localStorage.setItem('remaining', remaining.toString());
     }, [remaining]);
 
-    const openWafer = () => {
+    const openWafer = useCallback(() => {
         if (remaining > 0 && !isOpening) {
             setIsOpening(true);
             new Audio(openSound).play();
@@ -65,16 +66,16 @@ function App() {
             setShowTomorrowMessage(true);
             setTimeout(() => setShowTomorrowMessage(false), 3000);
         }
-    };
+    }, [remaining, isOpening, collectedStickers]);
 
-    const handleCardClick = (event) => {
+    const handleCardClick = useCallback((event) => {
         if (event.target.classList.contains("wafer-image")) {
             new Audio(viewStickersSound).play();
             setIsOpened(!isOpened);
         }
-    };
+    }, [isOpened]);
 
-    const closeStickerDetail = () => setSelectedSticker(null);
+    const closeStickerDetail = useCallback(() => setSelectedSticker(null), []);
 
     return (
         <div className="app">
@@ -114,14 +115,16 @@ function App() {
                 </div>
             )}
             {page === "collection" && (
-                <CollectionBook
-                    allStickers={stickersData}
-                    ownedStickers={collectedStickers}
-                    goBack={() => {
-                        new Audio(viewStickersSound).play();
-                        setPage("main");
-                    }}
-                />
+                <Suspense fallback={<div>Loading...</div>}>
+                    <CollectionBook
+                        allStickers={stickersData}
+                        ownedStickers={collectedStickers}
+                        goBack={() => {
+                            new Audio(viewStickersSound).play();
+                            setPage("main");
+                        }}
+                    />
+                </Suspense>
             )}
             {selectedSticker && (
                 <div className="sticker-popup" onClick={closeStickerDetail}>

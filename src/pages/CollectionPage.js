@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './CollectionBook.css';
-import waferImage from './images/wafer3.png';
+import waferImage from './images/wafer3.webp';
 import stickerRevealSound from './sounds/sticker-reveal.mp3';
 import viewStickersSound from './sounds/view-stickers.mp3'; // view-stickers.mp3をインポート
 
