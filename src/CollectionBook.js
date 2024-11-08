@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './CollectionBook.css';
-import waferImage from './images/wafer3.webp';
+import waferImage from './images/wafer3.webp'; // Ensure wafer image is in WebP format
 import stickerRevealSound from './sounds/sticker-reveal.mp3';
 import viewStickersSound from './sounds/view-stickers.mp3';
 
@@ -10,7 +10,6 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
     const [stickerSlots, setStickerSlots] = useState([]);
 
     useEffect(() => {
-        // 72スロットにランダムにステッカーを割り当てる
         const slots = Array(72).fill(null);
         ownedStickers.forEach((sticker) => {
             let randomIndex;
@@ -70,7 +69,7 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
                                 onClick={(e) => handleStickerClick(stickerSlots[j + cardIndex * 24], e)}
                             >
                                 <img
-                                    src={stickerSlots[j + cardIndex * 24] ? stickerSlots[j + cardIndex * 24].image : waferImage}
+                                    src={stickerSlots[j + cardIndex * 24]?.image || waferImage}
                                     alt={`Sticker ${j + 1}`}
                                     className="sticker-image"
                                 />
