@@ -66,7 +66,7 @@ function App() {
             setShowTomorrowMessage(true);
             setTimeout(() => setShowTomorrowMessage(false), 3000);
         }
-    }, [remaining, isOpening, collectedStickers]);
+    }, [remaining, isOpening]);
 
     const handleCardClick = useCallback((event) => {
         if (event.target.classList.contains("wafer-image")) {
