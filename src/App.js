@@ -11,7 +11,6 @@ const waferClosed = `${process.env.PUBLIC_URL}/images/stickers/wafer1.webp`;
 const waferOpened = `${process.env.PUBLIC_URL}/images/stickers/wafer2.webp`;
 
 function App() {
-    // 初期状態の設定
     const [isOpened, setIsOpened] = useState(false);
     const [remaining, setRemaining] = useState(() => {
         try {
@@ -22,7 +21,6 @@ function App() {
             return 3;
         }
     });
-
     const [collectedStickers, setCollectedStickers] = useState(() => {
         try {
             const savedStickers = localStorage.getItem('collectedStickers');
@@ -32,37 +30,27 @@ function App() {
             return [];
         }
     });
-
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
     const [page, setPage] = useState("main");
     const [showTomorrowMessage, setShowTomorrowMessage] = useState(false);
     const [isOpening, setIsOpening] = useState(false);
 
-    // 日付チェックとリセット
     useEffect(() => {
         const today = new Date().toISOString().split('T')[0];
-        let lastAccessDate;
         try {
-            lastAccessDate = localStorage.getItem('lastAccessDate') || today;
-        } catch (error) {
-            console.error('Failed to load lastAccessDate from localStorage:', error);
-            lastAccessDate = today;
-        }
-
-        if (today !== lastAccessDate) {
-            setRemaining(3);
-            setTodayStickers([]);
-            try {
+            const lastAccessDate = localStorage.getItem('lastAccessDate') || today;
+            if (today !== lastAccessDate) {
+                setRemaining(3);
+                setTodayStickers([]);
                 localStorage.setItem('lastAccessDate', today);
                 localStorage.setItem('remaining', '3');
-            } catch (error) {
-                console.error('Failed to save lastAccessDate or remaining to localStorage:', error);
             }
+        } catch (error) {
+            console.error('Failed to access localStorage for last access date:', error);
         }
     }, []);
 
-    // collectedStickers の変更時にローカルストレージに保存し、ログを表示
     useEffect(() => {
         try {
             localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
@@ -72,7 +60,6 @@ function App() {
         }
     }, [collectedStickers]);
 
-    // remaining の変更時にローカルストレージに保存
     useEffect(() => {
         try {
             localStorage.setItem('remaining', remaining.toString());
@@ -81,7 +68,6 @@ function App() {
         }
     }, [remaining]);
 
-    // ウェハーを開ける処理
     const openWafer = useCallback(() => {
         if (remaining > 0 && !isOpening) {
             setIsOpening(true);
@@ -105,7 +91,6 @@ function App() {
         }
     }, [remaining, isOpening]);
 
-    // ウェハーのクリック処理
     const handleCardClick = useCallback((event) => {
         if (event.target.classList.contains("wafer-image")) {
             new Audio(viewStickersSound).play();
@@ -113,7 +98,6 @@ function App() {
         }
     }, [isOpened]);
 
-    // ステッカー詳細を閉じる処理
     const closeStickerDetail = useCallback(() => setSelectedSticker(null), []);
 
     return (
