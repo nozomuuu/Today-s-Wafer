@@ -11,6 +11,7 @@ const waferClosed = `${process.env.PUBLIC_URL}/images/stickers/wafer1.webp`;
 const waferOpened = `${process.env.PUBLIC_URL}/images/stickers/wafer2.webp`;
 
 function App() {
+    // 初期状態の設定
     const [isOpened, setIsOpened] = useState(false);
     const [remaining, setRemaining] = useState(() => {
         const savedRemaining = localStorage.getItem('remaining');
@@ -26,6 +27,7 @@ function App() {
     const [showTomorrowMessage, setShowTomorrowMessage] = useState(false);
     const [isOpening, setIsOpening] = useState(false);
 
+    // 日付チェックとリセット
     useEffect(() => {
         const today = new Date().toISOString().split('T')[0];
         const lastAccessDate = localStorage.getItem('lastAccessDate') || today;
@@ -38,14 +40,18 @@ function App() {
         }
     }, []);
 
+    // collectedStickers の変更時にローカルストレージに保存し、ログを表示
     useEffect(() => {
         localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
+        console.log('Collected Stickers saved to localStorage:', localStorage.getItem('collectedStickers'));
     }, [collectedStickers]);
 
+    // remaining の変更時にローカルストレージに保存
     useEffect(() => {
         localStorage.setItem('remaining', remaining.toString());
     }, [remaining]);
 
+    // ウェハーを開ける処理
     const openWafer = useCallback(() => {
         if (remaining > 0 && !isOpening) {
             setIsOpening(true);
@@ -69,6 +75,7 @@ function App() {
         }
     }, [remaining, isOpening]);
 
+    // ウェハーのクリック処理
     const handleCardClick = useCallback((event) => {
         if (event.target.classList.contains("wafer-image")) {
             new Audio(viewStickersSound).play();
@@ -76,6 +83,7 @@ function App() {
         }
     }, [isOpened]);
 
+    // ステッカー詳細を閉じる処理
     const closeStickerDetail = useCallback(() => setSelectedSticker(null), []);
 
     return (
