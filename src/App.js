@@ -1,35 +1,23 @@
-import stickersData from './stickersData';
-import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useCallback, Suspense } from 'react';
 import './App.css';
 import openSound from './sounds/wafer-open.mp3';
 import revealSound from './sounds/sticker-reveal.mp3';
 import viewStickersSound from './sounds/view-stickers.mp3';
+import stickersData from './stickersData';
+import CollectionBook from './CollectionBook'; // lazyを一旦オフ
 
-const CollectionBook = lazy(() => import('./CollectionBook'));
-
-const waferClosed = `${process.env.PUBLIC_URL}/images/stickers/wafer1.webp`;
-const waferOpened = `${process.env.PUBLIC_URL}/images/stickers/wafer2.webp`;
+const waferClosed = `${process.env.PUBLIC_URL}/images/wafer1.webp`;
+const waferOpened = `${process.env.PUBLIC_URL}/images/wafer2.webp`;
 
 function App() {
-    // 初期状態の設定
     const [isOpened, setIsOpened] = useState(false);
     const [remaining, setRemaining] = useState(() => {
-        try {
-            const savedRemaining = localStorage.getItem('remaining');
-            return savedRemaining ? parseInt(savedRemaining, 10) : 3;
-        } catch (error) {
-            console.error('Failed to load remaining from localStorage:', error);
-            return 3;
-        }
+        const savedRemaining = localStorage.getItem('remaining');
+        return savedRemaining ? parseInt(savedRemaining, 10) : 3;
     });
     const [collectedStickers, setCollectedStickers] = useState(() => {
-        try {
-            const savedStickers = localStorage.getItem('collectedStickers');
-            return savedStickers ? JSON.parse(savedStickers) : [];
-        } catch (error) {
-            console.error('Failed to load collectedStickers from localStorage:', error);
-            return [];
-        }
+        const savedStickers = localStorage.getItem('collectedStickers');
+        return savedStickers ? JSON.parse(savedStickers) : [];
     });
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
@@ -37,7 +25,6 @@ function App() {
     const [showTomorrowMessage, setShowTomorrowMessage] = useState(false);
     const [isOpening, setIsOpening] = useState(false);
 
-    // 日付チェックとリセット
     useEffect(() => {
         const today = new Date().toISOString().split('T')[0];
         const lastAccessDate = localStorage.getItem('lastAccessDate') || today;
@@ -45,35 +32,20 @@ function App() {
         if (today !== lastAccessDate) {
             setRemaining(3);
             setTodayStickers([]);
-            try {
-                localStorage.setItem('lastAccessDate', today);
-                localStorage.setItem('remaining', '3');
-            } catch (error) {
-                console.error('Failed to set initial values in localStorage:', error);
-            }
+            localStorage.setItem('lastAccessDate', today);
+            localStorage.setItem('remaining', '3');
         }
     }, []);
 
-    // collectedStickers の変更時にローカルストレージに保存し、ログを表示
     useEffect(() => {
-        try {
-            localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
-            console.log('Collected Stickers saved to localStorage:', localStorage.getItem('collectedStickers'));
-        } catch (error) {
-            console.error('Failed to save collectedStickers to localStorage:', error);
-        }
+        console.log('Saving collectedStickers to localStorage:', collectedStickers);
+        localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
     }, [collectedStickers]);
 
-    // remaining の変更時にローカルストレージに保存
     useEffect(() => {
-        try {
-            localStorage.setItem('remaining', remaining.toString());
-        } catch (error) {
-            console.error('Failed to save remaining to localStorage:', error);
-        }
+        localStorage.setItem('remaining', remaining.toString());
     }, [remaining]);
 
-    // ウェハーを開ける処理
     const openWafer = useCallback(() => {
         if (remaining > 0 && !isOpening) {
             setIsOpening(true);
@@ -97,7 +69,6 @@ function App() {
         }
     }, [remaining, isOpening]);
 
-    // ウェハーのクリック処理
     const handleCardClick = useCallback((event) => {
         if (event.target.classList.contains("wafer-image")) {
             new Audio(viewStickersSound).play();
@@ -105,7 +76,6 @@ function App() {
         }
     }, [isOpened]);
 
-    // ステッカー詳細を閉じる処理
     const closeStickerDetail = useCallback(() => setSelectedSticker(null), []);
 
     return (
@@ -146,16 +116,14 @@ function App() {
                 </div>
             )}
             {page === "collection" && (
-                <Suspense fallback={<div>Loading...</div>}>
-                    <CollectionBook
-                        allStickers={stickersData}
-                        ownedStickers={collectedStickers}
-                        goBack={() => {
-                            new Audio(viewStickersSound).play();
-                            setPage("main");
-                        }}
-                    />
-                </Suspense>
+                <CollectionBook
+                    allStickers={stickersData}
+                    ownedStickers={collectedStickers}
+                    goBack={() => {
+                        new Audio(viewStickersSound).play();
+                        setPage("main");
+                    }}
+                />
             )}
             {selectedSticker && (
                 <div className="sticker-popup" onClick={closeStickerDetail}>
