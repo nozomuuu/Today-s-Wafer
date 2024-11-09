@@ -13,12 +13,24 @@ const waferOpened = `${process.env.PUBLIC_URL}/images/stickers/wafer2.webp`;
 function App() {
     const [isOpened, setIsOpened] = useState(false);
     const [remaining, setRemaining] = useState(() => {
-        const savedRemaining = localStorage.getItem('remaining');
-        return savedRemaining ? parseInt(savedRemaining, 10) : 3;
+        try {
+            const savedRemaining = localStorage.getItem('remaining');
+            console.log('Loaded remaining from localStorage:', savedRemaining);
+            return savedRemaining ? parseInt(savedRemaining, 10) : 3;
+        } catch (error) {
+            console.error('Error loading remaining from localStorage:', error);
+            return 3;
+        }
     });
     const [collectedStickers, setCollectedStickers] = useState(() => {
-        const savedStickers = localStorage.getItem('collectedStickers');
-        return savedStickers ? JSON.parse(savedStickers) : [];
+        try {
+            const savedStickers = localStorage.getItem('collectedStickers');
+            console.log('Loaded collectedStickers from localStorage:', savedStickers);
+            return savedStickers ? JSON.parse(savedStickers) : [];
+        } catch (error) {
+            console.error('Error loading collectedStickers from localStorage:', error);
+            return [];
+        }
     });
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
@@ -28,22 +40,38 @@ function App() {
 
     useEffect(() => {
         const today = new Date().toISOString().split('T')[0];
-        const lastAccessDate = localStorage.getItem('lastAccessDate') || today;
-
-        if (today !== lastAccessDate) {
-            setRemaining(3);
-            setTodayStickers([]);
-            localStorage.setItem('lastAccessDate', today);
-            localStorage.setItem('remaining', '3');
+        try {
+            const lastAccessDate = localStorage.getItem('lastAccessDate') || today;
+            console.log('Loaded lastAccessDate from localStorage:', lastAccessDate);
+            
+            if (today !== lastAccessDate) {
+                console.log('New day detected, resetting remaining to 3 and clearing todayStickers.');
+                setRemaining(3);
+                setTodayStickers([]);
+                localStorage.setItem('lastAccessDate', today);
+                localStorage.setItem('remaining', '3');
+            }
+        } catch (error) {
+            console.error('Error loading lastAccessDate from localStorage:', error);
         }
     }, []);
 
     useEffect(() => {
-        localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
+        try {
+            localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
+            console.log('Saved collectedStickers to localStorage:', collectedStickers);
+        } catch (error) {
+            console.error('Error saving collectedStickers to localStorage:', error);
+        }
     }, [collectedStickers]);
 
     useEffect(() => {
-        localStorage.setItem('remaining', remaining.toString());
+        try {
+            localStorage.setItem('remaining', remaining.toString());
+            console.log('Saved remaining to localStorage:', remaining);
+        } catch (error) {
+            console.error('Error saving remaining to localStorage:', error);
+        }
     }, [remaining]);
 
     const openWafer = useCallback(() => {
