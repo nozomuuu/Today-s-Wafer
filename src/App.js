@@ -1,9 +1,9 @@
+import stickersData from './stickersData';
 import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import './App.css';
 import openSound from './sounds/wafer-open.mp3';
 import revealSound from './sounds/sticker-reveal.mp3';
 import viewStickersSound from './sounds/view-stickers.mp3';
-import stickersData from './stickersData';
 
 const CollectionBook = lazy(() => import('./CollectionBook'));
 

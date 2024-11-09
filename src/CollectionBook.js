@@ -3,8 +3,7 @@ import './CollectionBook.css';
 import stickerRevealSound from './sounds/sticker-reveal.mp3';
 import viewStickersSound from './sounds/view-stickers.mp3';
 
-// Wafer image path using PUBLIC_URL
-const waferImage = process.env.PUBLIC_URL + '/images/wafer3.webp';
+const waferImage = `${process.env.PUBLIC_URL}/images/wafer3.webp`;
 
 function CollectionBook({ allStickers, ownedStickers, goBack }) {
     const [cardIndexes, setCardIndexes] = useState([0, 1, 2]);
@@ -24,43 +23,32 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
     }, [ownedStickers]);
 
     const cycleCards = (index) => {
-        const audio = new Audio(viewStickersSound);
-        audio.play();
-
-        if (index === 0) {
-            setCardIndexes([cardIndexes[1], cardIndexes[2], cardIndexes[0]]);
-        } else if (index === 1) {
-            setCardIndexes([cardIndexes[2], cardIndexes[0], cardIndexes[1]]);
-        } else {
-            setCardIndexes([cardIndexes[0], cardIndexes[1], cardIndexes[2]]);
-        }
+        new Audio(viewStickersSound).play();
+        setCardIndexes((prev) => {
+            if (index === 0) return [prev[1], prev[2], prev[0]];
+            if (index === 1) return [prev[2], prev[0], prev[1]];
+            return [prev[0], prev[1], prev[2]];
+        });
     };
 
-    const handleStickerClick = (sticker, event) => {
-        if (event.target.className === 'sticker-image' && sticker) {
+    const handleStickerClick = (sticker) => {
+        if (sticker) {
             setSelectedSticker(sticker);
-            const revealAudio = new Audio(stickerRevealSound);
-            revealAudio.play();
+            new Audio(stickerRevealSound).play();
         }
     };
-
-    const closePopup = () => setSelectedSticker(null);
 
     return (
         <div className="collection-container">
             {cardIndexes.map((cardIndex, i) => (
                 <div
-                    key={cardIndex}
+                    key={i}
                     className={`collection-book ${i === 0 ? "top-card" : ""}`}
                     style={{
                         zIndex: 3 - i,
                         transform: `translateX(${i * 40}px) translateY(${i * 5}px) scale(${1 - i * 0.05})`,
                     }}
-                    onClick={(e) => {
-                        if (e.target.className !== 'sticker-image') {
-                            cycleCards(i);
-                        }
-                    }}
+                    onClick={() => cycleCards(i)}
                 >
                     <h2 className="collection-title">Touch and Change Card</h2>
                     <div className="sticker-grid">
@@ -68,7 +56,7 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
                             <div
                                 key={j}
                                 className="sticker-item"
-                                onClick={(e) => handleStickerClick(stickerSlots[j + cardIndex * 24], e)}
+                                onClick={() => handleStickerClick(stickerSlots[j + cardIndex * 24])}
                             >
                                 <img
                                     src={stickerSlots[j + cardIndex * 24]?.image || waferImage}
@@ -86,7 +74,7 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
                 <div className="popup">
                     <div className="popup-content">
                         <img src={selectedSticker.image} alt="Selected Sticker" className="popup-image" />
-                        <button onClick={closePopup} className="close-popup-button">Close</button>
+                        <button onClick={() => setSelectedSticker(null)} className="close-popup-button">Close</button>
                     </div>
                 </div>
             )}
