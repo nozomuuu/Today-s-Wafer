@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
-import './CollectionBook.css';
-import waferImage from './images/wafer3.webp';
+import React from 'react';
+import './CollectionPage.css';
 import stickerRevealSound from './sounds/sticker-reveal.mp3';
-import viewStickersSound from './sounds/view-stickers.mp3'; // view-stickers.mp3をインポート
+import viewStickersSound from './sounds/view-stickers.mp3';
 
-function CollectionBook({ allStickers, ownedStickers, goBack }) {
+// Wafer image path using PUBLIC_URL
+const waferImage = process.env.PUBLIC_URL + '/images/wafer3.webp';
+
+function CollectionPage({ allStickers, ownedStickers, goBack }) {
     const [cardIndexes, setCardIndexes] = useState([0, 1, 2]);
     const [selectedSticker, setSelectedSticker] = useState(null);
 
-    // カードを入れ替える際に音を再生する
     const cycleCards = (index) => {
-        new Audio(viewStickersSound).play(); // カードを入れ替えるたびにサウンド再生
+        new Audio(viewStickersSound).play();
         if (index === 0) {
             setCardIndexes([cardIndexes[1], cardIndexes[2], cardIndexes[0]]);
         } else if (index === 1) {
@@ -20,7 +21,6 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
         }
     };
 
-    // シールをクリックした際にのみポップアップを表示
     const handleStickerClick = (sticker) => {
         if (ownedStickers.includes(sticker)) {
             setSelectedSticker(sticker);
@@ -41,7 +41,6 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
                         transform: `translateX(${i * 40}px) translateY(${i * 5}px) scale(${1 - i * 0.05})`,
                     }}
                     onClick={(e) => {
-                        // シール画像をクリックしたときはカードを入れ替えない
                         if (e.target.className !== 'sticker-image') {
                             cycleCards(i);
                         }
@@ -79,4 +78,4 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
     );
 }
 
-export default CollectionBook;
+export default CollectionPage;

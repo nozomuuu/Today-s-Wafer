@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './CollectionBook.css';
-import waferImage from './images/wafer3.webp'; // Ensure wafer image is in WebP format
 import stickerRevealSound from './sounds/sticker-reveal.mp3';
 import viewStickersSound from './sounds/view-stickers.mp3';
+
+// Wafer image path using PUBLIC_URL
+const waferImage = process.env.PUBLIC_URL + '/images/wafer3.webp';
 
 function CollectionBook({ allStickers, ownedStickers, goBack }) {
     const [cardIndexes, setCardIndexes] = useState([0, 1, 2]);

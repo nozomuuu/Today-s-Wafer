@@ -1,14 +1,14 @@
-import stickersData from './stickersData';
 import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import './App.css';
 import openSound from './sounds/wafer-open.mp3';
 import revealSound from './sounds/sticker-reveal.mp3';
 import viewStickersSound from './sounds/view-stickers.mp3';
+import stickersData from './stickersData';
 
 const CollectionBook = lazy(() => import('./CollectionBook'));
 
-const waferClosed = process.env.PUBLIC_URL + '/images/wafer1.webp';
-const waferOpened = process.env.PUBLIC_URL + '/images/wafer2.webp';
+const waferClosed = `${process.env.PUBLIC_URL}/images/wafer1.webp`;
+const waferOpened = `${process.env.PUBLIC_URL}/images/wafer2.webp`;
 
 function App() {
     const [isOpened, setIsOpened] = useState(false);
