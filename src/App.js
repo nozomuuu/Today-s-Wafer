@@ -14,13 +14,25 @@ function App() {
     // 初期状態の設定
     const [isOpened, setIsOpened] = useState(false);
     const [remaining, setRemaining] = useState(() => {
-        const savedRemaining = localStorage.getItem('remaining');
-        return savedRemaining ? parseInt(savedRemaining, 10) : 3;
+        try {
+            const savedRemaining = localStorage.getItem('remaining');
+            return savedRemaining ? parseInt(savedRemaining, 10) : 3;
+        } catch (error) {
+            console.error('Failed to load remaining from localStorage:', error);
+            return 3;
+        }
     });
+
     const [collectedStickers, setCollectedStickers] = useState(() => {
-        const savedStickers = localStorage.getItem('collectedStickers');
-        return savedStickers ? JSON.parse(savedStickers) : [];
+        try {
+            const savedStickers = localStorage.getItem('collectedStickers');
+            return savedStickers ? JSON.parse(savedStickers) : [];
+        } catch (error) {
+            console.error('Failed to load collectedStickers from localStorage:', error);
+            return [];
+        }
     });
+
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
     const [page, setPage] = useState("main");
@@ -30,25 +42,43 @@ function App() {
     // 日付チェックとリセット
     useEffect(() => {
         const today = new Date().toISOString().split('T')[0];
-        const lastAccessDate = localStorage.getItem('lastAccessDate') || today;
+        let lastAccessDate;
+        try {
+            lastAccessDate = localStorage.getItem('lastAccessDate') || today;
+        } catch (error) {
+            console.error('Failed to load lastAccessDate from localStorage:', error);
+            lastAccessDate = today;
+        }
 
         if (today !== lastAccessDate) {
             setRemaining(3);
             setTodayStickers([]);
-            localStorage.setItem('lastAccessDate', today);
-            localStorage.setItem('remaining', '3');
+            try {
+                localStorage.setItem('lastAccessDate', today);
+                localStorage.setItem('remaining', '3');
+            } catch (error) {
+                console.error('Failed to save lastAccessDate or remaining to localStorage:', error);
+            }
         }
     }, []);
 
     // collectedStickers の変更時にローカルストレージに保存し、ログを表示
     useEffect(() => {
-        localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
-        console.log('Collected Stickers saved to localStorage:', localStorage.getItem('collectedStickers'));
+        try {
+            localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
+            console.log('Collected Stickers saved to localStorage:', localStorage.getItem('collectedStickers'));
+        } catch (error) {
+            console.error('Failed to save collectedStickers to localStorage:', error);
+        }
     }, [collectedStickers]);
 
     // remaining の変更時にローカルストレージに保存
     useEffect(() => {
-        localStorage.setItem('remaining', remaining.toString());
+        try {
+            localStorage.setItem('remaining', remaining.toString());
+        } catch (error) {
+            console.error('Failed to save remaining to localStorage:', error);
+        }
     }, [remaining]);
 
     // ウェハーを開ける処理
