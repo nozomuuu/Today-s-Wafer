@@ -10,6 +10,7 @@ const CollectionBook = ({ allStickers, ownedStickers, goBack }) => {
   const [stickerSlots, setStickerSlots] = useState([]);
 
   useEffect(() => {
+    // ステッカースロットを準備し、各ステッカーをランダムに配置
     const slots = Array(72).fill(null);
     ownedStickers.forEach((sticker) => {
       let randomIndex;
