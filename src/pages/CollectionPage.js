@@ -4,7 +4,7 @@ import stickerRevealSound from './sounds/sticker-reveal.mp3';
 import viewStickersSound from './sounds/view-stickers.mp3';
 
 // Wafer image path using PUBLIC_URL
-const waferImage = process.env.PUBLIC_URL + '/images/wafer3.webp';
+const waferImage = process.env.PUBLIC_URL + '/images/stickers/wafer3.webp';
 
 function CollectionPage({ allStickers, ownedStickers, goBack }) {
     const [cardIndexes, setCardIndexes] = useState([0, 1, 2]);

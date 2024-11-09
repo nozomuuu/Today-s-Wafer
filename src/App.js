@@ -7,8 +7,8 @@ import viewStickersSound from './sounds/view-stickers.mp3';
 
 const CollectionBook = lazy(() => import('./CollectionBook'));
 
-const waferClosed = `${process.env.PUBLIC_URL}/images/wafer1.webp`;
-const waferOpened = `${process.env.PUBLIC_URL}/images/wafer2.webp`;
+const waferClosed = `${process.env.PUBLIC_URL}/images/stickers/wafer1.webp`;
+const waferOpened = `${process.env.PUBLIC_URL}/images/stickers/wafer2.webp`;
 
 function App() {
     const [isOpened, setIsOpened] = useState(false);

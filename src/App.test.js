@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
-import waferClosed from './images/wafer1.webp';
-import waferOpened from './images/wafer2.webp';
+import waferClosed from './images/stickers/wafer1.webp';
+import waferOpened from './images/stickers/wafer2.webp';
 import stickersData from './stickersData'; // すべてのステッカー情報を含む
 import CollectionBook from './CollectionBook';
 import stickerRevealSound from './sounds/sticker-reveal.mp3';
