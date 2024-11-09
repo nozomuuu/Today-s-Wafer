@@ -11,13 +11,14 @@ const waferClosed = `${process.env.PUBLIC_URL}/images/stickers/wafer1.webp`;
 const waferOpened = `${process.env.PUBLIC_URL}/images/stickers/wafer2.webp`;
 
 function App() {
+    // 初期状態の設定
     const [isOpened, setIsOpened] = useState(false);
     const [remaining, setRemaining] = useState(() => {
         try {
             const savedRemaining = localStorage.getItem('remaining');
             return savedRemaining ? parseInt(savedRemaining, 10) : 3;
         } catch (error) {
-            console.error('Failed to load remaining from localStorage:', error);
+            console.error('Error accessing remaining in localStorage:', error);
             return 3;
         }
     });
@@ -26,7 +27,7 @@ function App() {
             const savedStickers = localStorage.getItem('collectedStickers');
             return savedStickers ? JSON.parse(savedStickers) : [];
         } catch (error) {
-            console.error('Failed to load collectedStickers from localStorage:', error);
+            console.error('Error accessing collectedStickers in localStorage:', error);
             return [];
         }
     });
@@ -36,10 +37,12 @@ function App() {
     const [showTomorrowMessage, setShowTomorrowMessage] = useState(false);
     const [isOpening, setIsOpening] = useState(false);
 
+    // 日付チェックとリセット
     useEffect(() => {
         const today = new Date().toISOString().split('T')[0];
         try {
             const lastAccessDate = localStorage.getItem('lastAccessDate') || today;
+
             if (today !== lastAccessDate) {
                 setRemaining(3);
                 setTodayStickers([]);
@@ -47,27 +50,30 @@ function App() {
                 localStorage.setItem('remaining', '3');
             }
         } catch (error) {
-            console.error('Failed to access localStorage for last access date:', error);
+            console.error('Error accessing or setting lastAccessDate in localStorage:', error);
         }
     }, []);
 
+    // collectedStickers の変更時にローカルストレージに保存し、ログを表示
     useEffect(() => {
         try {
             localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
             console.log('Collected Stickers saved to localStorage:', localStorage.getItem('collectedStickers'));
         } catch (error) {
-            console.error('Failed to save collectedStickers to localStorage:', error);
+            console.error('Error saving collectedStickers to localStorage:', error);
         }
     }, [collectedStickers]);
 
+    // remaining の変更時にローカルストレージに保存
     useEffect(() => {
         try {
             localStorage.setItem('remaining', remaining.toString());
         } catch (error) {
-            console.error('Failed to save remaining to localStorage:', error);
+            console.error('Error saving remaining to localStorage:', error);
         }
     }, [remaining]);
 
+    // ウェハーを開ける処理
     const openWafer = useCallback(() => {
         if (remaining > 0 && !isOpening) {
             setIsOpening(true);
@@ -91,6 +97,7 @@ function App() {
         }
     }, [remaining, isOpening]);
 
+    // ウェハーのクリック処理
     const handleCardClick = useCallback((event) => {
         if (event.target.classList.contains("wafer-image")) {
             new Audio(viewStickersSound).play();
@@ -98,6 +105,7 @@ function App() {
         }
     }, [isOpened]);
 
+    // ステッカー詳細を閉じる処理
     const closeStickerDetail = useCallback(() => setSelectedSticker(null), []);
 
     return (
