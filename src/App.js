@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, lazy } from 'react';
 import './App.css';
+import stickersData from './stickersData';
 import openSound from './sounds/wafer-open.mp3';
 import revealSound from './sounds/sticker-reveal.mp3';
 import viewStickersSound from './sounds/view-stickers.mp3';
