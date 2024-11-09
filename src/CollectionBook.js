@@ -68,7 +68,7 @@ const CollectionBook = ({ allStickers, ownedStickers, goBack }) => {
                 onClick={() => handleStickerClick(stickerSlots[j + cardIndex * 24])}
               >
                 <Sticker
-                  src={stickerSlots[j + cardIndex * 24]?.image || '/path/to/wafer-image.webp'}
+                  src={stickerSlots[j + cardIndex * 24]?.image || `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`}
                   alt={`Sticker ${j + 1}`}
                 />
               </div>
