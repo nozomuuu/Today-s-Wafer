@@ -4,7 +4,7 @@ import openSound from './sounds/wafer-open.mp3';
 import revealSound from './sounds/sticker-reveal.mp3';
 import viewStickersSound from './sounds/view-stickers.mp3';
 import stickersData from './stickersData';
-import { getStorageItem, setStorageItem } from './indexedDBHelper';
+import { openDatabase, saveSticker, getStickers } from './indexedDBHelper';
 
 const CollectionBook = lazy(() => import('./CollectionBook'));
 
@@ -12,6 +12,7 @@ const waferClosed = `${process.env.PUBLIC_URL}/images/stickers/wafer1.webp`;
 const waferOpened = `${process.env.PUBLIC_URL}/images/stickers/wafer2.webp`;
 
 function App() {
+    const [dbReady, setDbReady] = useState(false);
     const [isOpened, setIsOpened] = useState(false);
     const [remaining, setRemaining] = useState(3);
     const [collectedStickers, setCollectedStickers] = useState([]);
@@ -22,67 +23,60 @@ function App() {
     const [isOpening, setIsOpening] = useState(false);
 
     useEffect(() => {
-        const loadInitialData = async () => {
-            const savedRemaining = await getStorageItem('remaining');
-            const savedStickers = await getStorageItem('collectedStickers');
-            const lastAccessDate = await getStorageItem('lastAccessDate');
-            const today = new Date().toISOString().split('T')[0];
-
-            setRemaining(savedRemaining !== null ? savedRemaining : 3);
-            setCollectedStickers(savedStickers !== null ? savedStickers : []);
-
-            if (today !== lastAccessDate) {
-                setRemaining(3);
-                setTodayStickers([]);
-                await setStorageItem('lastAccessDate', today);
-                await setStorageItem('remaining', 3);
-            }
-        };
-
-        loadInitialData();
+        openDatabase().then(() => {
+            setDbReady(true);
+            getStickers().then((stickers) => setCollectedStickers(stickers));
+        }).catch(console.error);
     }, []);
 
     useEffect(() => {
-        setStorageItem('collectedStickers', collectedStickers);
-    }, [collectedStickers]);
+        const today = new Date().toISOString().split('T')[0];
+        const lastAccessDate = localStorage.getItem('lastAccessDate') || today;
 
-    useEffect(() => {
-        setStorageItem('remaining', remaining);
-    }, [remaining]);
+        if (today !== lastAccessDate) {
+            setRemaining(3);
+            setTodayStickers([]);
+            localStorage.setItem('lastAccessDate', today);
+            localStorage.setItem('remaining', '3');
+        }
+    }, []);
+
+    const playSound = (sound) => {
+        const audio = new Audio(sound);
+        audio.play().catch(error => {
+            console.warn("Audio playback failed: ", error);
+        });
+    };
 
     const openWafer = useCallback(() => {
-        if (remaining > 0 && !isOpening) {
+        if (remaining > 0 && !isOpening && dbReady) {
             setIsOpening(true);
-            new Audio(openSound).play().catch((error) => {
-                console.warn('Audio playback failed:', error);
-            });
+            playSound(openSound);
             setIsOpened(true);
             setRemaining(prev => prev - 1);
 
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-            setCollectedStickers(prev => [...prev, newSticker]);
-            setTodayStickers(prev => [...prev, newSticker]);
+            saveSticker(newSticker).then(() => {
+                setCollectedStickers(prev => [...prev, newSticker]);
+                setTodayStickers(prev => [...prev, newSticker]);
+            }).catch(console.error);
 
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
-                new Audio(revealSound).play().catch((error) => {
-                    console.warn('Audio playback failed:', error);
-                });
+                playSound(revealSound);
                 setIsOpening(false);
             }, 1500);
         } else if (remaining === 0) {
             setShowTomorrowMessage(true);
             setTimeout(() => setShowTomorrowMessage(false), 3000);
         }
-    }, [remaining, isOpening]);
+    }, [remaining, isOpening, dbReady]);
 
     const handleCardClick = useCallback((event) => {
         if (event.target.classList.contains("wafer-image")) {
+            playSound(viewStickersSound);
             setIsOpened(!isOpened);
-            new Audio(viewStickersSound).play().catch((error) => {
-                console.warn('Audio playback failed:', error);
-            });
         }
     }, [isOpened]);
 
@@ -104,10 +98,8 @@ function App() {
                         {remaining > 0 ? 'Open a Wafer' : 'No More Wafers'}
                     </button>
                     <button onClick={() => {
+                        playSound(viewStickersSound);
                         setPage("collection");
-                        new Audio(viewStickersSound).play().catch((error) => {
-                            console.warn('Audio playback failed:', error);
-                        });
                     }} className="button">
                         CollectionBook
                     </button>
@@ -120,9 +112,7 @@ function App() {
                                 className="sticker-small"
                                 onClick={() => {
                                     setSelectedSticker(sticker);
-                                    new Audio(revealSound).play().catch((error) => {
-                                        console.warn('Audio playback failed:', error);
-                                    });
+                                    playSound(revealSound);
                                 }}
                             />
                         ))}
@@ -135,10 +125,8 @@ function App() {
                         allStickers={stickersData}
                         ownedStickers={collectedStickers}
                         goBack={() => {
+                            playSound(viewStickersSound);
                             setPage("main");
-                            new Audio(viewStickersSound).play().catch((error) => {
-                                console.warn('Audio playback failed:', error);
-                            });
                         }}
                     />
                 </Suspense>

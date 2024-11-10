@@ -1,75 +1,64 @@
-// IndexedDBHelper.js
-export async function getStorageItem(key) {
-    try {
-        const value = await getFromIndexedDB(key);
-        return value !== undefined ? JSON.parse(value) : JSON.parse(localStorage.getItem(key));
-    } catch (error) {
-        console.error('IndexedDB and localStorage access failed:', error);
-        return null;
-    }
-}
+// indexedDBHelper.js
+let db;
+const dbName = 'stickerAppDB';
+const dbVersion = 2; // バージョン番号を更新してデータベースを再構築
 
-export async function setStorageItem(key, value) {
-    try {
-        await saveToIndexedDB(key, JSON.stringify(value));
-        localStorage.setItem(key, JSON.stringify(value));
-    } catch (error) {
-        console.error('Failed to save to IndexedDB or localStorage:', error);
-    }
-}
-
-// IndexedDB操作関数の実装例
-export async function getFromIndexedDB(key) {
+export function openDatabase() {
     return new Promise((resolve, reject) => {
-        const request = indexedDB.open("AppDatabase", 1);
+        const request = indexedDB.open(dbName, dbVersion);
 
-        request.onsuccess = function(event) {
-            const db = event.target.result;
-            const transaction = db.transaction(["AppStore"], "readonly");
-            const objectStore = transaction.objectStore("AppStore");
-            const getRequest = objectStore.get(key);
-
-            getRequest.onsuccess = function() {
-                resolve(getRequest.result);
-            };
-            getRequest.onerror = function() {
-                reject("Failed to retrieve data from IndexedDB");
-            };
+        request.onupgradeneeded = (event) => {
+            db = event.target.result;
+            if (!db.objectStoreNames.contains('stickers')) {
+                db.createObjectStore('stickers', { keyPath: 'id', autoIncrement: true });
+            }
+            console.log('Object store "stickers" created or verified.');
         };
 
-        request.onerror = function() {
-            reject("Failed to open IndexedDB");
+        request.onsuccess = (event) => {
+            db = event.target.result;
+            console.log('Database opened successfully');
+            resolve(db);
+        };
+
+        request.onerror = (event) => {
+            console.error('Database failed to open:', event.target.error);
+            reject(event.target.error);
         };
     });
 }
 
-export async function saveToIndexedDB(key, value) {
+export function saveSticker(sticker) {
     return new Promise((resolve, reject) => {
-        const request = indexedDB.open("AppDatabase", 1);
+        const transaction = db.transaction(['stickers'], 'readwrite');
+        const store = transaction.objectStore('stickers');
+        const request = store.add(sticker);
 
-        request.onupgradeneeded = function(event) {
-            const db = event.target.result;
-            if (!db.objectStoreNames.contains("AppStore")) {
-                db.createObjectStore("AppStore");
-            }
+        request.onsuccess = () => {
+            console.log('Sticker saved to IndexedDB');
+            resolve();
         };
 
-        request.onsuccess = function(event) {
-            const db = event.target.result;
-            const transaction = db.transaction(["AppStore"], "readwrite");
-            const objectStore = transaction.objectStore("AppStore");
-            const putRequest = objectStore.put(value, key);
+        request.onerror = (event) => {
+            console.error('Failed to save sticker:', event.target.error);
+            reject(event.target.error);
+        };
+    });
+}
 
-            putRequest.onsuccess = function() {
-                resolve();
-            };
-            putRequest.onerror = function() {
-                reject("Failed to save data to IndexedDB");
-            };
+export function getStickers() {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(['stickers'], 'readonly');
+        const store = transaction.objectStore('stickers');
+        const request = store.getAll();
+
+        request.onsuccess = (event) => {
+            resolve(event.target.result);
         };
 
-        request.onerror = function() {
-            reject("Failed to open IndexedDB");
+        request.onerror = (event) => {
+            console.error('Failed to retrieve stickers:', event.target.error);
+            reject(event.target.error);
         };
     });
 }
