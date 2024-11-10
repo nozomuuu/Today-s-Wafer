@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import './App.css';
+import openSound from './sounds/wafer-open.mp3';
+import revealSound from './sounds/sticker-reveal.mp3';
+import viewStickersSound from './sounds/view-stickers.mp3';
+import { saveStickerToIndexedDB, getCollectedStickers } from './indexedDBHelper';
 import stickersData from './stickersData';
-import { openDatabase, saveSticker, getStickers } from './indexedDBHelper';
 
 const CollectionBook = lazy(() => import('./CollectionBook'));
 
@@ -9,9 +12,11 @@ const waferClosed = `${process.env.PUBLIC_URL}/images/stickers/wafer1.webp`;
 const waferOpened = `${process.env.PUBLIC_URL}/images/stickers/wafer2.webp`;
 
 function App() {
-    const [dbReady, setDbReady] = useState(false);
     const [isOpened, setIsOpened] = useState(false);
-    const [remaining, setRemaining] = useState(3);
+    const [remaining, setRemaining] = useState(() => {
+        const savedRemaining = localStorage.getItem('remaining');
+        return savedRemaining ? parseInt(savedRemaining, 10) : 3;
+    });
     const [collectedStickers, setCollectedStickers] = useState([]);
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
@@ -20,62 +25,54 @@ function App() {
     const [isOpening, setIsOpening] = useState(false);
 
     useEffect(() => {
-        async function loadData() {
-            try {
-                await openDatabase();
-                setDbReady(true);
-                const stickers = await getStickers();
-                console.log("Stickers loaded from IndexedDB:", stickers);
+        const loadStickers = async () => {
+            const stickers = await getCollectedStickers();
+            if (stickers) {
                 setCollectedStickers(stickers);
-            } catch (error) {
-                console.error("Failed to load stickers. Retrying...", error);
-                setTimeout(loadData, 1000); // 1秒後に再試行
             }
-        }
-
-        loadData();
+        };
+        loadStickers();
     }, []);
 
     useEffect(() => {
-        const today = new Date().toISOString().split('T')[0];
-        const lastAccessDate = localStorage.getItem('lastAccessDate') || today;
+        localStorage.setItem('remaining', remaining.toString());
+    }, [remaining]);
 
-        if (today !== lastAccessDate) {
-            setRemaining(3);
-            setTodayStickers([]);
-            localStorage.setItem('lastAccessDate', today);
-            localStorage.setItem('remaining', '3');
-        }
-    }, []);
-
-    const openWafer = useCallback(() => {
-        if (remaining > 0 && !isOpening && dbReady) {
+    const openWafer = useCallback(async () => {
+        if (remaining > 0 && !isOpening) {
             setIsOpening(true);
-            // playSound(openSound); // 音声再生を一時的にコメントアウト
+            playSound(openSound);
             setIsOpened(true);
             setRemaining(prev => prev - 1);
 
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-            saveSticker(newSticker).then(() => {
-                setCollectedStickers(prev => [...prev, newSticker]);
-                setTodayStickers(prev => [...prev, newSticker]);
-            }).catch(console.error);
+            await saveStickerToIndexedDB(newSticker);
+            setCollectedStickers(prev => [...prev, newSticker]);
+            setTodayStickers(prev => [...prev, newSticker]);
 
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
-                // playSound(revealSound); // 音声再生を一時的にコメントアウト
+                playSound(revealSound);
                 setIsOpening(false);
             }, 1500);
         } else if (remaining === 0) {
             setShowTomorrowMessage(true);
             setTimeout(() => setShowTomorrowMessage(false), 3000);
         }
-    }, [remaining, isOpening, dbReady]);
+    }, [remaining, isOpening]);
 
     const handleCardClick = useCallback(() => {
+        playSound(viewStickersSound);
         setIsOpened(!isOpened);
     }, [isOpened]);
+
+    const playSound = (audioFile) => {
+        const audio = new Audio(audioFile);
+        audio.play().catch(error => {
+            console.error("Audio playback failed:", error);
+        });
+    };
 
     const closeStickerDetail = useCallback(() => setSelectedSticker(null), []);
 
@@ -94,7 +91,10 @@ function App() {
                     <button onClick={openWafer} className="button" disabled={isOpening}>
                         {remaining > 0 ? 'Open a Wafer' : 'No More Wafers'}
                     </button>
-                    <button onClick={() => setPage("collection")} className="button">
+                    <button onClick={() => {
+                        playSound(viewStickersSound);
+                        setPage("collection");
+                    }} className="button">
                         CollectionBook
                     </button>
                     <div className="collected-stickers">
@@ -104,7 +104,10 @@ function App() {
                                 src={sticker.image}
                                 alt={`Sticker ${index + 1}`}
                                 className="sticker-small"
-                                onClick={() => setSelectedSticker(sticker)}
+                                onClick={() => {
+                                    setSelectedSticker(sticker);
+                                    playSound(revealSound);
+                                }}
                             />
                         ))}
                     </div>
@@ -115,7 +118,10 @@ function App() {
                     <CollectionBook
                         allStickers={stickersData}
                         ownedStickers={collectedStickers}
-                        goBack={() => setPage("main")}
+                        goBack={() => {
+                            playSound(viewStickersSound);
+                            setPage("main");
+                        }}
                     />
                 </Suspense>
             )}
