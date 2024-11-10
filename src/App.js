@@ -45,15 +45,14 @@ function App() {
             setIsOpened(true);
             setRemaining(prev => prev - 1);
 
-            const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-            // `wafer3.webp`画像をステッカーとして保存しないようにする
-            if (newSticker.image !== `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`) {
-                await saveStickerWithRetry(newSticker);
-                setCollectedStickers(prev => [...prev, newSticker]);
-                setTodayStickers(prev => [...prev, newSticker]);
-            } else {
-                console.log("wafer3.webpはステッカーとして保存されませんでした。");
-            }
+            let newSticker;
+            do {
+                newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
+            } while (!newSticker.isSticker);  // isStickerプロパティがfalseの場合は再抽選
+
+            await saveStickerToIndexedDB(newSticker);
+            setCollectedStickers(prev => [...prev, newSticker]);
+            setTodayStickers(prev => [...prev, newSticker]);
 
             setTimeout(() => {
                 setIsOpened(false);
@@ -67,18 +66,6 @@ function App() {
         }
     }, [remaining, isOpening]);
 
-    const saveStickerWithRetry = async (sticker, retries = 3) => {
-        for (let i = 0; i < retries; i++) {
-            try {
-                await saveStickerToIndexedDB(sticker);
-                console.log("Sticker saved successfully");
-                break;
-            } catch (error) {
-                console.error("Failed to save sticker, retrying...", error);
-            }
-        }
-    };
-
     const handleCardClick = useCallback(() => {
         playSound(viewStickersSound);
         setIsOpened(!isOpened);
@@ -87,7 +74,7 @@ function App() {
     const playSound = (audioFile) => {
         const audio = new Audio(audioFile);
         audio.play().catch(error => {
-            console.error("Audio playback failed:", error);
+            console.warn("Audio playback failed. Continuing without sound.", error);
         });
     };
 
