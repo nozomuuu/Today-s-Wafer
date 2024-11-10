@@ -4,7 +4,6 @@ import openSound from './sounds/wafer-open.mp3';
 import revealSound from './sounds/sticker-reveal.mp3';
 import viewStickersSound from './sounds/view-stickers.mp3';
 import stickersData from './stickersData';
-import { setCookie, getCookie } from './cookieHelper'; // deleteCookieは削除しました
 
 const CollectionBook = lazy(() => import('./CollectionBook'));
 
