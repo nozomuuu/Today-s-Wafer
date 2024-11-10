@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, lazy, Suspense, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import './App.css';
 import openSound from './sounds/wafer-open.mp3';
 import revealSound from './sounds/sticker-reveal.mp3';
@@ -38,14 +38,6 @@ function App() {
         localStorage.setItem('remaining', remaining.toString());
     }, [remaining]);
 
-    const selectNewSticker = useCallback(async () => {
-        let newSticker;
-        do {
-            newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-        } while (!newSticker.isSticker);
-        return newSticker;
-    }, []); // `stickersData`を依存から除外（この配列は外部にある静的なものとして扱う）
-
     const openWafer = useCallback(async () => {
         if (remaining > 0 && !isOpening) {
             setIsOpening(true);
@@ -53,9 +45,8 @@ function App() {
             setIsOpened(true);
             setRemaining(prev => prev - 1);
 
-            const newSticker = await selectNewSticker();
+            const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
             await saveStickerToIndexedDB(newSticker);
-
             setCollectedStickers(prev => [...prev, newSticker]);
             setTodayStickers(prev => [...prev, newSticker]);
 
@@ -69,7 +60,7 @@ function App() {
             setShowTomorrowMessage(true);
             setTimeout(() => setShowTomorrowMessage(false), 3000);
         }
-    }, [remaining, isOpening, selectNewSticker]); // `selectNewSticker`を依存関係に追加
+    }, [remaining, isOpening]);
 
     const handleCardClick = useCallback(() => {
         playSound(viewStickersSound);
@@ -79,7 +70,7 @@ function App() {
     const playSound = (audioFile) => {
         const audio = new Audio(audioFile);
         audio.play().catch(error => {
-            console.warn("Audio playback failed. Continuing without sound.", error);
+            console.error("Audio playback failed:", error);
         });
     };
 
@@ -97,13 +88,8 @@ function App() {
                         onClick={handleCardClick} 
                     />
                     <p>Remaining: {remaining}</p>
-                    <button 
-                        onClick={openWafer} 
-                        className="button" 
-                        disabled={isOpening} 
-                        style={{ position: 'relative' }}
-                    >
-                        {isOpening ? "Opening..." : (remaining > 0 ? 'Open a Wafer' : 'No More Wafers')}
+                    <button onClick={openWafer} className="button" disabled={isOpening}>
+                        {remaining > 0 ? 'Open a Wafer' : 'No More Wafers'}
                     </button>
                     <button onClick={() => {
                         playSound(viewStickersSound);
@@ -142,18 +128,7 @@ function App() {
             {selectedSticker && (
                 <div className="sticker-popup" onClick={closeStickerDetail}>
                     <div className="sticker-popup-content">
-                        <img 
-                            src={selectedSticker.image} 
-                            alt="Selected Sticker" 
-                            className="popup-image" 
-                            style={{ 
-                                width: '100%', 
-                                height: 'auto', 
-                                maxWidth: '300px', 
-                                objectFit: 'contain', 
-                                borderRadius: '8px' 
-                            }} 
-                        />
+                        <img src={selectedSticker.image} alt="Selected Sticker" className="sticker-large" />
                         <button onClick={closeStickerDetail} className="button">Close</button>
                     </div>
                 </div>
