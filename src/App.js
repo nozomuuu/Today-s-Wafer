@@ -13,22 +13,12 @@ const waferOpened = `${process.env.PUBLIC_URL}/images/stickers/wafer2.webp`;
 function App() {
     const [isOpened, setIsOpened] = useState(false);
     const [remaining, setRemaining] = useState(() => {
-        try {
-            const savedRemaining = localStorage.getItem('remaining');
-            return savedRemaining ? parseInt(savedRemaining, 10) : 3;
-        } catch (error) {
-            console.error("Failed to load remaining:", error);
-            return 3;
-        }
+        const savedRemaining = localStorage.getItem('remaining');
+        return savedRemaining ? parseInt(savedRemaining, 10) : 3;
     });
     const [collectedStickers, setCollectedStickers] = useState(() => {
-        try {
-            const savedStickers = localStorage.getItem('collectedStickers');
-            return savedStickers ? JSON.parse(savedStickers) : [];
-        } catch (error) {
-            console.error("Failed to load collectedStickers:", error);
-            return [];
-        }
+        const savedStickers = localStorage.getItem('collectedStickers');
+        return savedStickers ? JSON.parse(savedStickers) : [];
     });
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
@@ -36,7 +26,6 @@ function App() {
     const [showTomorrowMessage, setShowTomorrowMessage] = useState(false);
     const [isOpening, setIsOpening] = useState(false);
 
-    // 日付チェックとリセット
     useEffect(() => {
         const today = new Date().toISOString().split('T')[0];
         const lastAccessDate = localStorage.getItem('lastAccessDate') || today;
@@ -49,27 +38,15 @@ function App() {
         }
     }, []);
 
-    // collectedStickersの変更時にローカルストレージに保存
     useEffect(() => {
-        try {
-            localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
-            console.log('Saved collectedStickers to localStorage:', collectedStickers);
-        } catch (error) {
-            console.error("Failed to save collectedStickers:", error);
-        }
+        // 収集ステッカーを更新し、変更が確実に保存されるように
+        localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
     }, [collectedStickers]);
 
-    // remainingの変更時にローカルストレージに保存
     useEffect(() => {
-        try {
-            localStorage.setItem('remaining', remaining.toString());
-            console.log('Saved remaining to localStorage:', remaining);
-        } catch (error) {
-            console.error("Failed to save remaining:", error);
-        }
+        localStorage.setItem('remaining', remaining.toString());
     }, [remaining]);
 
-    // ウェハーを開ける処理
     const openWafer = useCallback(() => {
         if (remaining > 0 && !isOpening) {
             setIsOpening(true);
@@ -93,14 +70,6 @@ function App() {
         }
     }, [remaining, isOpening]);
 
-    // コレクションページに移動
-    const goToCollection = useCallback(() => {
-        new Audio(viewStickersSound).play();
-        console.log("Navigating to collection with stickers:", collectedStickers);
-        setPage("collection");
-    }, [collectedStickers]);
-
-    // カードのクリック処理
     const handleCardClick = useCallback((event) => {
         if (event.target.classList.contains("wafer-image")) {
             new Audio(viewStickersSound).play();
@@ -109,6 +78,17 @@ function App() {
     }, [isOpened]);
 
     const closeStickerDetail = useCallback(() => setSelectedSticker(null), []);
+
+    // CollectionBookに遷移する前にlocalStorageのデータが最新の状態になるように再読み込み
+    const handleOpenCollection = () => {
+        new Audio(viewStickersSound).play();
+        // 収集したステッカー情報を再読み込みして同期を確保
+        const updatedStickers = localStorage.getItem('collectedStickers');
+        if (updatedStickers) {
+            setCollectedStickers(JSON.parse(updatedStickers));
+        }
+        setPage("collection");
+    };
 
     return (
         <div className="app">
@@ -125,7 +105,7 @@ function App() {
                     <button onClick={openWafer} className="button" disabled={isOpening}>
                         {remaining > 0 ? 'Open a Wafer' : 'No More Wafers'}
                     </button>
-                    <button onClick={goToCollection} className="button">
+                    <button onClick={handleOpenCollection} className="button">
                         CollectionBook
                     </button>
                     <div className="collected-stickers">
