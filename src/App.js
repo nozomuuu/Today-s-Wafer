@@ -39,8 +39,9 @@ function App() {
     }, []);
 
     useEffect(() => {
-        // 収集ステッカーを更新し、変更が確実に保存されるように
+        // collectedStickersをlocalStorageとsessionStorageの両方に保存
         localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
+        sessionStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
     }, [collectedStickers]);
 
     useEffect(() => {
@@ -79,11 +80,10 @@ function App() {
 
     const closeStickerDetail = useCallback(() => setSelectedSticker(null), []);
 
-    // CollectionBookに遷移する前にlocalStorageのデータが最新の状態になるように再読み込み
     const handleOpenCollection = () => {
         new Audio(viewStickersSound).play();
-        // 収集したステッカー情報を再読み込みして同期を確保
-        const updatedStickers = localStorage.getItem('collectedStickers');
+        // sessionStorageから最新のデータを再取得
+        const updatedStickers = sessionStorage.getItem('collectedStickers') || localStorage.getItem('collectedStickers');
         if (updatedStickers) {
             setCollectedStickers(JSON.parse(updatedStickers));
         }
