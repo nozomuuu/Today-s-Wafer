@@ -1,8 +1,5 @@
 import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import './App.css';
-import openSound from './sounds/wafer-open.mp3';
-import revealSound from './sounds/sticker-reveal.mp3';
-import viewStickersSound from './sounds/view-stickers.mp3';
 import stickersData from './stickersData';
 import { openDatabase, saveSticker, getStickers } from './indexedDBHelper';
 
@@ -23,10 +20,20 @@ function App() {
     const [isOpening, setIsOpening] = useState(false);
 
     useEffect(() => {
-        openDatabase().then(() => {
-            setDbReady(true);
-            getStickers().then((stickers) => setCollectedStickers(stickers));
-        }).catch(console.error);
+        async function loadData() {
+            try {
+                await openDatabase();
+                setDbReady(true);
+                const stickers = await getStickers();
+                console.log("Stickers loaded from IndexedDB:", stickers);
+                setCollectedStickers(stickers);
+            } catch (error) {
+                console.error("Failed to load stickers. Retrying...", error);
+                setTimeout(loadData, 1000); // 1秒後に再試行
+            }
+        }
+
+        loadData();
     }, []);
 
     useEffect(() => {
@@ -41,17 +48,10 @@ function App() {
         }
     }, []);
 
-    const playSound = (sound) => {
-        const audio = new Audio(sound);
-        audio.play().catch(error => {
-            console.warn("Audio playback failed: ", error);
-        });
-    };
-
     const openWafer = useCallback(() => {
         if (remaining > 0 && !isOpening && dbReady) {
             setIsOpening(true);
-            playSound(openSound);
+            // playSound(openSound); // 音声再生を一時的にコメントアウト
             setIsOpened(true);
             setRemaining(prev => prev - 1);
 
@@ -64,7 +64,7 @@ function App() {
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
-                playSound(revealSound);
+                // playSound(revealSound); // 音声再生を一時的にコメントアウト
                 setIsOpening(false);
             }, 1500);
         } else if (remaining === 0) {
@@ -73,11 +73,8 @@ function App() {
         }
     }, [remaining, isOpening, dbReady]);
 
-    const handleCardClick = useCallback((event) => {
-        if (event.target.classList.contains("wafer-image")) {
-            playSound(viewStickersSound);
-            setIsOpened(!isOpened);
-        }
+    const handleCardClick = useCallback(() => {
+        setIsOpened(!isOpened);
     }, [isOpened]);
 
     const closeStickerDetail = useCallback(() => setSelectedSticker(null), []);
@@ -97,10 +94,7 @@ function App() {
                     <button onClick={openWafer} className="button" disabled={isOpening}>
                         {remaining > 0 ? 'Open a Wafer' : 'No More Wafers'}
                     </button>
-                    <button onClick={() => {
-                        playSound(viewStickersSound);
-                        setPage("collection");
-                    }} className="button">
+                    <button onClick={() => setPage("collection")} className="button">
                         CollectionBook
                     </button>
                     <div className="collected-stickers">
@@ -110,10 +104,7 @@ function App() {
                                 src={sticker.image}
                                 alt={`Sticker ${index + 1}`}
                                 className="sticker-small"
-                                onClick={() => {
-                                    setSelectedSticker(sticker);
-                                    playSound(revealSound);
-                                }}
+                                onClick={() => setSelectedSticker(sticker)}
                             />
                         ))}
                     </div>
@@ -124,10 +115,7 @@ function App() {
                     <CollectionBook
                         allStickers={stickersData}
                         ownedStickers={collectedStickers}
-                        goBack={() => {
-                            playSound(viewStickersSound);
-                            setPage("main");
-                        }}
+                        goBack={() => setPage("main")}
                     />
                 </Suspense>
             )}
