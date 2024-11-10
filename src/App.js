@@ -46,11 +46,13 @@ function App() {
             setRemaining(prev => prev - 1);
 
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-            // `wafer3.webp` 以外のステッカーのみ保存
+            // `wafer3.webp`画像をステッカーとして保存しないようにする
             if (newSticker.image !== `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`) {
                 await saveStickerWithRetry(newSticker);
                 setCollectedStickers(prev => [...prev, newSticker]);
                 setTodayStickers(prev => [...prev, newSticker]);
+            } else {
+                console.log("wafer3.webpはステッカーとして保存されませんでした。");
             }
 
             setTimeout(() => {
