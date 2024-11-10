@@ -46,9 +46,12 @@ function App() {
             setRemaining(prev => prev - 1);
 
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-            await saveStickerToIndexedDB(newSticker);
-            setCollectedStickers(prev => [...prev, newSticker]);
-            setTodayStickers(prev => [...prev, newSticker]);
+            // `wafer3.webp` 以外のステッカーのみ保存
+            if (newSticker.image !== `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`) {
+                await saveStickerWithRetry(newSticker);
+                setCollectedStickers(prev => [...prev, newSticker]);
+                setTodayStickers(prev => [...prev, newSticker]);
+            }
 
             setTimeout(() => {
                 setIsOpened(false);
@@ -61,6 +64,18 @@ function App() {
             setTimeout(() => setShowTomorrowMessage(false), 3000);
         }
     }, [remaining, isOpening]);
+
+    const saveStickerWithRetry = async (sticker, retries = 3) => {
+        for (let i = 0; i < retries; i++) {
+            try {
+                await saveStickerToIndexedDB(sticker);
+                console.log("Sticker saved successfully");
+                break;
+            } catch (error) {
+                console.error("Failed to save sticker, retrying...", error);
+            }
+        }
+    };
 
     const handleCardClick = useCallback(() => {
         playSound(viewStickersSound);
