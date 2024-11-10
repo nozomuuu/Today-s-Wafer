@@ -48,7 +48,7 @@ function App() {
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
             await saveStickerToIndexedDB(newSticker);
             setCollectedStickers(prev => [...prev, newSticker]);
-            setTodayStickers(prev => [...prev, newSticker]);
+            setTodayStickers(prev => [...prev, newSticker]); // todayStickers に追加
 
             setTimeout(() => {
                 setIsOpened(false);

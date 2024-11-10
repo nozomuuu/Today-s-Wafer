@@ -21,20 +21,15 @@ export const saveStickerToIndexedDB = async (sticker) => {
         await tx.done;
         console.log('Sticker saved to IndexedDB');
     } catch (error) {
-        console.error('Error saving sticker to IndexedDB:', error);
+        console.error('Failed to save sticker to IndexedDB:', error);
     }
 };
 
 export const getCollectedStickers = async () => {
-    try {
-        const db = await initDB();
-        const tx = db.transaction(STORE_NAME, 'readonly');
-        const stickers = await tx.objectStore(STORE_NAME).getAll();
-        await tx.done;
-        console.log('Stickers loaded from IndexedDB:', stickers);
-        return stickers;
-    } catch (error) {
-        console.error('Error loading stickers from IndexedDB:', error);
-        return [];
-    }
+    const db = await initDB();
+    const tx = db.transaction(STORE_NAME, 'readonly');
+    const stickers = await tx.objectStore(STORE_NAME).getAll();
+    await tx.done;
+    console.log('Stickers loaded from IndexedDB:', stickers);
+    return stickers;
 };
