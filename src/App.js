@@ -38,6 +38,14 @@ function App() {
         localStorage.setItem('remaining', remaining.toString());
     }, [remaining]);
 
+    const selectNewSticker = useCallback(async () => {
+        let newSticker;
+        do {
+            newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
+        } while (!newSticker.isSticker);
+        return newSticker;
+    }, []); // `stickersData`を依存から除外（この配列は外部にある静的なものとして扱う）
+
     const openWafer = useCallback(async () => {
         if (remaining > 0 && !isOpening) {
             setIsOpening(true);
@@ -61,15 +69,7 @@ function App() {
             setShowTomorrowMessage(true);
             setTimeout(() => setShowTomorrowMessage(false), 3000);
         }
-    }, [remaining, isOpening]);
-
-    const selectNewSticker = useMemo(() => async () => {
-        let newSticker;
-        do {
-            newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-        } while (!newSticker.isSticker);
-        return newSticker;
-    }, [stickersData]);
+    }, [remaining, isOpening, selectNewSticker]); // `selectNewSticker`を依存関係に追加
 
     const handleCardClick = useCallback(() => {
         playSound(viewStickersSound);
