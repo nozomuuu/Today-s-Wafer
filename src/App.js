@@ -128,8 +128,8 @@ function App() {
             {selectedSticker && (
                 <div className="sticker-popup" onClick={closeStickerDetail}>
                     <div className="sticker-popup-content">
-                        <img src={selectedSticker.image} alt="Selected Sticker" className="sticker-large" />
-                        <button onClick={closeStickerDetail} className="button">Close</button>
+                        <img src={selectedSticker.image} alt="Selected Sticker" className="popup-image" />
+                        <button onClick={closeStickerDetail} className="close-popup-button">Close</button>
                     </div>
                 </div>
             )}
