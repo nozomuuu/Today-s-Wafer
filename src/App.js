@@ -1,9 +1,11 @@
+// import 文などの設定は現状のまま
 import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import './App.css';
 import openSound from './sounds/wafer-open.mp3';
 import revealSound from './sounds/sticker-reveal.mp3';
 import viewStickersSound from './sounds/view-stickers.mp3';
 import stickersData from './stickersData';
+import Cookies from 'js-cookie'; // 必要な場合には js-cookie ライブラリをインストール
 
 const CollectionBook = lazy(() => import('./CollectionBook'));
 
@@ -13,11 +15,11 @@ const waferOpened = `${process.env.PUBLIC_URL}/images/stickers/wafer2.webp`;
 function App() {
     const [isOpened, setIsOpened] = useState(false);
     const [remaining, setRemaining] = useState(() => {
-        const savedRemaining = localStorage.getItem('remaining');
+        const savedRemaining = Cookies.get('remaining');
         return savedRemaining ? parseInt(savedRemaining, 10) : 3;
     });
     const [collectedStickers, setCollectedStickers] = useState(() => {
-        const savedStickers = localStorage.getItem('collectedStickers');
+        const savedStickers = Cookies.get('collectedStickers');
         return savedStickers ? JSON.parse(savedStickers) : [];
     });
     const [todayStickers, setTodayStickers] = useState([]);
@@ -28,22 +30,22 @@ function App() {
 
     useEffect(() => {
         const today = new Date().toISOString().split('T')[0];
-        const lastAccessDate = localStorage.getItem('lastAccessDate') || today;
+        const lastAccessDate = Cookies.get('lastAccessDate') || today;
 
         if (today !== lastAccessDate) {
             setRemaining(3);
             setTodayStickers([]);
-            localStorage.setItem('lastAccessDate', today);
-            localStorage.setItem('remaining', '3');
+            Cookies.set('lastAccessDate', today, { expires: 365 });
+            Cookies.set('remaining', '3', { expires: 365 });
         }
     }, []);
 
     useEffect(() => {
-        localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
+        Cookies.set('collectedStickers', JSON.stringify(collectedStickers), { expires: 365 });
     }, [collectedStickers]);
 
     useEffect(() => {
-        localStorage.setItem('remaining', remaining.toString());
+        Cookies.set('remaining', remaining.toString(), { expires: 365 });
     }, [remaining]);
 
     const openWafer = useCallback(() => {
