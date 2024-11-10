@@ -4,7 +4,7 @@ import openSound from './sounds/wafer-open.mp3';
 import revealSound from './sounds/sticker-reveal.mp3';
 import viewStickersSound from './sounds/view-stickers.mp3';
 import stickersData from './stickersData';
-import { saveToIndexedDB, getFromIndexedDB } from './indexedDBHelper';
+import { setCookie, getCookie, deleteCookie } from './cookieHelper';
 
 const CollectionBook = lazy(() => import('./CollectionBook'));
 
@@ -13,8 +13,14 @@ const waferOpened = `${process.env.PUBLIC_URL}/images/stickers/wafer2.webp`;
 
 function App() {
     const [isOpened, setIsOpened] = useState(false);
-    const [remaining, setRemaining] = useState(3);
-    const [collectedStickers, setCollectedStickers] = useState([]);
+    const [remaining, setRemaining] = useState(() => {
+        const savedRemaining = getCookie('remaining');
+        return savedRemaining ? parseInt(savedRemaining, 10) : 3;
+    });
+    const [collectedStickers, setCollectedStickers] = useState(() => {
+        const savedStickers = getCookie('collectedStickers');
+        return savedStickers ? JSON.parse(savedStickers) : [];
+    });
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
     const [page, setPage] = useState("main");
@@ -23,28 +29,22 @@ function App() {
 
     useEffect(() => {
         const today = new Date().toISOString().split('T')[0];
-        getFromIndexedDB('lastAccessDate').then((lastAccessDate) => {
-            if (today !== lastAccessDate) {
-                setRemaining(3);
-                setTodayStickers([]);
-                saveToIndexedDB('lastAccessDate', today);
-                saveToIndexedDB('remaining', 3);
-            } else {
-                getFromIndexedDB('remaining').then((savedRemaining) => {
-                    if (savedRemaining !== null) {
-                        setRemaining(savedRemaining);
-                    }
-                });
-            }
-        });
+        const lastAccessDate = getCookie('lastAccessDate') || today;
+
+        if (today !== lastAccessDate) {
+            setRemaining(3);
+            setTodayStickers([]);
+            setCookie('lastAccessDate', today, 7);  // クッキーの有効期限は1週間
+            setCookie('remaining', '3', 7);
+        }
     }, []);
 
     useEffect(() => {
-        saveToIndexedDB('collectedStickers', collectedStickers);
+        setCookie('collectedStickers', JSON.stringify(collectedStickers), 7);
     }, [collectedStickers]);
 
     useEffect(() => {
-        saveToIndexedDB('remaining', remaining);
+        setCookie('remaining', remaining.toString(), 7);
     }, [remaining]);
 
     const openWafer = useCallback(() => {
@@ -79,16 +79,6 @@ function App() {
 
     const closeStickerDetail = useCallback(() => setSelectedSticker(null), []);
 
-    const handleOpenCollection = () => {
-        new Audio(viewStickersSound).play();
-        getFromIndexedDB('collectedStickers').then((updatedStickers) => {
-            if (updatedStickers) {
-                setCollectedStickers(updatedStickers);
-            }
-            setPage("collection");
-        });
-    };
-
     return (
         <div className="app">
             {page === "main" && (
@@ -104,7 +94,10 @@ function App() {
                     <button onClick={openWafer} className="button" disabled={isOpening}>
                         {remaining > 0 ? 'Open a Wafer' : 'No More Wafers'}
                     </button>
-                    <button onClick={handleOpenCollection} className="button">
+                    <button onClick={() => {
+                        new Audio(viewStickersSound).play();
+                        setPage("collection");
+                    }} className="button">
                         CollectionBook
                     </button>
                     <div className="collected-stickers">
