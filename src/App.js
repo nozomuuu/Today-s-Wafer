@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useCallback, lazy, Suspense, useMemo } from 'react';
 import './App.css';
 import openSound from './sounds/wafer-open.mp3';
 import revealSound from './sounds/sticker-reveal.mp3';
@@ -40,13 +40,13 @@ function App() {
 
     const openWafer = useCallback(async () => {
         if (remaining > 0 && !isOpening) {
-            setIsOpening(true); // ローディングインディケーター用の状態
+            setIsOpening(true);
             playSound(openSound);
             setIsOpened(true);
             setRemaining(prev => prev - 1);
 
-            const newSticker = await selectNewSticker();  // 新しい関数でスティッカー選択を行う
-            await saveStickerToIndexedDB(newSticker);  // IndexedDBへの保存
+            const newSticker = await selectNewSticker();
+            await saveStickerToIndexedDB(newSticker);
 
             setCollectedStickers(prev => [...prev, newSticker]);
             setTodayStickers(prev => [...prev, newSticker]);
@@ -55,7 +55,7 @@ function App() {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
                 playSound(revealSound);
-                setIsOpening(false); // ローディング解除
+                setIsOpening(false);
             }, 1500);
         } else if (remaining === 0) {
             setShowTomorrowMessage(true);
@@ -63,14 +63,13 @@ function App() {
         }
     }, [remaining, isOpening]);
 
-    // 新しいステッカーを選択するための関数
-    const selectNewSticker = async () => {
+    const selectNewSticker = useMemo(() => async () => {
         let newSticker;
         do {
             newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-        } while (!newSticker.isSticker);  // isStickerプロパティでのフィルタリング
+        } while (!newSticker.isSticker);
         return newSticker;
-    };
+    }, [stickersData]);
 
     const handleCardClick = useCallback(() => {
         playSound(viewStickersSound);
