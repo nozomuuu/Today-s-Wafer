@@ -4,6 +4,7 @@ import openSound from './sounds/wafer-open.mp3';
 import revealSound from './sounds/sticker-reveal.mp3';
 import viewStickersSound from './sounds/view-stickers.mp3';
 import stickersData from './stickersData';
+import { saveToIndexedDB, getFromIndexedDB } from './indexedDBHelper';
 
 const CollectionBook = lazy(() => import('./CollectionBook'));
 
@@ -12,14 +13,8 @@ const waferOpened = `${process.env.PUBLIC_URL}/images/stickers/wafer2.webp`;
 
 function App() {
     const [isOpened, setIsOpened] = useState(false);
-    const [remaining, setRemaining] = useState(() => {
-        const savedRemaining = localStorage.getItem('remaining');
-        return savedRemaining ? parseInt(savedRemaining, 10) : 3;
-    });
-    const [collectedStickers, setCollectedStickers] = useState(() => {
-        const savedStickers = localStorage.getItem('collectedStickers');
-        return savedStickers ? JSON.parse(savedStickers) : [];
-    });
+    const [remaining, setRemaining] = useState(3);
+    const [collectedStickers, setCollectedStickers] = useState([]);
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
     const [page, setPage] = useState("main");
@@ -28,24 +23,28 @@ function App() {
 
     useEffect(() => {
         const today = new Date().toISOString().split('T')[0];
-        const lastAccessDate = localStorage.getItem('lastAccessDate') || today;
-
-        if (today !== lastAccessDate) {
-            setRemaining(3);
-            setTodayStickers([]);
-            localStorage.setItem('lastAccessDate', today);
-            localStorage.setItem('remaining', '3');
-        }
+        getFromIndexedDB('lastAccessDate').then((lastAccessDate) => {
+            if (today !== lastAccessDate) {
+                setRemaining(3);
+                setTodayStickers([]);
+                saveToIndexedDB('lastAccessDate', today);
+                saveToIndexedDB('remaining', 3);
+            } else {
+                getFromIndexedDB('remaining').then((savedRemaining) => {
+                    if (savedRemaining !== null) {
+                        setRemaining(savedRemaining);
+                    }
+                });
+            }
+        });
     }, []);
 
     useEffect(() => {
-        // collectedStickersをlocalStorageとsessionStorageの両方に保存
-        localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
-        sessionStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
+        saveToIndexedDB('collectedStickers', collectedStickers);
     }, [collectedStickers]);
 
     useEffect(() => {
-        localStorage.setItem('remaining', remaining.toString());
+        saveToIndexedDB('remaining', remaining);
     }, [remaining]);
 
     const openWafer = useCallback(() => {
@@ -82,12 +81,12 @@ function App() {
 
     const handleOpenCollection = () => {
         new Audio(viewStickersSound).play();
-        // sessionStorageから最新のデータを再取得
-        const updatedStickers = sessionStorage.getItem('collectedStickers') || localStorage.getItem('collectedStickers');
-        if (updatedStickers) {
-            setCollectedStickers(JSON.parse(updatedStickers));
-        }
-        setPage("collection");
+        getFromIndexedDB('collectedStickers').then((updatedStickers) => {
+            if (updatedStickers) {
+                setCollectedStickers(updatedStickers);
+            }
+            setPage("collection");
+        });
     };
 
     return (
