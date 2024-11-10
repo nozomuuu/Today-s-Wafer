@@ -40,17 +40,14 @@ function App() {
 
     const openWafer = useCallback(async () => {
         if (remaining > 0 && !isOpening) {
-            setIsOpening(true);
+            setIsOpening(true); // ローディングインディケーター用の状態
             playSound(openSound);
             setIsOpened(true);
             setRemaining(prev => prev - 1);
 
-            let newSticker;
-            do {
-                newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-            } while (!newSticker.isSticker);  // isStickerプロパティがfalseの場合は再抽選
+            const newSticker = await selectNewSticker();  // 新しい関数でスティッカー選択を行う
+            await saveStickerToIndexedDB(newSticker);  // IndexedDBへの保存
 
-            await saveStickerToIndexedDB(newSticker);
             setCollectedStickers(prev => [...prev, newSticker]);
             setTodayStickers(prev => [...prev, newSticker]);
 
@@ -58,13 +55,22 @@ function App() {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
                 playSound(revealSound);
-                setIsOpening(false);
+                setIsOpening(false); // ローディング解除
             }, 1500);
         } else if (remaining === 0) {
             setShowTomorrowMessage(true);
             setTimeout(() => setShowTomorrowMessage(false), 3000);
         }
     }, [remaining, isOpening]);
+
+    // 新しいステッカーを選択するための関数
+    const selectNewSticker = async () => {
+        let newSticker;
+        do {
+            newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
+        } while (!newSticker.isSticker);  // isStickerプロパティでのフィルタリング
+        return newSticker;
+    };
 
     const handleCardClick = useCallback(() => {
         playSound(viewStickersSound);
@@ -92,8 +98,13 @@ function App() {
                         onClick={handleCardClick} 
                     />
                     <p>Remaining: {remaining}</p>
-                    <button onClick={openWafer} className="button" disabled={isOpening}>
-                        {remaining > 0 ? 'Open a Wafer' : 'No More Wafers'}
+                    <button 
+                        onClick={openWafer} 
+                        className="button" 
+                        disabled={isOpening} 
+                        style={{ position: 'relative' }}
+                    >
+                        {isOpening ? "Opening..." : (remaining > 0 ? 'Open a Wafer' : 'No More Wafers')}
                     </button>
                     <button onClick={() => {
                         playSound(viewStickersSound);
