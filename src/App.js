@@ -48,7 +48,7 @@ function App() {
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
             await saveStickerToIndexedDB(newSticker);
             setCollectedStickers(prev => [...prev, newSticker]);
-            setTodayStickers(prev => [...prev, newSticker]); // todayStickers に追加
+            setTodayStickers(prev => [...prev, newSticker]);
 
             setTimeout(() => {
                 setIsOpened(false);
@@ -128,8 +128,19 @@ function App() {
             {selectedSticker && (
                 <div className="sticker-popup" onClick={closeStickerDetail}>
                     <div className="sticker-popup-content">
-                        <img src={selectedSticker.image} alt="Selected Sticker" className="popup-image" />
-                        <button onClick={closeStickerDetail} className="close-popup-button">Close</button>
+                        <img 
+                            src={selectedSticker.image} 
+                            alt="Selected Sticker" 
+                            className="popup-image" 
+                            style={{ 
+                                width: '100%', 
+                                height: 'auto', 
+                                maxWidth: '300px', 
+                                objectFit: 'contain', 
+                                borderRadius: '8px' 
+                            }} 
+                        />
+                        <button onClick={closeStickerDetail} className="button">Close</button>
                     </div>
                 </div>
             )}
