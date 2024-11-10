@@ -1,49 +1,75 @@
-// indexedDBHelper.js
-export function openDatabase() {
+// IndexedDBHelper.js
+export async function getStorageItem(key) {
+    try {
+        const value = await getFromIndexedDB(key);
+        return value !== undefined ? JSON.parse(value) : JSON.parse(localStorage.getItem(key));
+    } catch (error) {
+        console.error('IndexedDB and localStorage access failed:', error);
+        return null;
+    }
+}
+
+export async function setStorageItem(key, value) {
+    try {
+        await saveToIndexedDB(key, JSON.stringify(value));
+        localStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+        console.error('Failed to save to IndexedDB or localStorage:', error);
+    }
+}
+
+// IndexedDB操作関数の実装例
+export async function getFromIndexedDB(key) {
     return new Promise((resolve, reject) => {
-        const request = indexedDB.open("StickerAppDB", 1);
+        const request = indexedDB.open("AppDatabase", 1);
 
-        request.onerror = (event) => {
-            console.error("Database error:", event.target.error);
-            reject("Database failed to open");
-        };
-
-        request.onsuccess = () => {
-            console.log("Database opened successfully");
-            resolve(request.result);
-        };
-
-        request.onupgradeneeded = (event) => {
+        request.onsuccess = function(event) {
             const db = event.target.result;
-            db.createObjectStore("stickers", { keyPath: "key" });
-            console.log("Database setup complete");
+            const transaction = db.transaction(["AppStore"], "readonly");
+            const objectStore = transaction.objectStore("AppStore");
+            const getRequest = objectStore.get(key);
+
+            getRequest.onsuccess = function() {
+                resolve(getRequest.result);
+            };
+            getRequest.onerror = function() {
+                reject("Failed to retrieve data from IndexedDB");
+            };
+        };
+
+        request.onerror = function() {
+            reject("Failed to open IndexedDB");
         };
     });
 }
 
-export function saveToIndexedDB(key, data) {
-    return openDatabase().then((db) => {
-        const transaction = db.transaction(["stickers"], "readwrite");
-        const store = transaction.objectStore("stickers");
-        store.put({ key, data });
-    });
-}
+export async function saveToIndexedDB(key, value) {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open("AppDatabase", 1);
 
-export function getFromIndexedDB(key) {
-    return openDatabase().then((db) => {
-        return new Promise((resolve, reject) => {
-            const transaction = db.transaction(["stickers"], "readonly");
-            const store = transaction.objectStore("stickers");
-            const request = store.get(key);
+        request.onupgradeneeded = function(event) {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains("AppStore")) {
+                db.createObjectStore("AppStore");
+            }
+        };
 
-            request.onsuccess = () => {
-                resolve(request.result ? request.result.data : null);
+        request.onsuccess = function(event) {
+            const db = event.target.result;
+            const transaction = db.transaction(["AppStore"], "readwrite");
+            const objectStore = transaction.objectStore("AppStore");
+            const putRequest = objectStore.put(value, key);
+
+            putRequest.onsuccess = function() {
+                resolve();
             };
-
-            request.onerror = (event) => {
-                console.error("Database get error:", event.target.error);
-                reject("Failed to retrieve data");
+            putRequest.onerror = function() {
+                reject("Failed to save data to IndexedDB");
             };
-        });
+        };
+
+        request.onerror = function() {
+            reject("Failed to open IndexedDB");
+        };
     });
 }

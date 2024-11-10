@@ -1,11 +1,10 @@
-// import 文などの設定は現状のまま
 import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import './App.css';
 import openSound from './sounds/wafer-open.mp3';
 import revealSound from './sounds/sticker-reveal.mp3';
 import viewStickersSound from './sounds/view-stickers.mp3';
 import stickersData from './stickersData';
-import Cookies from 'js-cookie'; // 必要な場合には js-cookie ライブラリをインストール
+import { getStorageItem, setStorageItem } from './indexedDBHelper';
 
 const CollectionBook = lazy(() => import('./CollectionBook'));
 
@@ -14,14 +13,8 @@ const waferOpened = `${process.env.PUBLIC_URL}/images/stickers/wafer2.webp`;
 
 function App() {
     const [isOpened, setIsOpened] = useState(false);
-    const [remaining, setRemaining] = useState(() => {
-        const savedRemaining = Cookies.get('remaining');
-        return savedRemaining ? parseInt(savedRemaining, 10) : 3;
-    });
-    const [collectedStickers, setCollectedStickers] = useState(() => {
-        const savedStickers = Cookies.get('collectedStickers');
-        return savedStickers ? JSON.parse(savedStickers) : [];
-    });
+    const [remaining, setRemaining] = useState(3);
+    const [collectedStickers, setCollectedStickers] = useState([]);
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
     const [page, setPage] = useState("main");
@@ -29,29 +22,40 @@ function App() {
     const [isOpening, setIsOpening] = useState(false);
 
     useEffect(() => {
-        const today = new Date().toISOString().split('T')[0];
-        const lastAccessDate = Cookies.get('lastAccessDate') || today;
+        const loadInitialData = async () => {
+            const savedRemaining = await getStorageItem('remaining');
+            const savedStickers = await getStorageItem('collectedStickers');
+            const lastAccessDate = await getStorageItem('lastAccessDate');
+            const today = new Date().toISOString().split('T')[0];
 
-        if (today !== lastAccessDate) {
-            setRemaining(3);
-            setTodayStickers([]);
-            Cookies.set('lastAccessDate', today, { expires: 365 });
-            Cookies.set('remaining', '3', { expires: 365 });
-        }
+            setRemaining(savedRemaining !== null ? savedRemaining : 3);
+            setCollectedStickers(savedStickers !== null ? savedStickers : []);
+
+            if (today !== lastAccessDate) {
+                setRemaining(3);
+                setTodayStickers([]);
+                await setStorageItem('lastAccessDate', today);
+                await setStorageItem('remaining', 3);
+            }
+        };
+
+        loadInitialData();
     }, []);
 
     useEffect(() => {
-        Cookies.set('collectedStickers', JSON.stringify(collectedStickers), { expires: 365 });
+        setStorageItem('collectedStickers', collectedStickers);
     }, [collectedStickers]);
 
     useEffect(() => {
-        Cookies.set('remaining', remaining.toString(), { expires: 365 });
+        setStorageItem('remaining', remaining);
     }, [remaining]);
 
     const openWafer = useCallback(() => {
         if (remaining > 0 && !isOpening) {
             setIsOpening(true);
-            new Audio(openSound).play();
+            new Audio(openSound).play().catch((error) => {
+                console.warn('Audio playback failed:', error);
+            });
             setIsOpened(true);
             setRemaining(prev => prev - 1);
 
@@ -62,7 +66,9 @@ function App() {
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
-                new Audio(revealSound).play();
+                new Audio(revealSound).play().catch((error) => {
+                    console.warn('Audio playback failed:', error);
+                });
                 setIsOpening(false);
             }, 1500);
         } else if (remaining === 0) {
@@ -73,8 +79,10 @@ function App() {
 
     const handleCardClick = useCallback((event) => {
         if (event.target.classList.contains("wafer-image")) {
-            new Audio(viewStickersSound).play();
             setIsOpened(!isOpened);
+            new Audio(viewStickersSound).play().catch((error) => {
+                console.warn('Audio playback failed:', error);
+            });
         }
     }, [isOpened]);
 
@@ -96,8 +104,10 @@ function App() {
                         {remaining > 0 ? 'Open a Wafer' : 'No More Wafers'}
                     </button>
                     <button onClick={() => {
-                        new Audio(viewStickersSound).play();
                         setPage("collection");
+                        new Audio(viewStickersSound).play().catch((error) => {
+                            console.warn('Audio playback failed:', error);
+                        });
                     }} className="button">
                         CollectionBook
                     </button>
@@ -110,7 +120,9 @@ function App() {
                                 className="sticker-small"
                                 onClick={() => {
                                     setSelectedSticker(sticker);
-                                    new Audio(revealSound).play();
+                                    new Audio(revealSound).play().catch((error) => {
+                                        console.warn('Audio playback failed:', error);
+                                    });
                                 }}
                             />
                         ))}
@@ -123,8 +135,10 @@ function App() {
                         allStickers={stickersData}
                         ownedStickers={collectedStickers}
                         goBack={() => {
-                            new Audio(viewStickersSound).play();
                             setPage("main");
+                            new Audio(viewStickersSound).play().catch((error) => {
+                                console.warn('Audio playback failed:', error);
+                            });
                         }}
                     />
                 </Suspense>
