@@ -10,7 +10,7 @@ const CollectionBook = lazy(() => import('./CollectionBook'));
 
 const waferClosed = `${process.env.PUBLIC_URL}/images/stickers/wafer1.webp`;
 const waferOpened = `${process.env.PUBLIC_URL}/images/stickers/wafer2.webp`;
-const waferPlaceholder = `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`;  // プレースホルダー画像
+const waferPlaceholder = `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`;
 
 function App() {
     const [isOpened, setIsOpened] = useState(false);
@@ -77,6 +77,13 @@ function App() {
 
     const closeStickerDetail = useCallback(() => setSelectedSticker(null), []);
 
+    const handleStickerClick = (sticker) => {
+        if (sticker && sticker.image !== waferPlaceholder) {  // プレースホルダー画像の場合は無視
+            setSelectedSticker(sticker);
+            playSound(revealSound);
+        }
+    };
+
     return (
         <div className="app">
             {page === "main" && (
@@ -105,12 +112,7 @@ function App() {
                                 src={sticker.image || waferPlaceholder}
                                 alt={`Sticker ${index + 1}`}
                                 className="sticker-small"
-                                onClick={() => {
-                                    if (sticker.image !== waferPlaceholder) {
-                                        setSelectedSticker(sticker);
-                                        playSound(revealSound);
-                                    }
-                                }}
+                                onClick={() => handleStickerClick(sticker)}
                             />
                         ))}
                     </div>
