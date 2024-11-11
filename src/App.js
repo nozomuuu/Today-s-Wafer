@@ -11,6 +11,14 @@ const CollectionBook = lazy(() => import('./CollectionBook'));
 const waferClosed = `${process.env.PUBLIC_URL}/images/stickers/wafer1.webp`;
 const waferOpened = `${process.env.PUBLIC_URL}/images/stickers/wafer2.webp`;
 
+// playSound関数を先に定義
+const playSound = (audioFile) => {
+    const audio = new Audio(audioFile);
+    audio.play().catch(error => {
+        console.error("Audio playback failed:", error);
+    });
+};
+
 function App() {
     const [isOpened, setIsOpened] = useState(false);
     const [remaining, setRemaining] = useState(() => {
@@ -75,19 +83,12 @@ function App() {
             setShowTomorrowMessage(true);
             setTimeout(() => setShowTomorrowMessage(false), 3000);
         }
-    }, [remaining, isOpening, playSound]);
+    }, [remaining, isOpening]);
 
     const handleCardClick = useCallback(() => {
         playSound(viewStickersSound);
         setIsOpened(!isOpened);
-    }, [isOpened, playSound]);
-
-    const playSound = useCallback((audioFile) => {
-        const audio = new Audio(audioFile);
-        audio.play().catch(error => {
-            console.error("Audio playback failed:", error);
-        });
-    }, []);
+    }, [isOpened]);
 
     const closeStickerDetail = useCallback(() => setSelectedSticker(null), []);
 
