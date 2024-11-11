@@ -11,11 +11,13 @@ const CollectionBook = lazy(() => import('./CollectionBook'));
 const waferClosed = `${process.env.PUBLIC_URL}/images/stickers/wafer1.webp`;
 const waferOpened = `${process.env.PUBLIC_URL}/images/stickers/wafer2.webp`;
 
-const playSound = (audioFile) => {
-    const audio = new Audio(audioFile);
-    audio.play().catch(error => {
+const playSound = async (audioFile) => {
+    try {
+        const audio = new Audio(audioFile);
+        await audio.play();
+    } catch (error) {
         console.error("Audio playback failed:", error);
-    });
+    }
 };
 
 function App() {
@@ -48,11 +50,16 @@ function App() {
     const openWafer = useCallback(async () => {
         if (remaining > 0 && !isOpening) {
             setIsOpening(true);
-            playSound(openSound);
+            await playSound(openSound);
             setIsOpened(true);
             setRemaining(prev => prev - 1);
 
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
+
+            // wafer3.webpの場合の特定処理
+            if (newSticker.image.includes("wafer3.webp")) {
+                console.log("wafer3.webp has been selected");
+            }
 
             if (newSticker.isCollectible && !collectedStickers.includes(newSticker)) {
                 await saveStickerToIndexedDB(newSticker);
