@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, lazy, Suspense, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import './App.css';
 import openSound from './sounds/wafer-open.mp3';
 import revealSound from './sounds/sticker-reveal.mp3';
