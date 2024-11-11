@@ -11,13 +11,6 @@ const CollectionBook = lazy(() => import('./CollectionBook'));
 const waferClosed = `${process.env.PUBLIC_URL}/images/stickers/wafer1.webp`;
 const waferOpened = `${process.env.PUBLIC_URL}/images/stickers/wafer2.webp`;
 
-// Audio cache for performance optimization
-const audioCache = {
-    openSound: new Audio(openSound),
-    revealSound: new Audio(revealSound),
-    viewStickersSound: new Audio(viewStickersSound)
-};
-
 function App() {
     const [isOpened, setIsOpened] = useState(false);
     const [remaining, setRemaining] = useState(() => {
@@ -30,6 +23,17 @@ function App() {
     const [page, setPage] = useState("main");
     const [showTomorrowMessage, setShowTomorrowMessage] = useState(false);
     const [isOpening, setIsOpening] = useState(false);
+
+    // 音声ファイルを事前に読み込み
+    const openAudio = new Audio(openSound);
+    const revealAudio = new Audio(revealSound);
+    const viewStickersAudio = new Audio(viewStickersSound);
+
+    useEffect(() => {
+        openAudio.load();
+        revealAudio.load();
+        viewStickersAudio.load();
+    }, []);
 
     useEffect(() => {
         const loadStickers = async () => {
@@ -45,49 +49,43 @@ function App() {
         localStorage.setItem('remaining', remaining.toString());
     }, [remaining]);
 
-    const playSound = (soundKey) => {
-        const audio = audioCache[soundKey];
-        if (audio) {
-            audio.currentTime = 0;  // Reset audio for consecutive playbacks
-            audio.play().catch(error => {
-                console.error("Audio playback failed:", error);
-            });
-        }
-    };
-
     const openWafer = useCallback(async () => {
         if (remaining > 0 && !isOpening) {
             setIsOpening(true);
-            playSound('openSound');
+            playSound(openAudio);
             setIsOpened(true);
             setRemaining(prev => prev - 1);
 
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
 
-            // Check for duplicate stickers before saving to IndexedDB
-            const isAlreadyCollected = collectedStickers.some(sticker => sticker.image === newSticker.image);
-            if (!isAlreadyCollected && newSticker.isCollectible) {
-                await saveStickerToIndexedDB(newSticker);
-                setCollectedStickers(prev => [...prev, newSticker]);
-                setTodayStickers(prev => [...prev, newSticker]);
-            }
+            // IndexedDBに保存後にステッカーリストを更新
+            await saveStickerToIndexedDB(newSticker);
+            setCollectedStickers(prev => [...prev, newSticker]);
+            setTodayStickers(prev => [...prev, newSticker]);
 
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
-                playSound('revealSound');
+                playSound(revealAudio);
                 setIsOpening(false);
             }, 1500);
         } else if (remaining === 0) {
             setShowTomorrowMessage(true);
             setTimeout(() => setShowTomorrowMessage(false), 3000);
         }
-    }, [remaining, isOpening, collectedStickers]);
+    }, [remaining, isOpening]);
 
     const handleCardClick = useCallback(() => {
-        playSound('viewStickersSound');
+        playSound(viewStickersAudio);
         setIsOpened(!isOpened);
     }, [isOpened]);
+
+    const playSound = (audio) => {
+        audio.currentTime = 0;  // 再生前にリセット
+        audio.play().catch(error => {
+            console.error("Audio playback failed:", error);
+        });
+    };
 
     const closeStickerDetail = useCallback(() => setSelectedSticker(null), []);
 
@@ -107,7 +105,7 @@ function App() {
                         {remaining > 0 ? 'Open a Wafer' : 'No More Wafers'}
                     </button>
                     <button onClick={() => {
-                        playSound('viewStickersSound');
+                        playSound(viewStickersAudio);
                         setPage("collection");
                     }} className="button">
                         CollectionBook
@@ -121,7 +119,7 @@ function App() {
                                 className="sticker-small"
                                 onClick={() => {
                                     setSelectedSticker(sticker);
-                                    playSound('revealSound');
+                                    playSound(revealAudio);
                                 }}
                             />
                         ))}
@@ -134,7 +132,7 @@ function App() {
                         allStickers={stickersData}
                         ownedStickers={collectedStickers}
                         goBack={() => {
-                            playSound('viewStickersSound');
+                            playSound(viewStickersAudio);
                             setPage("main");
                         }}
                     />
