@@ -33,7 +33,7 @@ function App() {
         openAudio.load();
         revealAudio.load();
         viewStickersAudio.load();
-    }, []);
+    }, [openAudio, revealAudio, viewStickersAudio]); // 依存関係に追加
 
     useEffect(() => {
         const loadStickers = async () => {
@@ -58,7 +58,6 @@ function App() {
 
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
 
-            // IndexedDBに保存後にステッカーリストを更新
             await saveStickerToIndexedDB(newSticker);
             setCollectedStickers(prev => [...prev, newSticker]);
             setTodayStickers(prev => [...prev, newSticker]);
@@ -73,12 +72,12 @@ function App() {
             setShowTomorrowMessage(true);
             setTimeout(() => setShowTomorrowMessage(false), 3000);
         }
-    }, [remaining, isOpening]);
+    }, [remaining, isOpening, openAudio, revealAudio]); // 依存関係に追加
 
     const handleCardClick = useCallback(() => {
         playSound(viewStickersAudio);
         setIsOpened(!isOpened);
-    }, [isOpened]);
+    }, [isOpened, viewStickersAudio]); // 依存関係に追加
 
     const playSound = (audio) => {
         audio.currentTime = 0;  // 再生前にリセット
