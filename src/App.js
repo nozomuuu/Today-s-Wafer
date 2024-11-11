@@ -1,4 +1,3 @@
-// App.js
 import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import './App.css';
 import openSound from './sounds/wafer-open.mp3';
@@ -25,6 +24,7 @@ function App() {
     const [showTomorrowMessage, setShowTomorrowMessage] = useState(false);
     const [isOpening, setIsOpening] = useState(false);
 
+    // 音声ファイルを事前にロードし、Promise対応でエラーハンドリング強化
     const openAudio = new Audio(openSound);
     const revealAudio = new Audio(revealSound);
     const viewStickersAudio = new Audio(viewStickersSound);
@@ -33,7 +33,7 @@ function App() {
         openAudio.load();
         revealAudio.load();
         viewStickersAudio.load();
-    }, [openAudio, revealAudio, viewStickersAudio]);
+    }, []);
 
     useEffect(() => {
         const loadStickers = async () => {
@@ -54,6 +54,9 @@ function App() {
             audio.currentTime = 0;
             audio.play().catch(error => {
                 console.error("Audio playback failed:", error);
+                setTimeout(() => {
+                    audio.play().catch(retryError => console.warn("Audio playback retry failed:", retryError));
+                }, 3000);
             });
         }
     };
@@ -72,7 +75,7 @@ function App() {
                 setCollectedStickers(prev => [...prev, newSticker]);
                 setTodayStickers(prev => [...prev, newSticker]);
             } else {
-                console.log("This sticker is already collected.");
+                setTodayStickers(prev => [...prev, newSticker]);
             }
 
             setTimeout(() => {
@@ -90,7 +93,7 @@ function App() {
     const handleCardClick = useCallback(() => {
         playSound(viewStickersAudio);
         setIsOpened(!isOpened);
-    }, [isOpened, viewStickersAudio]);
+    }, [isOpened]);
 
     const closeStickerDetail = useCallback(() => setSelectedSticker(null), []);
 
