@@ -11,13 +11,11 @@ const CollectionBook = lazy(() => import('./CollectionBook'));
 const waferClosed = `${process.env.PUBLIC_URL}/images/stickers/wafer1.webp`;
 const waferOpened = `${process.env.PUBLIC_URL}/images/stickers/wafer2.webp`;
 
-const playSound = async (audioFile) => {
-    try {
-        const audio = new Audio(audioFile);
-        await audio.play();
-    } catch (error) {
-        console.error("Audio playback failed:", error);
-    }
+// Audio cache for performance optimization
+const audioCache = {
+    openSound: new Audio(openSound),
+    revealSound: new Audio(revealSound),
+    viewStickersSound: new Audio(viewStickersSound)
 };
 
 function App() {
@@ -47,17 +45,28 @@ function App() {
         localStorage.setItem('remaining', remaining.toString());
     }, [remaining]);
 
+    const playSound = (soundKey) => {
+        const audio = audioCache[soundKey];
+        if (audio) {
+            audio.currentTime = 0;  // Reset audio for consecutive playbacks
+            audio.play().catch(error => {
+                console.error("Audio playback failed:", error);
+            });
+        }
+    };
+
     const openWafer = useCallback(async () => {
         if (remaining > 0 && !isOpening) {
             setIsOpening(true);
-            await playSound(openSound);
+            playSound('openSound');
             setIsOpened(true);
             setRemaining(prev => prev - 1);
 
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
 
-            // wafer3.webpの特定条件を強化
-            if (newSticker.image.includes("wafer3.webp") && newSticker.isCollectible && !collectedStickers.includes(newSticker)) {
+            // Check for duplicate stickers before saving to IndexedDB
+            const isAlreadyCollected = collectedStickers.some(sticker => sticker.image === newSticker.image);
+            if (!isAlreadyCollected && newSticker.isCollectible) {
                 await saveStickerToIndexedDB(newSticker);
                 setCollectedStickers(prev => [...prev, newSticker]);
                 setTodayStickers(prev => [...prev, newSticker]);
@@ -66,7 +75,7 @@ function App() {
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
-                playSound(revealSound);
+                playSound('revealSound');
                 setIsOpening(false);
             }, 1500);
         } else if (remaining === 0) {
@@ -76,7 +85,7 @@ function App() {
     }, [remaining, isOpening, collectedStickers]);
 
     const handleCardClick = useCallback(() => {
-        playSound(viewStickersSound);
+        playSound('viewStickersSound');
         setIsOpened(!isOpened);
     }, [isOpened]);
 
@@ -98,7 +107,7 @@ function App() {
                         {remaining > 0 ? 'Open a Wafer' : 'No More Wafers'}
                     </button>
                     <button onClick={() => {
-                        playSound(viewStickersSound);
+                        playSound('viewStickersSound');
                         setPage("collection");
                     }} className="button">
                         CollectionBook
@@ -111,10 +120,8 @@ function App() {
                                 alt={`Sticker ${index + 1}`}
                                 className="sticker-small"
                                 onClick={() => {
-                                    if (!selectedSticker || selectedSticker !== sticker) {
-                                        setSelectedSticker(sticker);
-                                        playSound(revealSound);
-                                    }
+                                    setSelectedSticker(sticker);
+                                    playSound('revealSound');
                                 }}
                             />
                         ))}
@@ -127,7 +134,7 @@ function App() {
                         allStickers={stickersData}
                         ownedStickers={collectedStickers}
                         goBack={() => {
-                            playSound(viewStickersSound);
+                            playSound('viewStickersSound');
                             setPage("main");
                         }}
                     />
