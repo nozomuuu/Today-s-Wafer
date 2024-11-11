@@ -9,21 +9,31 @@ const CollectionBook = ({ allStickers, ownedStickers, goBack }) => {
   const [selectedSticker, setSelectedSticker] = useState(null);
   const [stickerSlots, setStickerSlots] = useState([]);
 
+  // オーディオの事前ロード
+  const viewStickersAudio = new Audio(viewStickersSound);
+  const revealAudio = new Audio(stickerRevealSound);
+
   useEffect(() => {
+    viewStickersAudio.load();
+    revealAudio.load();
+  }, []);
+
+  useEffect(() => {
+    // 72スロットを持つ空の配列を生成
     const slots = Array(72).fill(null);
     ownedStickers.forEach((sticker) => {
       let randomIndex;
       do {
         randomIndex = Math.floor(Math.random() * 72);
-      } while (slots[randomIndex] !== null);
+      } while (slots[randomIndex] !== null); // 既にスロットが埋まっていれば別の場所を探す
       slots[randomIndex] = sticker;
     });
     setStickerSlots(slots);
   }, [ownedStickers]);
 
   const cycleCards = (index) => {
-    const audio = new Audio(viewStickersSound);
-    audio.play();
+    viewStickersAudio.currentTime = 0;
+    viewStickersAudio.play();
     if (index === 0) {
       setCardIndexes([cardIndexes[1], cardIndexes[2], cardIndexes[0]]);
     } else if (index === 1) {
@@ -36,7 +46,7 @@ const CollectionBook = ({ allStickers, ownedStickers, goBack }) => {
   const handleStickerClick = (sticker) => {
     if (sticker) {
       setSelectedSticker(sticker);
-      const revealAudio = new Audio(stickerRevealSound);
+      revealAudio.currentTime = 0;
       revealAudio.play();
     }
   };
