@@ -24,7 +24,6 @@ function App() {
     const [showTomorrowMessage, setShowTomorrowMessage] = useState(false);
     const [isOpening, setIsOpening] = useState(false);
 
-    // useMemoで一度だけオーディオオブジェクトを生成
     const openAudio = useMemo(() => new Audio(openSound), []);
     const revealAudio = useMemo(() => new Audio(revealSound), []);
     const viewStickersAudio = useMemo(() => new Audio(viewStickersSound), []);
@@ -52,7 +51,7 @@ function App() {
 
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
             
-            // 重複確認を追加
+            // 重複チェックを追加
             if (!collectedStickers.some(sticker => sticker.image === newSticker.image)) {
                 await saveStickerToIndexedDB(newSticker);
                 setCollectedStickers(prev => [...prev, newSticker]);
