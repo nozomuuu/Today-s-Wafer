@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useCallback, lazy, Suspense, useMemo } from 'react';
 import './App.css';
 import openSound from './sounds/wafer-open.mp3';
 import revealSound from './sounds/sticker-reveal.mp3';
 import viewStickersSound from './sounds/view-stickers.mp3';
 import { saveStickerToIndexedDB, getCollectedStickers } from './indexedDBHelper';
 import stickersData from './stickersData';
-import { FixedSizeList as List } from 'react-window';
 
 const CollectionBook = lazy(() => import('./CollectionBook'));
 
@@ -25,16 +24,16 @@ function App() {
     const [showTomorrowMessage, setShowTomorrowMessage] = useState(false);
     const [isOpening, setIsOpening] = useState(false);
 
-    // 音声ファイルを事前にロード
-    const openAudio = new Audio(openSound);
-    const revealAudio = new Audio(revealSound);
-    const viewStickersAudio = new Audio(viewStickersSound);
+    // useMemoで音声ファイルをメモ化してロード
+    const openAudio = useMemo(() => new Audio(openSound), []);
+    const revealAudio = useMemo(() => new Audio(revealSound), []);
+    const viewStickersAudio = useMemo(() => new Audio(viewStickersSound), []);
 
     useEffect(() => {
         openAudio.load();
         revealAudio.load();
         viewStickersAudio.load();
-    }, []);
+    }, [openAudio, revealAudio, viewStickersAudio]);
 
     useEffect(() => {
         const loadStickers = async () => {
@@ -68,7 +67,6 @@ function App() {
 
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
 
-            // 重複チェックをIDで行う
             if (!collectedStickers.some(sticker => sticker.id === newSticker.id)) {
                 await saveStickerToIndexedDB(newSticker);
                 setCollectedStickers(prev => [...prev, newSticker]);
@@ -92,7 +90,7 @@ function App() {
     const handleCardClick = useCallback(() => {
         playSound(viewStickersAudio);
         setIsOpened(!isOpened);
-    }, [isOpened]);
+    }, [isOpened, viewStickersAudio]);
 
     const closeStickerDetail = useCallback(() => setSelectedSticker(null), []);
 
