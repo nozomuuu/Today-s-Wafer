@@ -47,7 +47,7 @@ function App() {
 
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
 
-            // isCollectible が false でない場合のみ保存
+            // isCollectibleがtrueのステッカーのみ保存
             if (newSticker.isCollectible !== false) {
                 await saveStickerToIndexedDB(newSticker);
                 setCollectedStickers(prev => [...prev, newSticker]);
