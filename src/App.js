@@ -11,7 +11,6 @@ const CollectionBook = lazy(() => import('./CollectionBook'));
 const waferClosed = `${process.env.PUBLIC_URL}/images/stickers/wafer1.webp`;
 const waferOpened = `${process.env.PUBLIC_URL}/images/stickers/wafer2.webp`;
 
-// playSound関数を先に定義
 const playSound = (audioFile) => {
     const audio = new Audio(audioFile);
     audio.play().catch(error => {
@@ -31,17 +30,6 @@ function App() {
     const [page, setPage] = useState("main");
     const [showTomorrowMessage, setShowTomorrowMessage] = useState(false);
     const [isOpening, setIsOpening] = useState(false);
-
-    // オーディオの事前ロード
-    useEffect(() => {
-        const preloadAudio = (audioFile) => {
-            const audio = new Audio(audioFile);
-            audio.load();
-        };
-        preloadAudio(openSound);
-        preloadAudio(revealSound);
-        preloadAudio(viewStickersSound);
-    }, []);
 
     useEffect(() => {
         const loadStickers = async () => {
@@ -66,8 +54,7 @@ function App() {
 
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
 
-            // isCollectible プロパティで取得条件を確認
-            if (newSticker.isCollectible) {
+            if (newSticker.isCollectible && !collectedStickers.includes(newSticker)) {
                 await saveStickerToIndexedDB(newSticker);
                 setCollectedStickers(prev => [...prev, newSticker]);
                 setTodayStickers(prev => [...prev, newSticker]);
@@ -83,7 +70,7 @@ function App() {
             setShowTomorrowMessage(true);
             setTimeout(() => setShowTomorrowMessage(false), 3000);
         }
-    }, [remaining, isOpening]);
+    }, [remaining, isOpening, collectedStickers]);
 
     const handleCardClick = useCallback(() => {
         playSound(viewStickersSound);
@@ -121,8 +108,10 @@ function App() {
                                 alt={`Sticker ${index + 1}`}
                                 className="sticker-small"
                                 onClick={() => {
-                                    setSelectedSticker(sticker);
-                                    playSound(revealSound);
+                                    if (!selectedSticker || selectedSticker !== sticker) {
+                                        setSelectedSticker(sticker);
+                                        playSound(revealSound);
+                                    }
                                 }}
                             />
                         ))}
