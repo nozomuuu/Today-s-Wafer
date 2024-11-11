@@ -24,7 +24,7 @@ function App() {
     const [showTomorrowMessage, setShowTomorrowMessage] = useState(false);
     const [isOpening, setIsOpening] = useState(false);
 
-    // useMemoを使用してオーディオオブジェクトを一度だけ作成
+    // useMemoで一度だけオーディオオブジェクトを生成
     const openAudio = useMemo(() => new Audio(openSound), []);
     const revealAudio = useMemo(() => new Audio(revealSound), []);
     const viewStickersAudio = useMemo(() => new Audio(viewStickersSound), []);
@@ -51,10 +51,13 @@ function App() {
             setRemaining(prev => prev - 1);
 
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-
-            await saveStickerToIndexedDB(newSticker);
-            setCollectedStickers(prev => [...prev, newSticker]);
-            setTodayStickers(prev => [...prev, newSticker]);
+            
+            // 重複確認を追加
+            if (!collectedStickers.some(sticker => sticker.image === newSticker.image)) {
+                await saveStickerToIndexedDB(newSticker);
+                setCollectedStickers(prev => [...prev, newSticker]);
+                setTodayStickers(prev => [...prev, newSticker]);
+            }
 
             setTimeout(() => {
                 setIsOpened(false);
@@ -66,7 +69,7 @@ function App() {
             setShowTomorrowMessage(true);
             setTimeout(() => setShowTomorrowMessage(false), 3000);
         }
-    }, [remaining, isOpening, openAudio, revealAudio]);
+    }, [remaining, isOpening, openAudio, revealAudio, collectedStickers]);
 
     const handleCardClick = useCallback(() => {
         playSound(viewStickersAudio);
@@ -75,9 +78,11 @@ function App() {
 
     const playSound = (audio) => {
         audio.currentTime = 0;
-        audio.play().catch(error => {
-            console.error("Audio playback failed:", error);
-        });
+        if (audio.paused) {
+            audio.play().catch(error => {
+                console.error("Audio playback failed:", error);
+            });
+        }
     };
 
     const closeStickerDetail = useCallback(() => setSelectedSticker(null), []);
