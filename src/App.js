@@ -56,12 +56,8 @@ function App() {
 
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
 
-            // wafer3.webpの場合の特定処理
-            if (newSticker.image.includes("wafer3.webp")) {
-                console.log("wafer3.webp has been selected");
-            }
-
-            if (newSticker.isCollectible && !collectedStickers.includes(newSticker)) {
+            // wafer3.webpの特定条件を強化
+            if (newSticker.image.includes("wafer3.webp") && newSticker.isCollectible && !collectedStickers.includes(newSticker)) {
                 await saveStickerToIndexedDB(newSticker);
                 setCollectedStickers(prev => [...prev, newSticker]);
                 setTodayStickers(prev => [...prev, newSticker]);
