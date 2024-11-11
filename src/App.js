@@ -24,6 +24,17 @@ function App() {
     const [showTomorrowMessage, setShowTomorrowMessage] = useState(false);
     const [isOpening, setIsOpening] = useState(false);
 
+    // オーディオの事前ロード
+    useEffect(() => {
+        const preloadAudio = (audioFile) => {
+            const audio = new Audio(audioFile);
+            audio.load();
+        };
+        preloadAudio(openSound);
+        preloadAudio(revealSound);
+        preloadAudio(viewStickersSound);
+    }, []);
+
     useEffect(() => {
         const loadStickers = async () => {
             const stickers = await getCollectedStickers();
@@ -47,8 +58,8 @@ function App() {
 
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
 
-            // isCollectibleがtrueのステッカーのみ保存
-            if (newSticker.isCollectible !== false) {
+            // isCollectible プロパティで取得条件を確認
+            if (newSticker.isCollectible) {
                 await saveStickerToIndexedDB(newSticker);
                 setCollectedStickers(prev => [...prev, newSticker]);
                 setTodayStickers(prev => [...prev, newSticker]);
@@ -64,19 +75,19 @@ function App() {
             setShowTomorrowMessage(true);
             setTimeout(() => setShowTomorrowMessage(false), 3000);
         }
-    }, [remaining, isOpening]);
+    }, [remaining, isOpening, playSound]);
 
     const handleCardClick = useCallback(() => {
         playSound(viewStickersSound);
         setIsOpened(!isOpened);
-    }, [isOpened]);
+    }, [isOpened, playSound]);
 
-    const playSound = (audioFile) => {
+    const playSound = useCallback((audioFile) => {
         const audio = new Audio(audioFile);
         audio.play().catch(error => {
             console.error("Audio playback failed:", error);
         });
-    };
+    }, []);
 
     const closeStickerDetail = useCallback(() => setSelectedSticker(null), []);
 
