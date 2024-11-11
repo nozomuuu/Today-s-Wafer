@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, lazy, Suspense } from 'react';
 import './App.css';
 import openSound from './sounds/wafer-open.mp3';
 import revealSound from './sounds/sticker-reveal.mp3';
@@ -24,16 +24,10 @@ function App() {
     const [showTomorrowMessage, setShowTomorrowMessage] = useState(false);
     const [isOpening, setIsOpening] = useState(false);
 
-    // 音声ファイルを事前に読み込み
-    const openAudio = new Audio(openSound);
-    const revealAudio = new Audio(revealSound);
-    const viewStickersAudio = new Audio(viewStickersSound);
-
-    useEffect(() => {
-        openAudio.load();
-        revealAudio.load();
-        viewStickersAudio.load();
-    }, [openAudio, revealAudio, viewStickersAudio]); // 依存関係に追加
+    // useMemoを使用してオーディオオブジェクトを一度だけ作成
+    const openAudio = useMemo(() => new Audio(openSound), []);
+    const revealAudio = useMemo(() => new Audio(revealSound), []);
+    const viewStickersAudio = useMemo(() => new Audio(viewStickersSound), []);
 
     useEffect(() => {
         const loadStickers = async () => {
@@ -72,15 +66,15 @@ function App() {
             setShowTomorrowMessage(true);
             setTimeout(() => setShowTomorrowMessage(false), 3000);
         }
-    }, [remaining, isOpening, openAudio, revealAudio]); // 依存関係に追加
+    }, [remaining, isOpening, openAudio, revealAudio]);
 
     const handleCardClick = useCallback(() => {
         playSound(viewStickersAudio);
         setIsOpened(!isOpened);
-    }, [isOpened, viewStickersAudio]); // 依存関係に追加
+    }, [isOpened, viewStickersAudio]);
 
     const playSound = (audio) => {
-        audio.currentTime = 0;  // 再生前にリセット
+        audio.currentTime = 0;
         audio.play().catch(error => {
             console.error("Audio playback failed:", error);
         });
