@@ -3,8 +3,8 @@ import './App.css';
 import openSound from './sounds/wafer-open.mp3';
 import revealSound from './sounds/sticker-reveal.mp3';
 import viewStickersSound from './sounds/view-stickers.mp3';
-import { saveStickerToIndexedDB, getCollectedStickers } from './indexedDBHelper';
 import stickersData from './stickersData';
+import { FixedSizeList as List } from 'react-window';
 
 const CollectionBook = lazy(() => import('./CollectionBook'));
 
@@ -24,10 +24,13 @@ function App() {
     const [showTomorrowMessage, setShowTomorrowMessage] = useState(false);
     const [isOpening, setIsOpening] = useState(false);
 
-    // 音声ファイルを事前にロードし、Promise対応でエラーハンドリング強化
+    // オーディオの管理
     const openAudio = new Audio(openSound);
     const revealAudio = new Audio(revealSound);
     const viewStickersAudio = new Audio(viewStickersSound);
+
+    // Web Workerを使ってIndexedDB操作を非同期化
+    const worker = new Worker(new URL('./indexedDBWorker.js', import.meta.url));
 
     useEffect(() => {
         openAudio.load();
@@ -36,14 +39,14 @@ function App() {
     }, []);
 
     useEffect(() => {
-        const loadStickers = async () => {
-            const stickers = await getCollectedStickers();
-            if (stickers) {
+        worker.onmessage = (event) => {
+            const { type, stickers } = event.data;
+            if (type === 'loadComplete') {
                 setCollectedStickers(stickers);
             }
         };
-        loadStickers();
-    }, []);
+        worker.postMessage({ type: 'load' });
+    }, [worker]);
 
     useEffect(() => {
         localStorage.setItem('remaining', remaining.toString());
@@ -54,9 +57,6 @@ function App() {
             audio.currentTime = 0;
             audio.play().catch(error => {
                 console.error("Audio playback failed:", error);
-                setTimeout(() => {
-                    audio.play().catch(retryError => console.warn("Audio playback retry failed:", retryError));
-                }, 3000);
             });
         }
     };
@@ -70,12 +70,13 @@ function App() {
 
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
 
+            // Web Workerで保存
             if (!collectedStickers.some(sticker => sticker.id === newSticker.id)) {
-                await saveStickerToIndexedDB(newSticker);
+                worker.postMessage({ type: 'save', sticker: newSticker });
                 setCollectedStickers(prev => [...prev, newSticker]);
                 setTodayStickers(prev => [...prev, newSticker]);
             } else {
-                setTodayStickers(prev => [...prev, newSticker]);
+                console.log("This sticker is already collected.");
             }
 
             setTimeout(() => {
@@ -88,12 +89,12 @@ function App() {
             setShowTomorrowMessage(true);
             setTimeout(() => setShowTomorrowMessage(false), 3000);
         }
-    }, [remaining, isOpening, openAudio, revealAudio, collectedStickers]);
+    }, [remaining, isOpening, openAudio, revealAudio, collectedStickers, worker]);
 
     const handleCardClick = useCallback(() => {
         playSound(viewStickersAudio);
         setIsOpened(!isOpened);
-    }, [isOpened]);
+    }, [isOpened, viewStickersAudio]);
 
     const closeStickerDetail = useCallback(() => setSelectedSticker(null), []);
 
