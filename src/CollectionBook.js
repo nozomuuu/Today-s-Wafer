@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Sticker from './Sticker';
 import './CollectionBook.css';
 import stickerRevealSound from './sounds/sticker-reveal.mp3';
@@ -7,47 +7,52 @@ import viewStickersSound from './sounds/view-stickers.mp3';
 const CollectionBook = ({ allStickers, ownedStickers, goBack }) => {
   const [cardIndexes, setCardIndexes] = useState([0, 1, 2]);
   const [selectedSticker, setSelectedSticker] = useState(null);
-  const [stickerSlots, setStickerSlots] = useState([]);
+  const [stickerSlots, setStickerSlots] = useState(Array(72).fill(null));
 
-  // オーディオの事前ロード
-  const viewStickersAudio = new Audio(viewStickersSound);
-  const revealAudio = new Audio(stickerRevealSound);
+  // useRefで音声オブジェクトを保持し、再生成を防ぐ
+  const viewStickersAudio = useRef(new Audio(viewStickersSound));
+  const revealAudio = useRef(new Audio(stickerRevealSound));
 
+  // オーディオのロードは初回のみ実行
   useEffect(() => {
-    viewStickersAudio.load();
-    revealAudio.load();
+    viewStickersAudio.current.load();
+    revealAudio.current.load();
   }, []);
 
+  // 72スロットを持つ空の配列にステッカーをランダムに配置
   useEffect(() => {
-    // 72スロットを持つ空の配列を生成
     const slots = Array(72).fill(null);
     ownedStickers.forEach((sticker) => {
       let randomIndex;
+      // 空きスロットを見つけるまでランダムに選ぶ
       do {
         randomIndex = Math.floor(Math.random() * 72);
-      } while (slots[randomIndex] !== null); // 既にスロットが埋まっていれば別の場所を探す
+      } while (slots[randomIndex] !== null);
       slots[randomIndex] = sticker;
     });
     setStickerSlots(slots);
   }, [ownedStickers]);
 
+  const playSound = (audioRef) => {
+    audioRef.current.currentTime = 0;
+    audioRef.current.play().catch(error => {
+      console.error("Audio playback failed:", error);
+    });
+  };
+
   const cycleCards = (index) => {
-    viewStickersAudio.currentTime = 0;
-    viewStickersAudio.play();
-    if (index === 0) {
-      setCardIndexes([cardIndexes[1], cardIndexes[2], cardIndexes[0]]);
-    } else if (index === 1) {
-      setCardIndexes([cardIndexes[2], cardIndexes[0], cardIndexes[1]]);
-    } else {
-      setCardIndexes([cardIndexes[0], cardIndexes[1], cardIndexes[2]]);
-    }
+    playSound(viewStickersAudio);
+    setCardIndexes((prevIndexes) => {
+      if (index === 0) return [prevIndexes[1], prevIndexes[2], prevIndexes[0]];
+      if (index === 1) return [prevIndexes[2], prevIndexes[0], prevIndexes[1]];
+      return [prevIndexes[0], prevIndexes[1], prevIndexes[2]];
+    });
   };
 
   const handleStickerClick = (sticker) => {
     if (sticker) {
       setSelectedSticker(sticker);
-      revealAudio.currentTime = 0;
-      revealAudio.play();
+      playSound(revealAudio);
     }
   };
 
