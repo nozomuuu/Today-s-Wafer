@@ -10,6 +10,7 @@ const CollectionBook = lazy(() => import('./CollectionBook'));
 
 const waferClosed = `${process.env.PUBLIC_URL}/images/stickers/wafer1.webp`;
 const waferOpened = `${process.env.PUBLIC_URL}/images/stickers/wafer2.webp`;
+const waferPlaceholder = `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`;  // プレースホルダー画像
 
 function App() {
     const [isOpened, setIsOpened] = useState(false);
@@ -101,12 +102,14 @@ function App() {
                         {todayStickers.map((sticker, index) => (
                             <img
                                 key={index}
-                                src={sticker.image}
+                                src={sticker.image || waferPlaceholder}
                                 alt={`Sticker ${index + 1}`}
                                 className="sticker-small"
                                 onClick={() => {
-                                    setSelectedSticker(sticker);
-                                    playSound(revealSound);
+                                    if (sticker.image !== waferPlaceholder) {
+                                        setSelectedSticker(sticker);
+                                        playSound(revealSound);
+                                    }
                                 }}
                             />
                         ))}
