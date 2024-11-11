@@ -46,9 +46,13 @@ function App() {
             setRemaining(prev => prev - 1);
 
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-            await saveStickerToIndexedDB(newSticker);
-            setCollectedStickers(prev => [...prev, newSticker]);
-            setTodayStickers(prev => [...prev, newSticker]);
+
+            // isCollectible が false でない場合のみ保存
+            if (newSticker.isCollectible !== false) {
+                await saveStickerToIndexedDB(newSticker);
+                setCollectedStickers(prev => [...prev, newSticker]);
+                setTodayStickers(prev => [...prev, newSticker]);
+            }
 
             setTimeout(() => {
                 setIsOpened(false);
