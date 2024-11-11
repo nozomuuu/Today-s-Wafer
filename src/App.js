@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useCallback, lazy, Suspense, useMemo } from 'react';
 import './App.css';
 import openSound from './sounds/wafer-open.mp3';
 import revealSound from './sounds/sticker-reveal.mp3';
@@ -23,7 +23,6 @@ function App() {
     const [page, setPage] = useState("main");
     const [showTomorrowMessage, setShowTomorrowMessage] = useState(false);
     const [isOpening, setIsOpening] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const loadStickers = async () => {
@@ -42,7 +41,6 @@ function App() {
     const openWafer = useCallback(async () => {
         if (remaining > 0 && !isOpening) {
             setIsOpening(true);
-            setIsLoading(true);
             playSound(openSound);
             setIsOpened(true);
             setRemaining(prev => prev - 1);
@@ -57,7 +55,6 @@ function App() {
                 setSelectedSticker(newSticker);
                 playSound(revealSound);
                 setIsOpening(false);
-                setIsLoading(false);
             }, 1500);
         } else if (remaining === 0) {
             setShowTomorrowMessage(true);
@@ -77,25 +74,7 @@ function App() {
         });
     };
 
-    const handleStickerClick = (sticker) => {
-        if (sticker && !sticker.isPlaceholder) {  // プレースホルダーなら処理を無視
-            setSelectedSticker(sticker);
-            playSound(revealSound);
-        }
-    };
-
     const closeStickerDetail = useCallback(() => setSelectedSticker(null), []);
-
-    // useMemoを使用して、todayStickersの描画をメモ化
-    const memoizedStickers = useMemo(() => todayStickers.map((sticker, index) => (
-        <img
-            key={index}
-            src={sticker.image || waferClosed}
-            alt={`Sticker ${index + 1}`}
-            className="sticker-small"
-            onClick={() => handleStickerClick(sticker)}
-        />
-    )), [todayStickers]);
 
     return (
         <div className="app">
@@ -119,11 +98,21 @@ function App() {
                         CollectionBook
                     </button>
                     <div className="collected-stickers">
-                        {memoizedStickers}
+                        {todayStickers.map((sticker, index) => (
+                            <img
+                                key={index}
+                                src={sticker.image}
+                                alt={`Sticker ${index + 1}`}
+                                className="sticker-small"
+                                onClick={() => {
+                                    setSelectedSticker(sticker);
+                                    playSound(revealSound);
+                                }}
+                            />
+                        ))}
                     </div>
                 </div>
             )}
-            {isLoading && <div className="loading-indicator">Loading...</div>}
             {page === "collection" && (
                 <Suspense fallback={<div>Loading...</div>}>
                     <CollectionBook
