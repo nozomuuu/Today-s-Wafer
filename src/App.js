@@ -24,7 +24,7 @@ function App() {
   const [showTomorrowMessage, setShowTomorrowMessage] = useState(false);
   const [isOpening, setIsOpening] = useState(false);
 
-  // 音声ファイルのキャッシュ化
+  // 音声ファイルのキャッシュとエラー処理
   const openAudio = new Audio(openSound);
   const revealAudio = new Audio(revealSound);
   const viewStickersAudio = new Audio(viewStickersSound);
@@ -35,7 +35,6 @@ function App() {
     viewStickersAudio.load();
   }, []);
 
-  // ステッカー情報の初回読み込み（Web Workerで非同期化を検討）
   useEffect(() => {
     const loadStickers = async () => {
       const stickers = await getCollectedStickers();
@@ -50,11 +49,15 @@ function App() {
     localStorage.setItem('remaining', remaining.toString());
   }, [remaining]);
 
-  // mini-stickerが正しく追加されるようtodayStickersの管理を見直し
   const playSound = (audio) => {
     if (audio && audio.paused) {
       audio.currentTime = 0;
-      audio.play().catch(error => console.error("Audio playback failed:", error));
+      audio.play().catch(error => {
+        console.error("Audio playback failed:", error);
+        // 再試行
+        audio.load();
+        audio.play().catch(err => console.error("Retry failed:", err));
+      });
     }
   };
 
@@ -67,10 +70,11 @@ function App() {
 
       const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
 
+      // 重複チェックとtodayStickersへの追加
       if (!collectedStickers.some(sticker => sticker.id === newSticker.id)) {
         await saveStickerToIndexedDB(newSticker);
         setCollectedStickers(prev => [...prev, newSticker]);
-        setTodayStickers(prev => [...prev, newSticker]); // mini-stickerの表示を開封回数分に調整
+        setTodayStickers(prev => [...prev, newSticker]); // mini-stickerを毎回追加
       }
 
       setTimeout(() => {

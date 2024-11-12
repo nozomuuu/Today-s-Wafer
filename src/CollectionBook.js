@@ -18,16 +18,21 @@ const CollectionBook = ({ allStickers, ownedStickers, goBack }) => {
   }, []);
 
   useEffect(() => {
-    // 72スロットを初期化し、各スロットに所有するステッカーをランダムに割り当て
-    const slots = Array(72).fill({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp` });
-    ownedStickers.forEach((sticker) => {
-      let randomIndex;
-      do {
-        randomIndex = Math.floor(Math.random() * 72);
-      } while (slots[randomIndex] && slots[randomIndex].id);
-      slots[randomIndex] = sticker;
-    });
-    setStickerSlots(slots);
+    const initializeStickers = () => {
+      const slots = Array(72).fill({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp` });
+      ownedStickers.forEach((sticker) => {
+        let randomIndex;
+        do {
+          randomIndex = Math.floor(Math.random() * 72);
+        } while (slots[randomIndex] && slots[randomIndex].id);
+        slots[randomIndex] = sticker;
+      });
+      setStickerSlots(slots);
+    };
+
+    if (ownedStickers.length > 0) {
+      initializeStickers();
+    }
   }, [ownedStickers]);
 
   const cycleCards = (index) => {
@@ -43,7 +48,7 @@ const CollectionBook = ({ allStickers, ownedStickers, goBack }) => {
   };
 
   const handleStickerClick = (sticker) => {
-    if (sticker && sticker.image !== `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`) {
+    if (sticker) {
       setSelectedSticker(sticker);
       revealAudio.currentTime = 0;
       revealAudio.play();
