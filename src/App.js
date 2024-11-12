@@ -1,5 +1,3 @@
-// App.js
-
 import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import './App.css';
 import openSound from './sounds/wafer-open.mp3';
@@ -41,6 +39,7 @@ function App() {
       const stickers = await getCollectedStickers();
       if (stickers) {
         setCollectedStickers(stickers);
+        console.log("Loaded stickers:", stickers);
       }
     };
     loadStickers();
@@ -70,6 +69,7 @@ function App() {
         await saveStickerToIndexedDB(newSticker);
         setCollectedStickers(prev => [...prev, newSticker]);
         setTodayStickers(prev => [...prev, newSticker]);
+        console.log("New sticker added:", newSticker);
       }
 
       setTimeout(() => {
