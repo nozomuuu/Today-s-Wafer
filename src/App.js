@@ -1,5 +1,4 @@
-// App.js
-import React, { useState, useEffect, useCallback, lazy, Suspense, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import './App.css';
 import openSound from './sounds/wafer-open.mp3';
 import revealSound from './sounds/sticker-reveal.mp3';
@@ -25,17 +24,16 @@ function App() {
   const [showTomorrowMessage, setShowTomorrowMessage] = useState(false);
   const [isOpening, setIsOpening] = useState(false);
 
-  // 音声ファイルをuseMemoでキャッシュして一度だけ作成
-  const openAudio = useMemo(() => new Audio(openSound), []);
-  const revealAudio = useMemo(() => new Audio(revealSound), []);
-  const viewStickersAudio = useMemo(() => new Audio(viewStickersSound), []);
+  // 音声ファイルのキャッシュ化
+  const openAudio = new Audio(openSound);
+  const revealAudio = new Audio(revealSound);
+  const viewStickersAudio = new Audio(viewStickersSound);
 
   useEffect(() => {
-    // オーディオファイルのプリロード
     openAudio.load();
     revealAudio.load();
     viewStickersAudio.load();
-  }, [openAudio, revealAudio, viewStickersAudio]);
+  }, []);
 
   useEffect(() => {
     const loadStickers = async () => {
@@ -51,14 +49,12 @@ function App() {
     localStorage.setItem('remaining', remaining.toString());
   }, [remaining]);
 
-  const playSound = useCallback((audio) => {
+  const playSound = (audio) => {
     if (audio && audio.paused) {
       audio.currentTime = 0;
-      audio.play().catch(error => {
-        console.error("Audio playback failed:", error);
-      });
+      audio.play().catch(error => console.error("Audio playback failed:", error));
     }
-  }, []);
+  };
 
   const openWafer = useCallback(async () => {
     if (remaining > 0 && !isOpening) {
@@ -73,8 +69,6 @@ function App() {
         await saveStickerToIndexedDB(newSticker);
         setCollectedStickers(prev => [...prev, newSticker]);
         setTodayStickers(prev => [...prev, newSticker]);
-      } else {
-        console.log("This sticker is already collected.");
       }
 
       setTimeout(() => {
@@ -87,12 +81,12 @@ function App() {
       setShowTomorrowMessage(true);
       setTimeout(() => setShowTomorrowMessage(false), 3000);
     }
-  }, [remaining, isOpening, openAudio, revealAudio, collectedStickers, playSound]);
+  }, [remaining, isOpening, openAudio, revealAudio, collectedStickers]);
 
   const handleCardClick = useCallback(() => {
     playSound(viewStickersAudio);
     setIsOpened(!isOpened);
-  }, [isOpened, viewStickersAudio, playSound]);
+  }, [isOpened, viewStickersAudio]);
 
   const closeStickerDetail = useCallback(() => setSelectedSticker(null), []);
 

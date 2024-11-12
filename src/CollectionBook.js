@@ -9,6 +9,7 @@ const CollectionBook = ({ allStickers, ownedStickers, goBack }) => {
   const [selectedSticker, setSelectedSticker] = useState(null);
   const [stickerSlots, setStickerSlots] = useState([]);
 
+  // オーディオの初期化とキャッシュ
   const viewStickersAudio = new Audio(viewStickersSound);
   const revealAudio = new Audio(stickerRevealSound);
 
@@ -18,31 +19,32 @@ const CollectionBook = ({ allStickers, ownedStickers, goBack }) => {
   }, []);
 
   useEffect(() => {
-    if (ownedStickers) {
-      const slots = Array(72).fill(null);
-      ownedStickers.forEach((sticker) => {
-        let randomIndex;
-        do {
-          randomIndex = Math.floor(Math.random() * 72);
-        } while (slots[randomIndex] !== null);
-        slots[randomIndex] = sticker;
-      });
-      setStickerSlots(slots);
-    }
+    // 72スロットの空配列を作成し、取得したステッカーをランダム配置
+    const slots = Array(72).fill({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp` });
+    ownedStickers.forEach((sticker) => {
+      let randomIndex;
+      do {
+        randomIndex = Math.floor(Math.random() * 72);
+      } while (slots[randomIndex] && slots[randomIndex].id);
+      slots[randomIndex] = sticker;
+    });
+    setStickerSlots(slots);
   }, [ownedStickers]);
 
   const cycleCards = (index) => {
     viewStickersAudio.currentTime = 0;
     viewStickersAudio.play();
-    setCardIndexes((prevIndexes) => {
-      if (index === 0) return [prevIndexes[1], prevIndexes[2], prevIndexes[0]];
-      if (index === 1) return [prevIndexes[2], prevIndexes[0], prevIndexes[1]];
-      return [prevIndexes[0], prevIndexes[1], prevIndexes[2]];
-    });
+    if (index === 0) {
+      setCardIndexes([cardIndexes[1], cardIndexes[2], cardIndexes[0]]);
+    } else if (index === 1) {
+      setCardIndexes([cardIndexes[2], cardIndexes[0], cardIndexes[1]]);
+    } else {
+      setCardIndexes([cardIndexes[0], cardIndexes[1], cardIndexes[2]]);
+    }
   };
 
   const handleStickerClick = (sticker) => {
-    if (sticker) {
+    if (sticker && sticker.image !== `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`) {
       setSelectedSticker(sticker);
       revealAudio.currentTime = 0;
       revealAudio.play();
