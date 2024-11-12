@@ -9,6 +9,7 @@ const CollectionBook = ({ allStickers, ownedStickers, goBack }) => {
   const [selectedSticker, setSelectedSticker] = useState(null);
   const [stickerSlots, setStickerSlots] = useState([]);
 
+  // オーディオオブジェクトを生成し、ページ表示中に保持
   const viewStickersAudio = new Audio(viewStickersSound);
   const revealAudio = new Audio(stickerRevealSound);
 
@@ -18,14 +19,13 @@ const CollectionBook = ({ allStickers, ownedStickers, goBack }) => {
   }, []);
 
   useEffect(() => {
+    // ステッカーのスロットを初期化し、一貫して表示されるようにする
     const initializeStickers = () => {
       const slots = Array(72).fill({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp` });
-      ownedStickers.forEach((sticker) => {
-        let randomIndex;
-        do {
-          randomIndex = Math.floor(Math.random() * 72);
-        } while (slots[randomIndex] && slots[randomIndex].id);
-        slots[randomIndex] = sticker;
+      ownedStickers.forEach((sticker, index) => {
+        if (index < slots.length) {
+          slots[index] = sticker;
+        }
       });
       setStickerSlots(slots);
     };
