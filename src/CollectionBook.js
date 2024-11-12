@@ -9,7 +9,6 @@ const CollectionBook = ({ allStickers, ownedStickers, goBack }) => {
   const [selectedSticker, setSelectedSticker] = useState(null);
   const [stickerSlots, setStickerSlots] = useState([]);
 
-  // オーディオの初期化とキャッシュ
   const viewStickersAudio = new Audio(viewStickersSound);
   const revealAudio = new Audio(stickerRevealSound);
 
@@ -19,7 +18,7 @@ const CollectionBook = ({ allStickers, ownedStickers, goBack }) => {
   }, []);
 
   useEffect(() => {
-    // 72スロットの空配列を作成し、取得したステッカーをランダム配置
+    // 72スロットを初期化し、各スロットに所有するステッカーをランダムに割り当て
     const slots = Array(72).fill({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp` });
     ownedStickers.forEach((sticker) => {
       let randomIndex;
