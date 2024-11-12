@@ -1,4 +1,3 @@
-// App.js
 import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import './App.css';
 import openSound from './sounds/wafer-open.mp3';
@@ -36,6 +35,7 @@ function App() {
     viewStickersAudio.load();
   }, []);
 
+  // ステッカー情報の初回読み込み（Web Workerで非同期化を検討）
   useEffect(() => {
     const loadStickers = async () => {
       const stickers = await getCollectedStickers();
@@ -50,6 +50,7 @@ function App() {
     localStorage.setItem('remaining', remaining.toString());
   }, [remaining]);
 
+  // mini-stickerが正しく追加されるようtodayStickersの管理を見直し
   const playSound = (audio) => {
     if (audio && audio.paused) {
       audio.currentTime = 0;
@@ -69,7 +70,7 @@ function App() {
       if (!collectedStickers.some(sticker => sticker.id === newSticker.id)) {
         await saveStickerToIndexedDB(newSticker);
         setCollectedStickers(prev => [...prev, newSticker]);
-        setTodayStickers(prev => [...prev, newSticker]);
+        setTodayStickers(prev => [...prev, newSticker]); // mini-stickerの表示を開封回数分に調整
       }
 
       setTimeout(() => {
