@@ -24,19 +24,17 @@ function App() {
   const [showTomorrowMessage, setShowTomorrowMessage] = useState(false);
   const [isOpening, setIsOpening] = useState(false);
 
-  // 音声ファイルの準備
-  const [openAudio, setOpenAudio] = useState(null);
-  const [revealAudio, setRevealAudio] = useState(null);
-  const [viewStickersAudio, setViewStickersAudio] = useState(null);
+  const openAudio = new Audio(openSound);
+  const revealAudio = new Audio(revealSound);
+  const viewStickersAudio = new Audio(viewStickersSound);
 
-  // 初回マウント時に音声ファイルを準備する
   useEffect(() => {
-    setOpenAudio(new Audio(openSound));
-    setRevealAudio(new Audio(revealSound));
-    setViewStickersAudio(new Audio(viewStickersSound));
+    openAudio.load();
+    revealAudio.load();
+    viewStickersAudio.load();
   }, []);
 
-  // IndexedDBからステッカーをロード
+  // 初回読み込みでステッカーを取得
   useEffect(() => {
     const loadStickers = async () => {
       const stickers = await getCollectedStickers();
@@ -47,21 +45,14 @@ function App() {
     loadStickers();
   }, []);
 
-  // 残り回数の保存
   useEffect(() => {
     localStorage.setItem('remaining', remaining.toString());
   }, [remaining]);
 
-  const playSound = async (audio) => {
+  const playSound = (audio) => {
     if (audio && audio.paused) {
-      try {
-        await audio.play();
-      } catch (error) {
-        console.error("Audio playback failed:", error);
-        // 再度再生を試みる
-        audio.load();
-        audio.play().catch((err) => console.error("Retry audio play failed:", err));
-      }
+      audio.currentTime = 0;
+      audio.play().catch(error => console.error("Audio playback failed:", error));
     }
   };
 
@@ -78,6 +69,8 @@ function App() {
         await saveStickerToIndexedDB(newSticker);
         setCollectedStickers(prev => [...prev, newSticker]);
         setTodayStickers(prev => [...prev, newSticker]);
+      } else {
+        setTodayStickers(prev => [...prev, newSticker]);  // 重複しても表示
       }
 
       setTimeout(() => {

@@ -8,11 +8,11 @@ const CollectionBook = ({ allStickers, ownedStickers, goBack }) => {
   const [cardIndexes, setCardIndexes] = useState([0, 1, 2]);
   const [selectedSticker, setSelectedSticker] = useState(null);
   const [stickerSlots, setStickerSlots] = useState([]);
-
   const viewStickersAudio = new Audio(viewStickersSound);
   const revealAudio = new Audio(stickerRevealSound);
 
   useEffect(() => {
+    // 音声ファイルの事前ロードとキャッシュ
     viewStickersAudio.load();
     revealAudio.load();
   }, []);
@@ -36,8 +36,12 @@ const CollectionBook = ({ allStickers, ownedStickers, goBack }) => {
   }, [ownedStickers]);
 
   const cycleCards = (index) => {
-    viewStickersAudio.currentTime = 0;
-    viewStickersAudio.play();
+    // サウンド再生処理
+    if (viewStickersAudio) {
+      viewStickersAudio.currentTime = 0;
+      viewStickersAudio.play().catch(error => console.error("Audio playback failed:", error));
+    }
+    // カードを回転
     if (index === 0) {
       setCardIndexes([cardIndexes[1], cardIndexes[2], cardIndexes[0]]);
     } else if (index === 1) {
@@ -48,10 +52,10 @@ const CollectionBook = ({ allStickers, ownedStickers, goBack }) => {
   };
 
   const handleStickerClick = (sticker) => {
-    if (sticker) {
+    if (sticker && revealAudio) {
       setSelectedSticker(sticker);
       revealAudio.currentTime = 0;
-      revealAudio.play();
+      revealAudio.play().catch(error => console.error("Audio playback failed:", error));
     }
   };
 
