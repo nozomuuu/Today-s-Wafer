@@ -52,7 +52,12 @@ function App() {
   const playSound = (audio) => {
     if (audio && audio.paused) {
       audio.currentTime = 0;
-      audio.play().catch(error => console.error("Audio playback failed:", error));
+      audio.play().catch(error => {
+        console.error("Audio playback failed:", error);
+        setTimeout(() => {
+          audio.play().catch(err => console.error("Retrying audio playback failed:", err));
+        }, 500);
+      });
     }
   };
 

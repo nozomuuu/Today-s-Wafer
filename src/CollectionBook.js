@@ -9,7 +9,6 @@ const CollectionBook = ({ allStickers, ownedStickers, goBack }) => {
   const [selectedSticker, setSelectedSticker] = useState(null);
   const [stickerSlots, setStickerSlots] = useState([]);
 
-  // 音声ファイルの初期ロードと再利用のためのオーディオオブジェクト
   const viewStickersAudio = new Audio(viewStickersSound);
   const revealAudio = new Audio(stickerRevealSound);
 
@@ -19,7 +18,6 @@ const CollectionBook = ({ allStickers, ownedStickers, goBack }) => {
   }, []);
 
   useEffect(() => {
-    // ownedStickersを特定の位置に確実に配置する初期化
     const initializeStickers = () => {
       const slots = Array(72).fill({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp` });
       ownedStickers.forEach((sticker, index) => {
