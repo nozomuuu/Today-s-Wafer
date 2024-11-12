@@ -24,17 +24,19 @@ function App() {
   const [showTomorrowMessage, setShowTomorrowMessage] = useState(false);
   const [isOpening, setIsOpening] = useState(false);
 
-  // 音声ファイルのキャッシュとエラー処理
-  const openAudio = new Audio(openSound);
-  const revealAudio = new Audio(revealSound);
-  const viewStickersAudio = new Audio(viewStickersSound);
+  // 音声ファイルの準備
+  const [openAudio, setOpenAudio] = useState(null);
+  const [revealAudio, setRevealAudio] = useState(null);
+  const [viewStickersAudio, setViewStickersAudio] = useState(null);
 
+  // 初回マウント時に音声ファイルを準備する
   useEffect(() => {
-    openAudio.load();
-    revealAudio.load();
-    viewStickersAudio.load();
+    setOpenAudio(new Audio(openSound));
+    setRevealAudio(new Audio(revealSound));
+    setViewStickersAudio(new Audio(viewStickersSound));
   }, []);
 
+  // IndexedDBからステッカーをロード
   useEffect(() => {
     const loadStickers = async () => {
       const stickers = await getCollectedStickers();
@@ -45,19 +47,21 @@ function App() {
     loadStickers();
   }, []);
 
+  // 残り回数の保存
   useEffect(() => {
     localStorage.setItem('remaining', remaining.toString());
   }, [remaining]);
 
-  const playSound = (audio) => {
+  const playSound = async (audio) => {
     if (audio && audio.paused) {
-      audio.currentTime = 0;
-      audio.play().catch(error => {
+      try {
+        await audio.play();
+      } catch (error) {
         console.error("Audio playback failed:", error);
-        // 再試行
+        // 再度再生を試みる
         audio.load();
-        audio.play().catch(err => console.error("Retry failed:", err));
-      });
+        audio.play().catch((err) => console.error("Retry audio play failed:", err));
+      }
     }
   };
 
@@ -70,11 +74,10 @@ function App() {
 
       const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
 
-      // 重複チェックとtodayStickersへの追加
       if (!collectedStickers.some(sticker => sticker.id === newSticker.id)) {
         await saveStickerToIndexedDB(newSticker);
         setCollectedStickers(prev => [...prev, newSticker]);
-        setTodayStickers(prev => [...prev, newSticker]); // mini-stickerを毎回追加
+        setTodayStickers(prev => [...prev, newSticker]);
       }
 
       setTimeout(() => {
