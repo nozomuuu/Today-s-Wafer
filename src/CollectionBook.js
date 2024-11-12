@@ -8,6 +8,7 @@ const CollectionBook = ({ allStickers, ownedStickers, goBack }) => {
   const [cardIndexes, setCardIndexes] = useState([0, 1, 2]);
   const [selectedSticker, setSelectedSticker] = useState(null);
   const [stickerSlots, setStickerSlots] = useState([]);
+
   const viewStickersAudio = new Audio(viewStickersSound);
   const revealAudio = new Audio(stickerRevealSound);
 
@@ -35,10 +36,8 @@ const CollectionBook = ({ allStickers, ownedStickers, goBack }) => {
   }, [ownedStickers]);
 
   const cycleCards = (index) => {
-    if (viewStickersAudio) {
-      viewStickersAudio.currentTime = 0;
-      viewStickersAudio.play().catch(error => console.error("Audio playback failed:", error));
-    }
+    viewStickersAudio.currentTime = 0;
+    viewStickersAudio.play().catch(error => console.error("Audio playback failed:", error));
     if (index === 0) {
       setCardIndexes([cardIndexes[1], cardIndexes[2], cardIndexes[0]]);
     } else if (index === 1) {
