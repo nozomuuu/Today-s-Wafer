@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
+// 以下が、元のApp.jsファイルのコードです。
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import './App.css';
 import openSound from './sounds/wafer-open.mp3';
 import revealSound from './sounds/sticker-reveal.mp3';
@@ -22,17 +23,6 @@ function App() {
   const [selectedSticker, setSelectedSticker] = useState(null);
   const [page, setPage] = useState("main");
   const [showTomorrowMessage, setShowTomorrowMessage] = useState(false);
-  const [isOpening, setIsOpening] = useState(false);
-
-  const openAudio = new Audio(openSound);
-  const revealAudio = new Audio(revealSound);
-  const viewStickersAudio = new Audio(viewStickersSound);
-
-  useEffect(() => {
-    openAudio.load();
-    revealAudio.load();
-    viewStickersAudio.load();
-  }, []);
 
   useEffect(() => {
     const loadStickers = async () => {
@@ -48,22 +38,8 @@ function App() {
     localStorage.setItem('remaining', remaining.toString());
   }, [remaining]);
 
-  const playSound = (audio) => {
-    if (audio && audio.paused) {
-      audio.currentTime = 0;
-      audio.play().catch(error => {
-        console.error("Audio playback failed:", error);
-        setTimeout(() => {
-          audio.play().catch(err => console.error("Retrying audio playback failed:", err));
-        }, 500);
-      });
-    }
-  };
-
-  const openWafer = useCallback(async () => {
-    if (remaining > 0 && !isOpening) {
-      setIsOpening(true);
-      playSound(openAudio);
+  const openWafer = async () => {
+    if (remaining > 0 && !isOpened) {
       setIsOpened(true);
       setRemaining(prev => prev - 1);
 
@@ -72,27 +48,16 @@ function App() {
       if (!collectedStickers.some(sticker => sticker.id === newSticker.id)) {
         await saveStickerToIndexedDB(newSticker);
         setCollectedStickers(prev => [...prev, newSticker]);
-        setTodayStickers(prev => [...prev, newSticker]);  // 必ず新しいステッカーが追加される
+        setTodayStickers(prev => [...prev, newSticker]);
       }
 
-      setTimeout(() => {
-        setIsOpened(false);
-        setSelectedSticker(newSticker);
-        playSound(revealAudio);
-        setIsOpening(false);
-      }, 1500);
+      setSelectedSticker(newSticker);
+      setTimeout(() => setIsOpened(false), 1500);
     } else if (remaining === 0) {
       setShowTomorrowMessage(true);
       setTimeout(() => setShowTomorrowMessage(false), 3000);
     }
-  }, [remaining, isOpening, openAudio, revealAudio, collectedStickers]);
-
-  const handleCardClick = useCallback(() => {
-    playSound(viewStickersAudio);
-    setIsOpened(!isOpened);
-  }, [isOpened, viewStickersAudio]);
-
-  const closeStickerDetail = useCallback(() => setSelectedSticker(null), []);
+  };
 
   return (
     <div className="app">
@@ -103,16 +68,13 @@ function App() {
             src={isOpened ? waferOpened : waferClosed} 
             alt="Wafer" 
             className="wafer-image" 
-            onClick={handleCardClick} 
+            onClick={() => setIsOpened(!isOpened)} 
           />
           <p>Remaining: {remaining}</p>
-          <button onClick={openWafer} className="button" disabled={isOpening}>
+          <button onClick={openWafer} className="button" disabled={isOpened}>
             {remaining > 0 ? 'Open a Wafer' : 'No More Wafers'}
           </button>
-          <button onClick={() => {
-            playSound(viewStickersAudio);
-            setPage("collection");
-          }} className="button">
+          <button onClick={() => setPage("collection")} className="button">
             CollectionBook
           </button>
           <div className="collected-stickers">
@@ -122,10 +84,7 @@ function App() {
                 src={sticker.image}
                 alt={`Sticker ${index + 1}`}
                 className="sticker-small"
-                onClick={() => {
-                  setSelectedSticker(sticker);
-                  playSound(revealAudio);
-                }}
+                onClick={() => setSelectedSticker(sticker)}
               />
             ))}
           </div>
@@ -136,18 +95,15 @@ function App() {
           <CollectionBook
             allStickers={stickersData}
             ownedStickers={collectedStickers}
-            goBack={() => {
-              playSound(viewStickersAudio);
-              setPage("main");
-            }}
+            goBack={() => setPage("main")}
           />
         </Suspense>
       )}
       {selectedSticker && (
-        <div className="sticker-popup" onClick={closeStickerDetail}>
+        <div className="sticker-popup" onClick={() => setSelectedSticker(null)}>
           <div className="sticker-popup-content">
             <img src={selectedSticker.image} alt="Selected Sticker" className="sticker-large" />
-            <button onClick={closeStickerDetail} className="button">Close</button>
+            <button onClick={() => setSelectedSticker(null)} className="button">Close</button>
           </div>
         </div>
       )}
