@@ -24,6 +24,7 @@ function App() {
   const [showTomorrowMessage, setShowTomorrowMessage] = useState(false);
   const [isOpening, setIsOpening] = useState(false);
 
+  // 音声ファイルのキャッシュ化
   const openAudio = new Audio(openSound);
   const revealAudio = new Audio(revealSound);
   const viewStickersAudio = new Audio(viewStickersSound);
@@ -39,7 +40,6 @@ function App() {
       const stickers = await getCollectedStickers();
       if (stickers) {
         setCollectedStickers(stickers);
-        console.log("Loaded stickers:", stickers);
       }
     };
     loadStickers();
@@ -69,7 +69,6 @@ function App() {
         await saveStickerToIndexedDB(newSticker);
         setCollectedStickers(prev => [...prev, newSticker]);
         setTodayStickers(prev => [...prev, newSticker]);
-        console.log("New sticker added:", newSticker);
       }
 
       setTimeout(() => {
