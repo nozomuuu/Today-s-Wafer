@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Sticker from './Sticker';
 import './CollectionBook.css';
 import stickerRevealSound from './sounds/sticker-reveal.mp3';
@@ -18,20 +18,28 @@ const CollectionBook = ({ allStickers, ownedStickers, goBack }) => {
   }, []);
 
   useEffect(() => {
-    const slots = Array(72).fill({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp` });
+    const slots = Array(72).fill(null);
     ownedStickers.forEach((sticker) => {
       let randomIndex;
       do {
         randomIndex = Math.floor(Math.random() * 72);
-      } while (slots[randomIndex] && slots[randomIndex].id);
+      } while (slots[randomIndex] !== null);
       slots[randomIndex] = sticker;
     });
     setStickerSlots(slots);
   }, [ownedStickers]);
 
+  const playSound = useCallback((audio) => {
+    if (audio && audio.paused) {
+      audio.currentTime = 0;
+      audio.play().catch(error => {
+        console.error("Audio playback failed:", error);
+      });
+    }
+  }, []);
+
   const cycleCards = (index) => {
-    viewStickersAudio.currentTime = 0;
-    viewStickersAudio.play();
+    playSound(viewStickersAudio);
     if (index === 0) {
       setCardIndexes([cardIndexes[1], cardIndexes[2], cardIndexes[0]]);
     } else if (index === 1) {
@@ -44,8 +52,7 @@ const CollectionBook = ({ allStickers, ownedStickers, goBack }) => {
   const handleStickerClick = (sticker) => {
     if (sticker) {
       setSelectedSticker(sticker);
-      revealAudio.currentTime = 0;
-      revealAudio.play();
+      playSound(revealAudio);
     }
   };
 
