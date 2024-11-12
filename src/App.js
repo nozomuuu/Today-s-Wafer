@@ -1,4 +1,3 @@
-// App.js
 import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import './App.css';
 import openSound from './sounds/wafer-open.mp3';
@@ -25,7 +24,7 @@ function App() {
   const [showTomorrowMessage, setShowTomorrowMessage] = useState(false);
   const [isOpening, setIsOpening] = useState(false);
 
-  // 音声ファイルのキャッシュ化
+  // 音声ファイルのキャッシュ
   const openAudio = new Audio(openSound);
   const revealAudio = new Audio(revealSound);
   const viewStickersAudio = new Audio(viewStickersSound);
@@ -69,8 +68,8 @@ function App() {
       if (!collectedStickers.some(sticker => sticker.id === newSticker.id)) {
         await saveStickerToIndexedDB(newSticker);
         setCollectedStickers(prev => [...prev, newSticker]);
-        setTodayStickers(prev => [...prev, newSticker]);
       }
+      setTodayStickers(prev => [...prev, newSticker]);
 
       setTimeout(() => {
         setIsOpened(false);
