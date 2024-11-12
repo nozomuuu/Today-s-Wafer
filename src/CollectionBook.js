@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sticker from './Sticker';
 import './CollectionBook.css';
 import stickerRevealSound from './sounds/sticker-reveal.mp3';
@@ -18,41 +18,34 @@ const CollectionBook = ({ allStickers, ownedStickers, goBack }) => {
   }, []);
 
   useEffect(() => {
-    const slots = Array(72).fill(null);
-    ownedStickers.forEach((sticker) => {
-      let randomIndex;
-      do {
-        randomIndex = Math.floor(Math.random() * 72);
-      } while (slots[randomIndex] !== null);
-      slots[randomIndex] = sticker;
-    });
-    setStickerSlots(slots);
+    if (ownedStickers) {
+      const slots = Array(72).fill(null);
+      ownedStickers.forEach((sticker) => {
+        let randomIndex;
+        do {
+          randomIndex = Math.floor(Math.random() * 72);
+        } while (slots[randomIndex] !== null);
+        slots[randomIndex] = sticker;
+      });
+      setStickerSlots(slots);
+    }
   }, [ownedStickers]);
 
-  const playSound = useCallback((audio) => {
-    if (audio && audio.paused) {
-      audio.currentTime = 0;
-      audio.play().catch(error => {
-        console.error("Audio playback failed:", error);
-      });
-    }
-  }, []);
-
   const cycleCards = (index) => {
-    playSound(viewStickersAudio);
-    if (index === 0) {
-      setCardIndexes([cardIndexes[1], cardIndexes[2], cardIndexes[0]]);
-    } else if (index === 1) {
-      setCardIndexes([cardIndexes[2], cardIndexes[0], cardIndexes[1]]);
-    } else {
-      setCardIndexes([cardIndexes[0], cardIndexes[1], cardIndexes[2]]);
-    }
+    viewStickersAudio.currentTime = 0;
+    viewStickersAudio.play();
+    setCardIndexes((prevIndexes) => {
+      if (index === 0) return [prevIndexes[1], prevIndexes[2], prevIndexes[0]];
+      if (index === 1) return [prevIndexes[2], prevIndexes[0], prevIndexes[1]];
+      return [prevIndexes[0], prevIndexes[1], prevIndexes[2]];
+    });
   };
 
   const handleStickerClick = (sticker) => {
     if (sticker) {
       setSelectedSticker(sticker);
-      playSound(revealAudio);
+      revealAudio.currentTime = 0;
+      revealAudio.play();
     }
   };
 
