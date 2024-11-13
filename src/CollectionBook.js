@@ -12,6 +12,7 @@ const CollectionBook = ({ allStickers, ownedStickers, goBack }) => {
   const viewStickersAudio = new Audio(viewStickersSound);
   const revealAudio = new Audio(stickerRevealSound);
 
+  // 音声再生用の共通関数
   const playSound = (audio) => {
     if (audio && audio.paused) {
       audio.currentTime = 0;
@@ -29,14 +30,15 @@ const CollectionBook = ({ allStickers, ownedStickers, goBack }) => {
     revealAudio.load();
   }, []);
 
+  // ステッカーをランダムに配置するロジック
   useEffect(() => {
     const initializeStickers = () => {
-      const slots = Array(72).fill(null);  // 72スロットをnullで初期化
-      ownedStickers.forEach((sticker) => {
+      const slots = Array(72).fill({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp` });
+      ownedStickers.forEach(sticker => {
         let randomIndex;
         do {
           randomIndex = Math.floor(Math.random() * 72);
-        } while (slots[randomIndex] !== null);  // 空スロットにランダム配置
+        } while (slots[randomIndex] && slots[randomIndex].id);  // 空スロットを見つけるまで繰り返す
         slots[randomIndex] = sticker;
       });
       setStickerSlots(slots);
@@ -49,15 +51,17 @@ const CollectionBook = ({ allStickers, ownedStickers, goBack }) => {
 
   const cycleCards = (index) => {
     playSound(viewStickersAudio);
-    setCardIndexes(prevIndexes => {
-      if (index === 0) return [prevIndexes[1], prevIndexes[2], prevIndexes[0]];
-      if (index === 1) return [prevIndexes[2], prevIndexes[0], prevIndexes[1]];
-      return [prevIndexes[0], prevIndexes[1], prevIndexes[2]];
-    });
+    if (index === 0) {
+      setCardIndexes([cardIndexes[1], cardIndexes[2], cardIndexes[0]]);
+    } else if (index === 1) {
+      setCardIndexes([cardIndexes[2], cardIndexes[0], cardIndexes[1]]);
+    } else {
+      setCardIndexes([cardIndexes[0], cardIndexes[1], cardIndexes[2]]);
+    }
   };
 
   const handleStickerClick = (sticker) => {
-    if (sticker) {
+    if (sticker && revealAudio) {
       setSelectedSticker(sticker);
       playSound(revealAudio);
     }
@@ -76,7 +80,9 @@ const CollectionBook = ({ allStickers, ownedStickers, goBack }) => {
             transform: `translateX(${i * 40}px) translateY(${i * 5}px) scale(${1 - i * 0.05})`,
           }}
           onClick={(e) => {
-            if (e.target.className !== 'sticker-image') cycleCards(i);
+            if (e.target.className !== 'sticker-image') {
+              cycleCards(i);
+            }
           }}
         >
           <h2 className="collection-title">Touch and Change Card</h2>
