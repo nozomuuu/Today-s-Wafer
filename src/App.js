@@ -28,14 +28,12 @@ function App() {
   const revealAudio = new Audio(revealSound);
   const viewStickersAudio = new Audio(viewStickersSound);
 
-  // 音声ファイルを事前にロード
   useEffect(() => {
     openAudio.load();
     revealAudio.load();
     viewStickersAudio.load();
   }, []);
 
-  // collectedStickersの読み込み
   useEffect(() => {
     const loadStickers = async () => {
       const stickers = await getCollectedStickers();
@@ -46,12 +44,10 @@ function App() {
     loadStickers();
   }, []);
 
-  // remainingの状態をローカルストレージに保存
   useEffect(() => {
     localStorage.setItem('remaining', remaining.toString());
   }, [remaining]);
 
-  // 音声再生の関数
   const playSound = (audio) => {
     if (audio && audio.paused) {
       audio.currentTime = 0;
@@ -64,7 +60,6 @@ function App() {
     }
   };
 
-  // ウエハース開封時の処理
   const openWafer = useCallback(async () => {
     if (remaining > 0 && !isOpening) {
       setIsOpening(true);
@@ -77,7 +72,7 @@ function App() {
       if (!collectedStickers.some(sticker => sticker.id === newSticker.id)) {
         await saveStickerToIndexedDB(newSticker);
         setCollectedStickers(prev => [...prev, newSticker]);
-        setTodayStickers(prev => [...prev, newSticker]);  // 必ず新しいステッカーが追加される
+        setTodayStickers(prev => [...prev, newSticker]);
       }
 
       setTimeout(() => {
