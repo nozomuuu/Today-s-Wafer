@@ -12,7 +12,6 @@ const CollectionBook = ({ allStickers, ownedStickers, goBack }) => {
   const viewStickersAudio = new Audio(viewStickersSound);
   const revealAudio = new Audio(stickerRevealSound);
 
-  // 音声再生用の共通関数
   const playSound = (audio) => {
     if (audio && audio.paused) {
       audio.currentTime = 0;
@@ -30,7 +29,6 @@ const CollectionBook = ({ allStickers, ownedStickers, goBack }) => {
     revealAudio.load();
   }, []);
 
-  // ステッカーをランダムに配置するロジック
   useEffect(() => {
     const initializeStickers = () => {
       const slots = Array(72).fill({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp` });
@@ -38,7 +36,7 @@ const CollectionBook = ({ allStickers, ownedStickers, goBack }) => {
         let randomIndex;
         do {
           randomIndex = Math.floor(Math.random() * 72);
-        } while (slots[randomIndex] && slots[randomIndex].id);  // 空スロットを見つけるまで繰り返す
+        } while (slots[randomIndex] && slots[randomIndex].id);
         slots[randomIndex] = sticker;
       });
       setStickerSlots(slots);

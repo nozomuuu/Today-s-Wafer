@@ -72,7 +72,7 @@ function App() {
       if (!collectedStickers.some(sticker => sticker.id === newSticker.id)) {
         await saveStickerToIndexedDB(newSticker);
         setCollectedStickers(prev => [...prev, newSticker]);
-        setTodayStickers(prev => [...prev, newSticker]);  // 累積的にmini-stickerに追加
+        setTodayStickers(prev => [...prev, newSticker]);
       }
 
       setTimeout(() => {
