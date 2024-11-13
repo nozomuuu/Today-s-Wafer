@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import waferClosed from './images/wafer1.webp';
-import waferOpened from './images/wafer2.webp';
+import waferClosed from './images/wafer1.png';
+import waferOpened from './images/wafer2.png';
 import stickersData from './stickersData';
 import CollectionBook from './CollectionBook';
 import openSound from './sounds/wafer-open.mp3';
@@ -20,47 +20,21 @@ function App() {
     const revealAudio = new Audio(revealSound);
     const viewStickersAudio = new Audio(viewStickersSound);
 
-    // 初期ロード時にオーディオを準備
     useEffect(() => {
-        openAudio.load();
-        revealAudio.load();
-        viewStickersAudio.load();
-
-        // 初回タップでオーディオを有効化
-        const handleFirstTap = () => {
-            openAudio.play().catch(() => {});
-            revealAudio.play().catch(() => {});
-            viewStickersAudio.play().catch(() => {});
-
-            // 一度再生させた後すぐ停止
-            openAudio.pause();
-            revealAudio.pause();
-            viewStickersAudio.pause();
-            openAudio.currentTime = 0;
-            revealAudio.currentTime = 0;
-            viewStickersAudio.currentTime = 0;
-
-            // リスナーを削除
-            document.removeEventListener('touchstart', handleFirstTap);
+        // スマホの初回タップでオーディオ再生を有効化する
+        const enableAudio = () => {
+            openAudio.play().then(() => openAudio.pause());
+            revealAudio.play().then(() => revealAudio.pause());
+            viewStickersAudio.play().then(() => viewStickersAudio.pause());
+            document.removeEventListener('click', enableAudio);
         };
-
-        // モバイルでの初回タップを監視
-        document.addEventListener('touchstart', handleFirstTap);
-
-        return () => {
-            document.removeEventListener('touchstart', handleFirstTap);
-        };
+        document.addEventListener('click', enableAudio);
     }, []);
 
     const playSound = (audio) => {
         if (audio && audio.paused) {
             audio.currentTime = 0;
-            audio.play().catch(error => {
-                console.error("Audio playback failed:", error);
-                setTimeout(() => {
-                    audio.play().catch(err => console.error("Retrying audio playback failed:", err));
-                }, 500);
-            });
+            audio.play().catch(error => console.error("Audio playback failed:", error));
         }
     };
 
@@ -72,10 +46,12 @@ function App() {
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
             setCollectedStickers([...collectedStickers, newSticker]);
             setTodayStickers(prev => [...prev, newSticker]);
+            
+            // 音声再生のタイミングをシール表示に合わせる
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
-                playSound(revealAudio);
+                playSound(revealAudio); // シール表示に合わせて再生
             }, 1500);
         }
     };
