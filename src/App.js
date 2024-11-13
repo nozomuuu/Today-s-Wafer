@@ -20,10 +20,47 @@ function App() {
     const revealAudio = new Audio(revealSound);
     const viewStickersAudio = new Audio(viewStickersSound);
 
+    // 初期ロード時にオーディオを準備
+    useEffect(() => {
+        openAudio.load();
+        revealAudio.load();
+        viewStickersAudio.load();
+
+        // 初回タップでオーディオを有効化
+        const handleFirstTap = () => {
+            openAudio.play().catch(() => {});
+            revealAudio.play().catch(() => {});
+            viewStickersAudio.play().catch(() => {});
+
+            // 一度再生させた後すぐ停止
+            openAudio.pause();
+            revealAudio.pause();
+            viewStickersAudio.pause();
+            openAudio.currentTime = 0;
+            revealAudio.currentTime = 0;
+            viewStickersAudio.currentTime = 0;
+
+            // リスナーを削除
+            document.removeEventListener('touchstart', handleFirstTap);
+        };
+
+        // モバイルでの初回タップを監視
+        document.addEventListener('touchstart', handleFirstTap);
+
+        return () => {
+            document.removeEventListener('touchstart', handleFirstTap);
+        };
+    }, []);
+
     const playSound = (audio) => {
         if (audio && audio.paused) {
             audio.currentTime = 0;
-            audio.play().catch(error => console.error("Audio playback failed:", error));
+            audio.play().catch(error => {
+                console.error("Audio playback failed:", error);
+                setTimeout(() => {
+                    audio.play().catch(err => console.error("Retrying audio playback failed:", err));
+                }, 500);
+            });
         }
     };
 
