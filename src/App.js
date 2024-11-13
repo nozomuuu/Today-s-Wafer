@@ -1,3 +1,4 @@
+// existing imports...
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import waferClosed from './images/wafer1.webp';
@@ -29,19 +30,16 @@ function App() {
             openAudio.play().catch(() => {});
             revealAudio.play().catch(() => {});
             viewStickersAudio.play().catch(() => {});
-
             openAudio.pause();
             revealAudio.pause();
             viewStickersAudio.pause();
             openAudio.currentTime = 0;
             revealAudio.currentTime = 0;
             viewStickersAudio.currentTime = 0;
-
             document.removeEventListener('touchstart', handleFirstTap);
         };
 
         document.addEventListener('touchstart', handleFirstTap);
-
         return () => {
             document.removeEventListener('touchstart', handleFirstTap);
         };
@@ -52,9 +50,6 @@ function App() {
             audio.currentTime = 0;
             audio.play().catch(error => {
                 console.error("Audio playback failed:", error);
-                setTimeout(() => {
-                    audio.play().catch(err => console.error("Retrying audio playback failed:", err));
-                }, 500);
             });
         }
     };
@@ -64,25 +59,17 @@ function App() {
             playSound(openAudio);
             setIsOpened(true);
             setRemaining(remaining - 1);
-
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
             setCollectedStickers([...collectedStickers, newSticker]);
             setTodayStickers(prev => [...prev, newSticker]);
 
-            // ポップアップ表示後にサウンドを再生
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
+                playSound(revealAudio); // ポップアップと同時に再生
             }, 1500);
         }
     };
-
-    // ポップアップ表示に合わせて再生
-    useEffect(() => {
-        if (selectedSticker) {
-            setTimeout(() => playSound(revealAudio), 0); // ポップアップ後にサウンド再生
-        }
-    }, [selectedSticker]);
 
     const handleCardClick = (event) => {
         if (event.target.classList.contains("wafer-image")) {
