@@ -69,17 +69,18 @@ function App() {
             setCollectedStickers([...collectedStickers, newSticker]);
             setTodayStickers(prev => [...prev, newSticker]);
 
+            // ポップアップ表示後にサウンドを再生
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
-            }, 1500); // ポップアップ表示のタイミング
+            }, 1500);
         }
     };
 
+    // ポップアップ表示に合わせて再生
     useEffect(() => {
         if (selectedSticker) {
-            // selectedStickerがセットされたタイミングでサウンド再生
-            playSound(revealAudio);
+            setTimeout(() => playSound(revealAudio), 0); // ポップアップ後にサウンド再生
         }
     }, [selectedSticker]);
 
