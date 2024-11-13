@@ -74,9 +74,8 @@ function App() {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
                 
-                setTimeout(() => {
-                    playSound(revealAudio);  // ポップアップ表示後の0.1秒後にサウンド再生を確実に行う
-                }, 100);  
+                // スマホ特有のサウンド同期のために、ポップアップ表示直後に再生
+                requestAnimationFrame(() => playSound(revealAudio)); 
             }, 1500);
         }
     };
