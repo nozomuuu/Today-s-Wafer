@@ -20,6 +20,7 @@ function App() {
     const revealAudio = new Audio(revealSound);
     const viewStickersAudio = new Audio(viewStickersSound);
 
+    // 初期ロード時にオーディオを準備
     useEffect(() => {
         openAudio.load();
         revealAudio.load();
@@ -67,14 +68,16 @@ function App() {
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
             setCollectedStickers([...collectedStickers, newSticker]);
             setTodayStickers(prev => [...prev, newSticker]);
-            
-            // ここでポップアップと音のタイミングを合わせる
+
+            // ポップアップと同時に音声を再生するタイミング
             setTimeout(() => {
                 setIsOpened(false);
-                setSelectedSticker(newSticker); // ポップアップ表示
+                setSelectedSticker(newSticker);
+                
+                // ポップアップ表示タイミングに合わせて音声再生
                 setTimeout(() => {
-                    playSound(revealAudio);  // ポップアップ表示と同時に音を再生
-                }, 100); // 100msの遅延で同期
+                    playSound(revealAudio);
+                }, 100);  // 100msの遅延を挟むことでタイミングを調整
             }, 1500);
         }
     };
