@@ -71,7 +71,8 @@ function App() {
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
-                playSound(revealAudio);
+                // ポップアップ表示と同時に音声再生
+                setTimeout(() => playSound(revealAudio), 100); // ポップアップ表示の少し後で再生
             }, 1500);  // 遅延タイミング調整
         }
     };
