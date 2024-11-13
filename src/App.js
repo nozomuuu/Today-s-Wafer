@@ -20,6 +20,7 @@ function App() {
     const revealAudio = new Audio(revealSound);
     const viewStickersAudio = new Audio(viewStickersSound);
 
+    // 音声の準備処理（初回タッチ対応）
     useEffect(() => {
         openAudio.load();
         revealAudio.load();
@@ -44,11 +45,15 @@ function App() {
         };
     }, []);
 
+    // 再生制御
     const playSound = (audio) => {
         if (audio && audio.paused) {
             audio.currentTime = 0;
             audio.play().catch(error => {
                 console.error("Audio playback failed:", error);
+                setTimeout(() => {
+                    audio.play().catch(err => console.error("Retrying audio playback failed:", err));
+                }, 500);
             });
         }
     };
@@ -62,12 +67,12 @@ function App() {
             setCollectedStickers([...collectedStickers, newSticker]);
             setTodayStickers(prev => [...prev, newSticker]);
 
-            // 1500msの遅延でポップアップと同時に再生
+            // タイミングをポップアップに合わせて遅延再生
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
                 playSound(revealAudio);
-            }, 1500);
+            }, 1500);  // 遅延タイミング調整
         }
     };
 
