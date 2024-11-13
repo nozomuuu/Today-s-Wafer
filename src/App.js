@@ -69,13 +69,15 @@ function App() {
             setCollectedStickers([...collectedStickers, newSticker]);
             setTodayStickers(prev => [...prev, newSticker]);
 
+            // ポップアップ表示とサウンドを同期
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
                 
-                // サウンドをポップアップ表示と同時に再生
-                playSound(revealAudio);
-            }, 1500);  // サウンドのタイミングを1500ms遅らせてポップアップと同期
+                setTimeout(() => {
+                    playSound(revealAudio);  // ポップアップ表示後の0.1秒後にサウンド再生を確実に行う
+                }, 100);  
+            }, 1500);
         }
     };
 
