@@ -20,16 +20,18 @@ function App() {
     const revealAudio = new Audio(revealSound);
     const viewStickersAudio = new Audio(viewStickersSound);
 
-    // 音声の準備処理（初回タッチ対応）
+    // 初期ロード時にオーディオを準備
     useEffect(() => {
         openAudio.load();
         revealAudio.load();
         viewStickersAudio.load();
 
+        // モバイルでの初回タップを監視しオーディオ再生を有効化
         const handleFirstTap = () => {
             openAudio.play().catch(() => {});
             revealAudio.play().catch(() => {});
             viewStickersAudio.play().catch(() => {});
+
             openAudio.pause();
             revealAudio.pause();
             viewStickersAudio.pause();
@@ -40,12 +42,13 @@ function App() {
         };
 
         document.addEventListener('touchstart', handleFirstTap);
+
         return () => {
             document.removeEventListener('touchstart', handleFirstTap);
         };
     }, []);
 
-    // 再生制御
+    // オーディオの再生関数
     const playSound = (audio) => {
         if (audio && audio.paused) {
             audio.currentTime = 0;
@@ -67,13 +70,14 @@ function App() {
             setCollectedStickers([...collectedStickers, newSticker]);
             setTodayStickers(prev => [...prev, newSticker]);
 
-            // タイミングをポップアップに合わせて遅延再生
+            // ポップアップ表示のタイミングで音声再生
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
-                // ポップアップ表示と同時に音声再生
-                setTimeout(() => playSound(revealAudio), 100); // ポップアップ表示の少し後で再生
-            }, 1500);  // 遅延タイミング調整
+
+                // ポップアップ表示の少し後で再生をトリガー
+                setTimeout(() => playSound(revealAudio), 100);  // 少し遅らせる
+            }, 1500);
         }
     };
 
