@@ -67,10 +67,14 @@ function App() {
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
             setCollectedStickers([...collectedStickers, newSticker]);
             setTodayStickers(prev => [...prev, newSticker]);
+            
+            // ここでポップアップと音のタイミングを合わせる
             setTimeout(() => {
                 setIsOpened(false);
-                setSelectedSticker(newSticker);
-                playSound(revealAudio);  // タイミングをここに揃える
+                setSelectedSticker(newSticker); // ポップアップ表示
+                setTimeout(() => {
+                    playSound(revealAudio);  // ポップアップ表示と同時に音を再生
+                }, 100); // 100msの遅延で同期
             }, 1500);
         }
     };
