@@ -69,16 +69,19 @@ function App() {
             setCollectedStickers([...collectedStickers, newSticker]);
             setTodayStickers(prev => [...prev, newSticker]);
 
-            // ポップアップ表示とサウンド再生のタイミングを統一
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
-                
-                // ポップアップ直後に少し遅れてサウンド再生
-                setTimeout(() => playSound(revealAudio), 50); 
-            }, 1500);
+            }, 1500); // ポップアップ表示のタイミング
         }
     };
+
+    useEffect(() => {
+        if (selectedSticker) {
+            // selectedStickerがセットされたタイミングでサウンド再生
+            playSound(revealAudio);
+        }
+    }, [selectedSticker]);
 
     const handleCardClick = (event) => {
         if (event.target.classList.contains("wafer-image")) {
