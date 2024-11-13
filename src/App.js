@@ -1,122 +1,101 @@
 import React, { useState, useEffect } from 'react';
-import './App.css';
-import waferClosed from './images/wafer1.png';
-import waferOpened from './images/wafer2.png';
-import stickersData from './stickersData';
-import CollectionBook from './CollectionBook';
-import openSound from './sounds/wafer-open.mp3';
-import revealSound from './sounds/sticker-reveal.mp3';
+import './CollectionBook.css';
+import stickerRevealSound from './sounds/sticker-reveal.mp3';
 import viewStickersSound from './sounds/view-stickers.mp3';
 
-function App() {
-    const [isOpened, setIsOpened] = useState(false);
-    const [remaining, setRemaining] = useState(3);
-    const [collectedStickers, setCollectedStickers] = useState([]);
-    const [todayStickers, setTodayStickers] = useState([]);
+function CollectionBook({ allStickers, ownedStickers, goBack }) {
+    const [cardIndexes, setCardIndexes] = useState([0, 1, 2]);
     const [selectedSticker, setSelectedSticker] = useState(null);
-    const [page, setPage] = useState("main");
+    const [stickerSlots, setStickerSlots] = useState([]);
 
-    const openAudio = new Audio(openSound);
-    const revealAudio = new Audio(revealSound);
     const viewStickersAudio = new Audio(viewStickersSound);
+    const revealAudio = new Audio(stickerRevealSound);
 
     useEffect(() => {
-        // スマホの初回タップでオーディオ再生を有効化する
-        const enableAudio = () => {
-            openAudio.play().then(() => openAudio.pause());
-            revealAudio.play().then(() => revealAudio.pause());
-            viewStickersAudio.play().then(() => viewStickersAudio.pause());
-            document.removeEventListener('click', enableAudio);
+        const initializeStickers = () => {
+            const slots = Array(72).fill(null);
+            ownedStickers.forEach((sticker) => {
+                let randomIndex;
+                do {
+                    randomIndex = Math.floor(Math.random() * 72);
+                } while (slots[randomIndex] !== null);
+                slots[randomIndex] = sticker;
+            });
+            setStickerSlots(slots);
         };
-        document.addEventListener('click', enableAudio);
-    }, []);
+        if (ownedStickers.length > 0) {
+            initializeStickers();
+        }
+    }, [ownedStickers]);
 
     const playSound = (audio) => {
         if (audio && audio.paused) {
             audio.currentTime = 0;
-            audio.play().catch(error => console.error("Audio playback failed:", error));
+            audio.play().catch(err => console.error("Audio playback error:", err));
         }
     };
 
-    const openWafer = () => {
-        if (remaining > 0) {
-            playSound(openAudio);
-            setIsOpened(true);
-            setRemaining(remaining - 1);
-            const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-            setCollectedStickers([...collectedStickers, newSticker]);
-            setTodayStickers(prev => [...prev, newSticker]);
-            
-            // 音声再生のタイミングをシール表示に合わせる
-            setTimeout(() => {
-                setIsOpened(false);
-                setSelectedSticker(newSticker);
-                playSound(revealAudio); // シール表示に合わせて再生
-            }, 1500);
+    const cycleCards = (index) => {
+        playSound(viewStickersAudio);
+        if (index === 0) {
+            setCardIndexes([cardIndexes[1], cardIndexes[2], cardIndexes[0]]);
+        } else if (index === 1) {
+            setCardIndexes([cardIndexes[2], cardIndexes[0], cardIndexes[1]]);
+        } else {
+            setCardIndexes([cardIndexes[0], cardIndexes[1], cardIndexes[2]]);
         }
     };
 
-    const handleCardClick = (event) => {
-        if (event.target.classList.contains("wafer-image")) {
-            playSound(viewStickersAudio);
-            setIsOpened(!isOpened);
+    const handleStickerClick = (sticker) => {
+        if (sticker) {
+            setSelectedSticker(sticker);
+            playSound(revealAudio);
         }
     };
 
-    const closeStickerDetail = () => setSelectedSticker(null);
+    const closePopup = () => setSelectedSticker(null);
 
     return (
-        <div className="app">
-            {page === "main" && (
-                <div className="main-container">
-                    <h1 className="title">Today's Wafer</h1>
-                    <img 
-                        src={isOpened ? waferOpened : waferClosed} 
-                        alt="Wafer" 
-                        className="wafer-image" 
-                        onClick={handleCardClick} 
-                    />
-                    <p>Remaining: {remaining}</p>
-                    <button onClick={openWafer} className="button">
-                        {remaining > 0 ? 'Open a Wafer' : 'No More Wafers'}
-                    </button>
-                    <button onClick={() => {
-                        playSound(viewStickersAudio);
-                        setPage("collection");
-                    }} className="button">
-                        CollectionBook
-                    </button>
-                    <div className="collected-stickers">
-                        {todayStickers.map((sticker, index) => (
-                            <img
-                                key={index}
-                                src={sticker.image}
-                                alt={`Sticker ${index + 1}`}
-                                className="sticker-small"
-                                onClick={() => {
-                                    setSelectedSticker(sticker);
-                                    playSound(revealAudio);
-                                }}
-                            />
+        <div className="collection-container">
+            {cardIndexes.map((cardIndex, i) => (
+                <div
+                    key={cardIndex}
+                    className={`collection-book ${i === 0 ? "top-card" : ""}`}
+                    style={{
+                        zIndex: 3 - i,
+                        transform: `translateX(${i * 40}px) translateY(${i * 5}px) scale(${1 - i * 0.05})`,
+                    }}
+                    onClick={(e) => {
+                        if (e.target.className !== 'sticker-image') {
+                            cycleCards(i);
+                        }
+                    }}
+                >
+                    <h2 className="collection-title">Touch and Change Card</h2>
+                    <div className="sticker-grid">
+                        {Array.from({ length: 24 }).map((_, j) => (
+                            <div
+                                key={j}
+                                className="sticker-item"
+                                onClick={() => handleStickerClick(stickerSlots[j + cardIndex * 24])}
+                            >
+                                <img
+                                    src={stickerSlots[j + cardIndex * 24]?.image || `${process.env.PUBLIC_URL}/images/wafer3.webp`}
+                                    alt={`Sticker ${j + 1}`}
+                                    className="sticker-image"
+                                />
+                            </div>
                         ))}
                     </div>
                 </div>
-            )}
-            {page === "collection" && (
-                <CollectionBook
-                    allStickers={stickersData}
-                    ownedStickers={collectedStickers}
-                    goBack={() => {
-                        playSound(viewStickersAudio);
-                        setPage("main");
-                    }}
-                />
-            )}
+            ))}
+            <button onClick={goBack} className="back-button">Back to Main</button>
+
             {selectedSticker && (
-                <div className="sticker-popup" onClick={closeStickerDetail}>
-                    <div className="sticker-popup-content">
-                        <img src={selectedSticker.image} alt="Selected Sticker" className="sticker-large" />
-                        <button onClick={closeStickerDetail} className="button">Close</button>
+                <div className="popup">
+                    <div className="popup-content">
+                        <img src={selectedSticker.image} alt="Selected Sticker" className="popup-image" />
+                        <button onClick={closePopup} className="close-popup-button">Close</button>
                     </div>
                 </div>
             )}
@@ -124,4 +103,4 @@ function App() {
     );
 }
 
-export default App;
+export default CollectionBook;
