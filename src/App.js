@@ -1,4 +1,3 @@
-// existing imports...
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import waferClosed from './images/wafer1.webp';
@@ -63,10 +62,11 @@ function App() {
             setCollectedStickers([...collectedStickers, newSticker]);
             setTodayStickers(prev => [...prev, newSticker]);
 
+            // 1500msの遅延でポップアップと同時に再生
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
-                playSound(revealAudio); // ポップアップと同時に再生
+                playSound(revealAudio);
             }, 1500);
         }
     };
