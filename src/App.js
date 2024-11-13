@@ -20,7 +20,7 @@ function App() {
     const revealAudio = new Audio(revealSound);
     const viewStickersAudio = new Audio(viewStickersSound);
 
-    // 初期設定で音声をロードし、スマホ初回タッチで音声を有効化
+    // オーディオ初期設定
     useEffect(() => {
         openAudio.load();
         revealAudio.load();
@@ -30,7 +30,7 @@ function App() {
             openAudio.play().catch(() => {});
             revealAudio.play().catch(() => {});
             viewStickersAudio.play().catch(() => {});
-            
+
             openAudio.pause();
             revealAudio.pause();
             viewStickersAudio.pause();
@@ -47,6 +47,7 @@ function App() {
         };
     }, []);
 
+    // 音声を再生するヘルパー関数
     const playSound = (audio) => {
         if (audio && audio.paused) {
             audio.currentTime = 0;
@@ -59,28 +60,25 @@ function App() {
         }
     };
 
+    // ウエハース開封アクション
     const openWafer = () => {
         if (remaining > 0) {
             playSound(openAudio);
             setIsOpened(true);
             setRemaining(remaining - 1);
-            const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
 
-            // 重複チェックを追加して最大72種類のステッカーを記録するように設定
-            setCollectedStickers(prev => {
-                if (prev.length < 72 && !prev.find(sticker => sticker.id === newSticker.id)) {
-                    return [...prev, newSticker];
-                }
-                return prev;
-            });
+            // 新しいステッカーをランダムに選択し、既存の収集に追加
+            const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
+            if (!collectedStickers.some(sticker => sticker.id === newSticker.id)) {
+                setCollectedStickers([...collectedStickers, newSticker]);
+            }
             setTodayStickers(prev => [...prev, newSticker]);
 
-            // ステッカーのポップアップと音声再生のタイミングを同期
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
-                setTimeout(() => playSound(revealAudio), 100); // ポップアップ後に再生
-            }, 1500); 
+                playSound(revealAudio); // ポップアップと同時に再生
+            }, 1500);
         }
     };
 
