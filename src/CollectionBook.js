@@ -11,29 +11,31 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
     const viewStickersAudio = new Audio(viewStickersSound);
     const revealAudio = new Audio(stickerRevealSound);
 
-    useEffect(() => {
-        const initializeStickers = () => {
-            const slots = Array(72).fill(null);
-            ownedStickers.forEach((sticker) => {
-                let randomIndex;
-                do {
-                    randomIndex = Math.floor(Math.random() * 72);
-                } while (slots[randomIndex] !== null);
-                slots[randomIndex] = sticker;
-            });
-            setStickerSlots(slots);
-        };
-        if (ownedStickers.length > 0) {
-            initializeStickers();
-        }
-    }, [ownedStickers]);
-
     const playSound = (audio) => {
         if (audio && audio.paused) {
             audio.currentTime = 0;
             audio.play().catch(err => console.error("Audio playback error:", err));
         }
     };
+
+    // Initialize sticker slots or load from localStorage
+    useEffect(() => {
+        const savedSlots = JSON.parse(localStorage.getItem('stickerSlots'));
+        if (savedSlots) {
+            setStickerSlots(savedSlots);
+        } else {
+            const slots = Array(72).fill({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp` });
+            ownedStickers.forEach(sticker => {
+                let randomIndex;
+                do {
+                    randomIndex = Math.floor(Math.random() * 72);
+                } while (slots[randomIndex]?.id);  // 空スロットが見つかるまでランダムインデックスを選択
+                slots[randomIndex] = sticker;
+            });
+            setStickerSlots(slots);
+            localStorage.setItem('stickerSlots', JSON.stringify(slots));  // 配置を保存
+        }
+    }, [ownedStickers]);
 
     const cycleCards = (index) => {
         playSound(viewStickersAudio);
@@ -80,7 +82,7 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
                                 onClick={() => handleStickerClick(stickerSlots[j + cardIndex * 24])}
                             >
                                 <img
-                                    src={stickerSlots[j + cardIndex * 24]?.image || `${process.env.PUBLIC_URL}/images/wafer3.webp`}
+                                    src={stickerSlots[j + cardIndex * 24]?.image || `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`}
                                     alt={`Sticker ${j + 1}`}
                                     className="sticker-image"
                                 />
