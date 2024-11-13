@@ -8,11 +8,9 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
     const [selectedSticker, setSelectedSticker] = useState(null);
     const [stickerSlots, setStickerSlots] = useState([]);
 
-    // Audio elements
     const viewStickersAudio = new Audio(viewStickersSound);
     const revealAudio = new Audio(stickerRevealSound);
 
-    // Initialize sticker slots
     useEffect(() => {
         const initializeStickers = () => {
             const slots = Array(72).fill(null);
@@ -82,7 +80,7 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
                                 onClick={() => handleStickerClick(stickerSlots[j + cardIndex * 24])}
                             >
                                 <img
-                                    src={stickerSlots[j + cardIndex * 24]?.image || `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`}
+                                    src={stickerSlots[j + cardIndex * 24]?.image || `${process.env.PUBLIC_URL}/images/wafer3.webp`}
                                     alt={`Sticker ${j + 1}`}
                                     className="sticker-image"
                                 />

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import waferClosed from './images/wafer1.png';
-import waferOpened from './images/wafer2.png';
+import waferClosed from './images/wafer1.webp';
+import waferOpened from './images/wafer2.webp';
 import stickersData from './stickersData';
 import CollectionBook from './CollectionBook';
 import openSound from './sounds/wafer-open.mp3';
