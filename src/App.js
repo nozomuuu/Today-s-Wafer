@@ -69,13 +69,13 @@ function App() {
             setCollectedStickers([...collectedStickers, newSticker]);
             setTodayStickers(prev => [...prev, newSticker]);
 
-            // ポップアップ表示とサウンドを同期
+            // ポップアップ表示とサウンド再生のタイミングを統一
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
                 
-                // スマホ特有のサウンド同期のために、ポップアップ表示直後に再生
-                requestAnimationFrame(() => playSound(revealAudio)); 
+                // ポップアップ直後に少し遅れてサウンド再生
+                setTimeout(() => playSound(revealAudio), 50); 
             }, 1500);
         }
     };
