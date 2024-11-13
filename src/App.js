@@ -20,7 +20,7 @@ function App() {
     const revealAudio = new Audio(revealSound);
     const viewStickersAudio = new Audio(viewStickersSound);
 
-    // オーディオの準備と再生のための初期設定
+    // 初期設定で音声をロードし、スマホ初回タッチで音声を有効化
     useEffect(() => {
         openAudio.load();
         revealAudio.load();
@@ -47,7 +47,6 @@ function App() {
         };
     }, []);
 
-    // 音声を確実に再生するための関数
     const playSound = (audio) => {
         if (audio && audio.paused) {
             audio.currentTime = 0;
@@ -66,13 +65,22 @@ function App() {
             setIsOpened(true);
             setRemaining(remaining - 1);
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-            setCollectedStickers([...collectedStickers, newSticker]);
+
+            // 重複チェックを追加して最大72種類のステッカーを記録するように設定
+            setCollectedStickers(prev => {
+                if (prev.length < 72 && !prev.find(sticker => sticker.id === newSticker.id)) {
+                    return [...prev, newSticker];
+                }
+                return prev;
+            });
             setTodayStickers(prev => [...prev, newSticker]);
+
+            // ステッカーのポップアップと音声再生のタイミングを同期
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
-                playSound(revealAudio);
-            }, 1500); // SEの再生タイミングを調整
+                setTimeout(() => playSound(revealAudio), 100); // ポップアップ後に再生
+            }, 1500); 
         }
     };
 
