@@ -20,17 +20,19 @@ function App() {
     const revealAudio = new Audio(revealSound);
     const viewStickersAudio = new Audio(viewStickersSound);
 
-    // オーディオの準備と再生のための初期設定
+    // 初期ロード時にオーディオを準備
     useEffect(() => {
         openAudio.load();
         revealAudio.load();
         viewStickersAudio.load();
 
+        // 初回タップでオーディオを有効化
         const handleFirstTap = () => {
             openAudio.play().catch(() => {});
             revealAudio.play().catch(() => {});
             viewStickersAudio.play().catch(() => {});
-            
+
+            // 一度再生させた後すぐ停止
             openAudio.pause();
             revealAudio.pause();
             viewStickersAudio.pause();
@@ -38,16 +40,18 @@ function App() {
             revealAudio.currentTime = 0;
             viewStickersAudio.currentTime = 0;
 
+            // リスナーを削除
             document.removeEventListener('touchstart', handleFirstTap);
         };
 
+        // モバイルでの初回タップを監視
         document.addEventListener('touchstart', handleFirstTap);
+
         return () => {
             document.removeEventListener('touchstart', handleFirstTap);
         };
     }, []);
 
-    // 音声を確実に再生するための関数
     const playSound = (audio) => {
         if (audio && audio.paused) {
             audio.currentTime = 0;
@@ -68,11 +72,13 @@ function App() {
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
             setCollectedStickers([...collectedStickers, newSticker]);
             setTodayStickers(prev => [...prev, newSticker]);
+            
+            // 音声再生を少し遅らせて、開封後のタイミングで鳴らす
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
-                playSound(revealAudio);
-            }, 1500); // SEの再生タイミングを調整
+                playSound(revealAudio);  // ここでタイミングを統一
+            }, 1500);
         }
     };
 
