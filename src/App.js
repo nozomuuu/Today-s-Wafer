@@ -20,44 +20,29 @@ function App() {
     const revealAudio = new Audio(revealSound);
     const viewStickersAudio = new Audio(viewStickersSound);
 
-    // オーディオの準備と再生のための初期設定
+    // 初回ロード時のオーディオ設定（スマホで初回のタッチでオーディオが有効になるように）
     useEffect(() => {
         openAudio.load();
         revealAudio.load();
         viewStickersAudio.load();
 
-        // 初回タップでオーディオを有効化するが、即座には再生しない
         const handleFirstTap = () => {
-            openAudio.play().catch(() => {});
-            revealAudio.play().catch(() => {});
-            viewStickersAudio.play().catch(() => {});
-
-            openAudio.pause();
-            revealAudio.pause();
-            viewStickersAudio.pause();
-            openAudio.currentTime = 0;
-            revealAudio.currentTime = 0;
-            viewStickersAudio.currentTime = 0;
-
+            [openAudio, revealAudio, viewStickersAudio].forEach(audio => {
+                audio.play().catch(() => {});
+                audio.pause();
+                audio.currentTime = 0;
+            });
             document.removeEventListener('touchstart', handleFirstTap);
         };
 
         document.addEventListener('touchstart', handleFirstTap);
-        return () => {
-            document.removeEventListener('touchstart', handleFirstTap);
-        };
+        return () => document.removeEventListener('touchstart', handleFirstTap);
     }, []);
 
+    // 音声再生の共通関数
     const playSound = (audio) => {
-        if (audio && audio.paused) {
-            audio.currentTime = 0;
-            audio.play().catch(error => {
-                console.error("Audio playback failed:", error);
-                setTimeout(() => {
-                    audio.play().catch(err => console.error("Retrying audio playback failed:", err));
-                }, 500);
-            });
-        }
+        audio.currentTime = 0;
+        audio.play().catch(error => console.error("Audio playback failed:", error));
     };
 
     const openWafer = () => {
@@ -66,24 +51,18 @@ function App() {
             setIsOpened(true);
             setRemaining(remaining - 1);
 
-            // 新しいステッカーをランダムに選び、収集に追加
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-            setCollectedStickers(prev => [...prev, newSticker]);
-            setTodayStickers(prev => [...prev, newSticker]);
+            setCollectedStickers(prev => {
+                const updated = [...prev, newSticker];
+                setTodayStickers(updated);  // todayStickersも更新して反映
+                return updated;
+            });
 
-            // 1.5秒後にポップアップと音声を同時に再生
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
-                playSound(revealAudio);
-            }, 1500);
-        }
-    };
-
-    const handleCardClick = (event) => {
-        if (event.target.classList.contains("wafer-image")) {
-            playSound(viewStickersAudio);
-            setIsOpened(!isOpened);
+                playSound(revealAudio); // ポップアップ表示と同時に再生
+            }, 1500); // 1.5秒後にポップアップとともに再生
         }
     };
 
@@ -91,25 +70,20 @@ function App() {
 
     return (
         <div className="app">
-            {page === "main" && (
+            {page === "main" ? (
                 <div className="main-container">
                     <h1 className="title">Today's Wafer</h1>
                     <img 
                         src={isOpened ? waferOpened : waferClosed} 
                         alt="Wafer" 
                         className="wafer-image" 
-                        onClick={handleCardClick} 
+                        onClick={() => setIsOpened(!isOpened)} 
                     />
                     <p>Remaining: {remaining}</p>
                     <button onClick={openWafer} className="button">
                         {remaining > 0 ? 'Open a Wafer' : 'No More Wafers'}
                     </button>
-                    <button onClick={() => {
-                        playSound(viewStickersAudio);
-                        setPage("collection");
-                    }} className="button">
-                        CollectionBook
-                    </button>
+                    <button onClick={() => setPage("collection")} className="button">CollectionBook</button>
                     <div className="collected-stickers">
                         {todayStickers.map((sticker, index) => (
                             <img
@@ -125,15 +99,11 @@ function App() {
                         ))}
                     </div>
                 </div>
-            )}
-            {page === "collection" && (
+            ) : (
                 <CollectionBook
                     allStickers={stickersData}
                     ownedStickers={collectedStickers}
-                    goBack={() => {
-                        playSound(viewStickersAudio);
-                        setPage("main");
-                    }}
+                    goBack={() => setPage("main")}
                 />
             )}
             {selectedSticker && (
