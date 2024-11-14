@@ -10,13 +10,14 @@ import viewStickersSound from './sounds/view-stickers.mp3';
 
 function App() {
     const [isOpened, setIsOpened] = useState(false);
-    const [remaining, setRemaining] = useState(Infinity); // 回数制限解除
+    const [remaining, setRemaining] = useState(Infinity); // 回数制限を一時的に解除
     const [collectedStickers, setCollectedStickers] = useState(
         JSON.parse(localStorage.getItem('collectedStickers')) || []
     );
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
     const [page, setPage] = useState("main");
+    const [renderToggle, setRenderToggle] = useState(false); // 強制リレンダリング用のフラグ
 
     const openAudio = new Audio(openSound);
     const revealAudio = new Audio(revealSound);
@@ -46,8 +47,8 @@ function App() {
     }, []);
 
     useEffect(() => {
-        // リアルタイムでlocalStorageに保存しつつ、ステッカーをCollectionBookに反映
         localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
+        console.log("現在のcollectedStickers:", collectedStickers);
     }, [collectedStickers]);
 
     const playSound = (audio) => {
@@ -68,15 +69,20 @@ function App() {
             setIsOpened(true);
             setRemaining(remaining - 1);
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-            
+
             setCollectedStickers(prev => {
-                const updatedStickers = [...prev, newSticker];
-                localStorage.setItem('collectedStickers', JSON.stringify(updatedStickers)); // localStorageにリアルタイム保存
+                const updatedStickers = [...prev];
+                const isStickerAlreadyCollected = updatedStickers.some(sticker => sticker.id === newSticker.id);
+                if (!isStickerAlreadyCollected) {
+                    updatedStickers.push(newSticker);
+                }
+                localStorage.setItem('collectedStickers', JSON.stringify(updatedStickers));
                 return updatedStickers;
             });
-            
+
             setTodayStickers(prev => [...prev, newSticker]);
-            
+            setRenderToggle(!renderToggle); // 強制リレンダリング
+
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
