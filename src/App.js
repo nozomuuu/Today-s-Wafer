@@ -11,7 +11,9 @@ import viewStickersSound from './sounds/view-stickers.mp3';
 function App() {
     const [isOpened, setIsOpened] = useState(false);
     const [remaining, setRemaining] = useState(3);
-    const [collectedStickers, setCollectedStickers] = useState([]);
+    const [collectedStickers, setCollectedStickers] = useState(
+        JSON.parse(localStorage.getItem('collectedStickers')) || []
+    );
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
     const [page, setPage] = useState("main");
@@ -20,39 +22,36 @@ function App() {
     const revealAudio = new Audio(revealSound);
     const viewStickersAudio = new Audio(viewStickersSound);
 
-    // ローカルストレージから初期データを読み込み
-    useEffect(() => {
-        const savedStickers = JSON.parse(localStorage.getItem('collectedStickers')) || [];
-        setCollectedStickers(savedStickers);
-        console.log("初期化時にローカルストレージからステッカーを読み込み:", savedStickers);
-    }, []);
-
-    // collectedStickersの状態が変わるたびにローカルストレージを更新
-    useEffect(() => {
-        localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
-        console.log("ローカルストレージにステッカーを保存:", collectedStickers);
-    }, [collectedStickers]);
-
-    // オーディオの初期化とデバッグ用
+    // 初回タップでオーディオを有効化
     useEffect(() => {
         const handleFirstTap = () => {
             openAudio.play().catch(() => {});
             revealAudio.play().catch(() => {});
             viewStickersAudio.play().catch(() => {});
+
             openAudio.pause();
             revealAudio.pause();
             viewStickersAudio.pause();
             openAudio.currentTime = 0;
             revealAudio.currentTime = 0;
             viewStickersAudio.currentTime = 0;
+
             document.removeEventListener('touchstart', handleFirstTap);
         };
+
         document.addEventListener('touchstart', handleFirstTap);
+
         return () => {
             document.removeEventListener('touchstart', handleFirstTap);
         };
     }, []);
 
+    // collectedStickersの変更をローカルストレージに反映
+    useEffect(() => {
+        localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
+    }, [collectedStickers]);
+
+    // 音声を確実に再生するための関数
     const playSound = (audio) => {
         if (audio && audio.paused) {
             audio.currentTime = 0;
@@ -70,21 +69,14 @@ function App() {
             playSound(openAudio);
             setIsOpened(true);
             setRemaining(remaining - 1);
-
-            // 新しいステッカーのランダム選択と追加
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-            setCollectedStickers(prevStickers => {
-                const updatedStickers = [...prevStickers, newSticker];
-                console.log("新しいステッカーを追加:", newSticker);
-                setTodayStickers(prev => [...prev, newSticker]);
-                return updatedStickers;
-            });
-
+            setCollectedStickers([...collectedStickers, newSticker]);
+            setTodayStickers(prev => [...prev, newSticker]);
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
                 playSound(revealAudio);
-            }, 1500);
+            }, 1500); // SEの再生タイミングを調整
         }
     };
 
