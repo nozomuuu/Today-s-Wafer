@@ -20,19 +20,16 @@ function App() {
     const revealAudio = new Audio(revealSound);
     const viewStickersAudio = new Audio(viewStickersSound);
 
-    // 初期ロード時にオーディオを準備
     useEffect(() => {
         openAudio.load();
         revealAudio.load();
         viewStickersAudio.load();
 
-        // 初回タップでオーディオを有効化
         const handleFirstTap = () => {
             openAudio.play().catch(() => {});
             revealAudio.play().catch(() => {});
             viewStickersAudio.play().catch(() => {});
 
-            // 一度再生させた後すぐ停止
             openAudio.pause();
             revealAudio.pause();
             viewStickersAudio.pause();
@@ -40,13 +37,10 @@ function App() {
             revealAudio.currentTime = 0;
             viewStickersAudio.currentTime = 0;
 
-            // リスナーを削除
             document.removeEventListener('touchstart', handleFirstTap);
         };
 
-        // モバイルでの初回タップを監視
         document.addEventListener('touchstart', handleFirstTap);
-
         return () => {
             document.removeEventListener('touchstart', handleFirstTap);
         };
@@ -70,12 +64,15 @@ function App() {
             setIsOpened(true);
             setRemaining(remaining - 1);
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-            setCollectedStickers([...collectedStickers, newSticker]);
+            setCollectedStickers(prev => [...prev, newSticker]);
             setTodayStickers(prev => [...prev, newSticker]);
+
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
-                playSound(revealAudio);
+
+                // SE再生を画像ポップアップと同時に確実に実行
+                setTimeout(() => playSound(revealAudio), 100);  // 100ms遅延を追加し、ポップアップと同時に再生
             }, 1500);
         }
     };
