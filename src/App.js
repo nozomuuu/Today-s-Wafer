@@ -10,7 +10,7 @@ import viewStickersSound from './sounds/view-stickers.mp3';
 
 function App() {
     const [isOpened, setIsOpened] = useState(false);
-    const [remaining, setRemaining] = useState(Infinity); // 回数制限を一時的に解除
+    const [remaining, setRemaining] = useState(Infinity); // 回数制限を解除
     const [collectedStickers, setCollectedStickers] = useState(
         JSON.parse(localStorage.getItem('collectedStickers')) || []
     );
@@ -46,8 +46,9 @@ function App() {
     }, []);
 
     useEffect(() => {
+        // `collectedStickers`に変化があるたびにlocalStorageを更新
         localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
-        console.log("現在のcollectedStickers:", collectedStickers);
+        console.log("現在のcollectedStickers:", collectedStickers); // デバッグ用
     }, [collectedStickers]);
 
     const playSound = (audio) => {
@@ -74,11 +75,10 @@ function App() {
                 const isStickerAlreadyCollected = updatedStickers.some(sticker => sticker.id === newSticker.id);
                 if (!isStickerAlreadyCollected) {
                     updatedStickers.push(newSticker);
+                    localStorage.setItem('collectedStickers', JSON.stringify(updatedStickers)); // 即時更新
+                    console.log("新しいステッカーを追加:", newSticker);
+                    console.log("更新後のcollectedStickers:", updatedStickers);
                 }
-                // ローカルストレージにも即座に更新
-                localStorage.setItem('collectedStickers', JSON.stringify(updatedStickers));
-                console.log("追加されたステッカー:", newSticker);
-                console.log("更新後のcollectedStickers:", updatedStickers);
                 return updatedStickers;
             });
 
