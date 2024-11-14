@@ -1,3 +1,4 @@
+// App.js
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import waferClosed from './images/wafer1.webp';
@@ -10,19 +11,13 @@ import viewStickersSound from './sounds/view-stickers.mp3';
 
 function App() {
     const [isOpened, setIsOpened] = useState(false);
-    const [remaining, setRemaining] = useState(() => {
-        const savedRemaining = localStorage.getItem('remaining');
-        return savedRemaining ? parseInt(savedRemaining, 10) : 3;
-    });
-    const [collectedStickers, setCollectedStickers] = useState(() => {
-        const savedStickers = localStorage.getItem('collectedStickers');
-        return savedStickers ? JSON.parse(savedStickers) : [];
-    });
+    const [remaining, setRemaining] = useState(3);
+    const [collectedStickers, setCollectedStickers] = useState(
+        JSON.parse(localStorage.getItem('collectedStickers')) || []
+    );
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
     const [page, setPage] = useState("main");
-    const [showTomorrowMessage, setShowTomorrowMessage] = useState(false);
-    const [isOpening, setIsOpening] = useState(false);
 
     const openAudio = new Audio(openSound);
     const revealAudio = new Audio(revealSound);
@@ -33,14 +28,12 @@ function App() {
             openAudio.play().catch(() => {});
             revealAudio.play().catch(() => {});
             viewStickersAudio.play().catch(() => {});
-
             openAudio.pause();
             revealAudio.pause();
             viewStickersAudio.pause();
             openAudio.currentTime = 0;
             revealAudio.currentTime = 0;
             viewStickersAudio.currentTime = 0;
-
             document.removeEventListener('touchstart', handleFirstTap);
         };
 
@@ -51,16 +44,7 @@ function App() {
     }, []);
 
     useEffect(() => {
-        localStorage.setItem('remaining', remaining.toString());
-    }, [remaining]);
-
-    useEffect(() => {
-        // 重複しないようにコレクションを保存
-        const uniqueStickers = collectedStickers.reduce((acc, sticker) => {
-            if (!acc.some(s => s.id === sticker.id)) acc.push(sticker);
-            return acc;
-        }, []);
-        localStorage.setItem('collectedStickers', JSON.stringify(uniqueStickers));
+        localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
     }, [collectedStickers]);
 
     const playSound = (audio) => {
@@ -76,28 +60,27 @@ function App() {
     };
 
     const openWafer = () => {
-        if (remaining > 0 && !isOpening) {
-            setIsOpening(true);
+        if (remaining > 0) {
             playSound(openAudio);
             setIsOpened(true);
-            setRemaining(prev => prev - 1);
-
+            setRemaining(remaining - 1);
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
+            
+            // 取得したステッカーを重複がないように追加
+            const updatedStickers = [...collectedStickers];
+            if (!updatedStickers.find(sticker => sticker.id === newSticker.id)) {
+                updatedStickers.push(newSticker);
+                setCollectedStickers(updatedStickers);
 
-            if (!collectedStickers.some(sticker => sticker.id === newSticker.id)) {
-                setCollectedStickers(prev => [...prev, newSticker]);
+                // 追加直後にローカルストレージへ保存
+                localStorage.setItem('collectedStickers', JSON.stringify(updatedStickers));
             }
             setTodayStickers(prev => [...prev, newSticker]);
-
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
                 playSound(revealAudio);
-                setIsOpening(false);
             }, 1500);
-        } else if (remaining === 0) {
-            setShowTomorrowMessage(true);
-            setTimeout(() => setShowTomorrowMessage(false), 3000);
         }
     };
 
@@ -122,8 +105,8 @@ function App() {
                         onClick={handleCardClick} 
                     />
                     <p>Remaining: {remaining}</p>
-                    <button onClick={openWafer} className="button" disabled={isOpening}>
-                        {remaining > 0 ? 'Open a Wafer' : 'No More Wafers'}
+                    <button onClick={openWafer} className="button">
+                        {remaining > 0 ? 'Open a Wafer' : 'See you tomorrow!'}
                     </button>
                     <button onClick={() => {
                         playSound(viewStickersAudio);
@@ -163,11 +146,6 @@ function App() {
                         <img src={selectedSticker.image} alt="Selected Sticker" className="sticker-large" />
                         <button onClick={closeStickerDetail} className="button">Close</button>
                     </div>
-                </div>
-            )}
-            {showTomorrowMessage && (
-                <div className="popup">
-                    <div className="popup-content">See you tomorrow!</div>
                 </div>
             )}
         </div>
