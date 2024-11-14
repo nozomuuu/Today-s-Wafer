@@ -11,9 +11,10 @@ import viewStickersSound from './sounds/view-stickers.mp3';
 function App() {
     const [isOpened, setIsOpened] = useState(false);
     const [remaining, setRemaining] = useState(Infinity); // 回数制限を解除
-    const [collectedStickers, setCollectedStickers] = useState(
-        JSON.parse(localStorage.getItem('collectedStickers')) || []
-    );
+    const [collectedStickers, setCollectedStickers] = useState(() => {
+        const storedStickers = JSON.parse(localStorage.getItem('collectedStickers'));
+        return storedStickers ? new Set(storedStickers.map(sticker => JSON.stringify(sticker))) : new Set();
+    });
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
     const [page, setPage] = useState("main");
@@ -46,9 +47,9 @@ function App() {
     }, []);
 
     useEffect(() => {
-        // `collectedStickers`に変化があるたびにlocalStorageを更新
-        localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
-        console.log("現在のcollectedStickers:", collectedStickers); // デバッグ用
+        // Setを配列に変換してlocalStorageに保存
+        localStorage.setItem('collectedStickers', JSON.stringify(Array.from(collectedStickers).map(sticker => JSON.parse(sticker))));
+        console.log("現在のcollectedStickers:", Array.from(collectedStickers).map(sticker => JSON.parse(sticker))); // デバッグ用
     }, [collectedStickers]);
 
     const playSound = (audio) => {
@@ -71,14 +72,8 @@ function App() {
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
 
             setCollectedStickers(prev => {
-                const updatedStickers = [...prev];
-                const isStickerAlreadyCollected = updatedStickers.some(sticker => sticker.id === newSticker.id);
-                if (!isStickerAlreadyCollected) {
-                    updatedStickers.push(newSticker);
-                    localStorage.setItem('collectedStickers', JSON.stringify(updatedStickers)); // 即時更新
-                    console.log("新しいステッカーを追加:", newSticker);
-                    console.log("更新後のcollectedStickers:", updatedStickers);
-                }
+                const updatedStickers = new Set(prev);
+                updatedStickers.add(JSON.stringify(newSticker));
                 return updatedStickers;
             });
 
@@ -127,7 +122,7 @@ function App() {
             {page === "collection" && (
                 <CollectionBook
                     allStickers={stickersData}
-                    ownedStickers={collectedStickers}
+                    ownedStickers={Array.from(collectedStickers).map(sticker => JSON.parse(sticker))}
                     goBack={() => setPage("main")}
                 />
             )}
