@@ -11,9 +11,10 @@ import viewStickersSound from './sounds/view-stickers.mp3';
 function App() {
     const [isOpened, setIsOpened] = useState(false);
     const [remaining, setRemaining] = useState(3);
-    const [collectedStickers, setCollectedStickers] = useState(
-        JSON.parse(localStorage.getItem('collectedStickers')) || []
-    );
+    const [collectedStickers, setCollectedStickers] = useState(() => {
+        const savedStickers = JSON.parse(localStorage.getItem('collectedStickers'));
+        return savedStickers || [];
+    });
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
     const [page, setPage] = useState("main");
@@ -27,7 +28,7 @@ function App() {
             openAudio.play().catch(() => {});
             revealAudio.play().catch(() => {});
             viewStickersAudio.play().catch(() => {});
-
+            
             openAudio.pause();
             revealAudio.pause();
             viewStickersAudio.pause();
@@ -37,6 +38,7 @@ function App() {
 
             document.removeEventListener('touchstart', handleFirstTap);
         };
+
         document.addEventListener('touchstart', handleFirstTap);
 
         return () => {
@@ -67,14 +69,16 @@ function App() {
             setRemaining(remaining - 1);
 
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-            
-            if (!collectedStickers.some(sticker => sticker.id === newSticker.id)) {
-                const updatedStickers = [...collectedStickers, newSticker];
-                setCollectedStickers(updatedStickers);
-                localStorage.setItem('collectedStickers', JSON.stringify(updatedStickers));
-            }
-
             setTodayStickers(prev => [...prev, newSticker]);
+
+            setCollectedStickers((prevStickers) => {
+                const updatedStickers = [...prevStickers];
+                if (!updatedStickers.find(sticker => sticker.id === newSticker.id)) {
+                    updatedStickers.push(newSticker);
+                }
+                return updatedStickers;
+            });
+
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
