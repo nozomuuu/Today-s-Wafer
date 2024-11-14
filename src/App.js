@@ -12,8 +12,9 @@ function App() {
     const [isOpened, setIsOpened] = useState(false);
     const [remaining, setRemaining] = useState(3);
     const [collectedStickers, setCollectedStickers] = useState(() => {
+        // 初期化時にlocalStorageからデータを取得
         const savedStickers = JSON.parse(localStorage.getItem('collectedStickers')) || [];
-        return new Set(savedStickers); // ユニークなステッカーのみを保存
+        return savedStickers;
     });
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
@@ -47,9 +48,9 @@ function App() {
         };
     }, []);
 
-    // collectedStickersの変更をローカルストレージに反映
+    // collectedStickersの変更をlocalStorageに確実に保存
     useEffect(() => {
-        localStorage.setItem('collectedStickers', JSON.stringify([...collectedStickers]));
+        localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
     }, [collectedStickers]);
 
     const playSound = (audio) => {
@@ -72,10 +73,9 @@ function App() {
 
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
 
-            if (!collectedStickers.has(newSticker.id)) {
-                const updatedStickers = new Set(collectedStickers);
-                updatedStickers.add(newSticker.id);
-                setCollectedStickers(updatedStickers);
+            // すでに取得していない場合のみ追加
+            if (!collectedStickers.some(sticker => sticker.id === newSticker.id)) {
+                setCollectedStickers(prev => [...prev, newSticker]);
             }
 
             setTodayStickers(prev => [...prev, newSticker]);
@@ -137,7 +137,7 @@ function App() {
             {page === "collection" && (
                 <CollectionBook
                     allStickers={stickersData}
-                    ownedStickers={[...collectedStickers]}
+                    ownedStickers={collectedStickers}
                     goBack={() => {
                         playSound(viewStickersAudio);
                         setPage("main");
