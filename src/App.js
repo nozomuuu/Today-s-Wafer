@@ -11,9 +11,10 @@ import viewStickersSound from './sounds/view-stickers.mp3';
 function App() {
     const [isOpened, setIsOpened] = useState(false);
     const [remaining, setRemaining] = useState(3);
-    const [collectedStickers, setCollectedStickers] = useState(
-        new Set(JSON.parse(localStorage.getItem('collectedStickers') || '[]'))
-    );
+    const [collectedStickers, setCollectedStickers] = useState(() => {
+        const savedStickers = JSON.parse(localStorage.getItem('collectedStickers')) || [];
+        return new Set(savedStickers); // ユニークなステッカーのみを保存
+    });
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
     const [page, setPage] = useState("main");
@@ -72,7 +73,8 @@ function App() {
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
 
             if (!collectedStickers.has(newSticker.id)) {
-                const updatedStickers = new Set(collectedStickers).add(newSticker.id);
+                const updatedStickers = new Set(collectedStickers);
+                updatedStickers.add(newSticker.id);
                 setCollectedStickers(updatedStickers);
             }
 
