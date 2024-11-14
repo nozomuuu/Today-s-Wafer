@@ -17,7 +17,6 @@ function App() {
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
     const [page, setPage] = useState("main");
-    const [renderToggle, setRenderToggle] = useState(false); // 強制リレンダリング用のフラグ
 
     const openAudio = new Audio(openSound);
     const revealAudio = new Audio(revealSound);
@@ -76,12 +75,14 @@ function App() {
                 if (!isStickerAlreadyCollected) {
                     updatedStickers.push(newSticker);
                 }
+                // ローカルストレージにも即座に更新
                 localStorage.setItem('collectedStickers', JSON.stringify(updatedStickers));
+                console.log("追加されたステッカー:", newSticker);
+                console.log("更新後のcollectedStickers:", updatedStickers);
                 return updatedStickers;
             });
 
             setTodayStickers(prev => [...prev, newSticker]);
-            setRenderToggle(!renderToggle); // 強制リレンダリング
 
             setTimeout(() => {
                 setIsOpened(false);
