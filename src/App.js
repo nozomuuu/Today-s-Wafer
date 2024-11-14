@@ -1,4 +1,5 @@
 // App.js
+
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import waferClosed from './images/wafer1.webp';
@@ -11,7 +12,7 @@ import viewStickersSound from './sounds/view-stickers.mp3';
 
 function App() {
     const [isOpened, setIsOpened] = useState(false);
-    const [remaining, setRemaining] = useState(3);
+    const [remaining, setRemaining] = useState(null);  // テストのため回数制限を解除
     const [collectedStickers, setCollectedStickers] = useState(
         JSON.parse(localStorage.getItem('collectedStickers')) || []
     );
@@ -60,28 +61,18 @@ function App() {
     };
 
     const openWafer = () => {
-        if (remaining > 0) {
-            playSound(openAudio);
-            setIsOpened(true);
-            setRemaining(remaining - 1);
-            const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-            
-            // 取得したステッカーを重複がないように追加
-            const updatedStickers = [...collectedStickers];
-            if (!updatedStickers.find(sticker => sticker.id === newSticker.id)) {
-                updatedStickers.push(newSticker);
-                setCollectedStickers(updatedStickers);
-
-                // 追加直後にローカルストレージへ保存
-                localStorage.setItem('collectedStickers', JSON.stringify(updatedStickers));
-            }
-            setTodayStickers(prev => [...prev, newSticker]);
-            setTimeout(() => {
-                setIsOpened(false);
-                setSelectedSticker(newSticker);
-                playSound(revealAudio);
-            }, 1500);
+        playSound(openAudio);
+        setIsOpened(true);
+        const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
+        if (!collectedStickers.find(sticker => sticker.id === newSticker.id)) {
+            setCollectedStickers(prev => [...prev, newSticker]);
         }
+        setTodayStickers(prev => [...prev, newSticker]);
+        setTimeout(() => {
+            setIsOpened(false);
+            setSelectedSticker(newSticker);
+            playSound(revealAudio);
+        }, 1500);
     };
 
     const handleCardClick = (event) => {
@@ -104,9 +95,8 @@ function App() {
                         className="wafer-image" 
                         onClick={handleCardClick} 
                     />
-                    <p>Remaining: {remaining}</p>
                     <button onClick={openWafer} className="button">
-                        {remaining > 0 ? 'Open a Wafer' : 'See you tomorrow!'}
+                        {remaining > 0 ? 'Open a Wafer' : 'Open Wafer'}
                     </button>
                     <button onClick={() => {
                         playSound(viewStickersAudio);
