@@ -20,16 +20,18 @@ function App() {
     const revealAudio = new Audio(revealSound);
     const viewStickersAudio = new Audio(viewStickersSound);
 
-    // 初回アクセス時、各オーディオを事前ロードしておく
+    // オーディオの準備と再生のための初期設定
     useEffect(() => {
         openAudio.load();
         revealAudio.load();
         viewStickersAudio.load();
 
+        // 初回タップでオーディオを有効化するが、即座には再生しない
         const handleFirstTap = () => {
             openAudio.play().catch(() => {});
             revealAudio.play().catch(() => {});
             viewStickersAudio.play().catch(() => {});
+
             openAudio.pause();
             revealAudio.pause();
             viewStickersAudio.pause();
@@ -46,23 +48,6 @@ function App() {
         };
     }, []);
 
-    // ステッカー位置情報のランダム生成と保持
-    useEffect(() => {
-        const storedStickers = JSON.parse(localStorage.getItem('collectedStickers')) || [];
-        setCollectedStickers(storedStickers.length ? storedStickers : generateRandomStickerPositions());
-    }, []);
-
-    const generateRandomStickerPositions = () => {
-        const slots = Array(72).fill(null);
-        const randomizedStickers = [...stickersData].sort(() => Math.random() - 0.5);
-        randomizedStickers.forEach((sticker, index) => {
-            slots[index] = sticker;
-        });
-        localStorage.setItem('collectedStickers', JSON.stringify(slots));
-        return slots;
-    };
-
-    // 確実な音声再生関数
     const playSound = (audio) => {
         if (audio && audio.paused) {
             audio.currentTime = 0;
@@ -75,21 +60,22 @@ function App() {
         }
     };
 
-    // ウエハース開封処理とステッカー表示
     const openWafer = () => {
         if (remaining > 0) {
             playSound(openAudio);
             setIsOpened(true);
             setRemaining(remaining - 1);
 
+            // 新しいステッカーをランダムに選び、収集に追加
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
             setCollectedStickers(prev => [...prev, newSticker]);
             setTodayStickers(prev => [...prev, newSticker]);
 
+            // 1.5秒後にポップアップと音声を同時に再生
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
-                setTimeout(() => playSound(revealAudio), 200);  // 遅延を追加して画像表示に同期
+                playSound(revealAudio);
             }, 1500);
         }
     };
