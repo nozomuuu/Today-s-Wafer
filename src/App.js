@@ -22,7 +22,6 @@ function App() {
     const revealAudio = new Audio(revealSound);
     const viewStickersAudio = new Audio(viewStickersSound);
 
-    // 初回タップでオーディオを有効化
     useEffect(() => {
         const handleFirstTap = () => {
             openAudio.play().catch(() => {});
@@ -38,7 +37,6 @@ function App() {
 
             document.removeEventListener('touchstart', handleFirstTap);
         };
-
         document.addEventListener('touchstart', handleFirstTap);
 
         return () => {
@@ -46,12 +44,10 @@ function App() {
         };
     }, []);
 
-    // collectedStickersの変更をローカルストレージに反映
     useEffect(() => {
         localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
     }, [collectedStickers]);
 
-    // 音声を確実に再生するための関数
     const playSound = (audio) => {
         if (audio && audio.paused) {
             audio.currentTime = 0;
@@ -71,24 +67,19 @@ function App() {
             setRemaining(remaining - 1);
 
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
+
+            if (!collectedStickers.some(sticker => sticker.id === newSticker.id)) {
+                const updatedStickers = [...collectedStickers, newSticker];
+                setCollectedStickers(updatedStickers);
+                localStorage.setItem('collectedStickers', JSON.stringify(updatedStickers));
+            }
+
             setTodayStickers(prev => [...prev, newSticker]);
-
-            // 新しいステッカーがcollectedStickersにない場合のみ追加
-            setCollectedStickers(prevStickers => {
-                const isDuplicate = prevStickers.some(sticker => sticker.id === newSticker.id);
-                if (!isDuplicate) {
-                    const updatedStickers = [...prevStickers, newSticker];
-                    localStorage.setItem('collectedStickers', JSON.stringify(updatedStickers));
-                    return updatedStickers;
-                }
-                return prevStickers;
-            });
-
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
                 playSound(revealAudio);
-            }, 1500); // SEの再生タイミングを調整
+            }, 1500);
         }
     };
 
