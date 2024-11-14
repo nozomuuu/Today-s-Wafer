@@ -13,7 +13,7 @@ function App() {
     const [remaining, setRemaining] = useState(3);
     const [collectedStickers, setCollectedStickers] = useState(() => {
         const savedStickers = JSON.parse(localStorage.getItem('collectedStickers'));
-        return savedStickers || [];
+        return savedStickers ? Array.from(new Set(savedStickers)) : [];
     });
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
@@ -72,10 +72,11 @@ function App() {
             setTodayStickers(prev => [...prev, newSticker]);
 
             setCollectedStickers((prevStickers) => {
-                const updatedStickers = [...prevStickers];
-                if (!updatedStickers.find(sticker => sticker.id === newSticker.id)) {
-                    updatedStickers.push(newSticker);
-                }
+                const updatedStickers = [...prevStickers, newSticker].reduce((unique, item) => {
+                    if (!unique.some(sticker => sticker.id === item.id)) unique.push(item);
+                    return unique;
+                }, []);
+                localStorage.setItem('collectedStickers', JSON.stringify(updatedStickers));  // ローカルストレージに即時反映
                 return updatedStickers;
             });
 
