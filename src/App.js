@@ -12,7 +12,7 @@ import viewStickersSound from './sounds/view-stickers.mp3';
 
 function App() {
     const [isOpened, setIsOpened] = useState(false);
-    const [remaining, setRemaining] = useState(null);  // テストのため回数制限を解除
+    const [remaining, setRemaining] = useState(3);  // 回数制限
     const [collectedStickers, setCollectedStickers] = useState(
         JSON.parse(localStorage.getItem('collectedStickers')) || []
     );
@@ -24,26 +24,31 @@ function App() {
     const revealAudio = new Audio(revealSound);
     const viewStickersAudio = new Audio(viewStickersSound);
 
+    // 初回タップでオーディオを有効化
     useEffect(() => {
         const handleFirstTap = () => {
             openAudio.play().catch(() => {});
             revealAudio.play().catch(() => {});
             viewStickersAudio.play().catch(() => {});
+
             openAudio.pause();
             revealAudio.pause();
             viewStickersAudio.pause();
             openAudio.currentTime = 0;
             revealAudio.currentTime = 0;
             viewStickersAudio.currentTime = 0;
+
             document.removeEventListener('touchstart', handleFirstTap);
         };
 
         document.addEventListener('touchstart', handleFirstTap);
+
         return () => {
             document.removeEventListener('touchstart', handleFirstTap);
         };
     }, []);
 
+    // collectedStickersの変更をリアルタイムで反映し、CollectionBookに確実に更新
     useEffect(() => {
         localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
     }, [collectedStickers]);
@@ -61,18 +66,30 @@ function App() {
     };
 
     const openWafer = () => {
-        playSound(openAudio);
-        setIsOpened(true);
-        const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-        if (!collectedStickers.find(sticker => sticker.id === newSticker.id)) {
-            setCollectedStickers(prev => [...prev, newSticker]);
+        if (remaining > 0) {
+            playSound(openAudio);
+            setIsOpened(true);
+            setRemaining(remaining - 1);
+
+            const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
+
+            // 同じステッカーがない場合だけ追加
+            if (!collectedStickers.find(sticker => sticker.id === newSticker.id)) {
+                setCollectedStickers(prev => {
+                    const updatedStickers = [...prev, newSticker];
+                    localStorage.setItem('collectedStickers', JSON.stringify(updatedStickers));
+                    return updatedStickers;
+                });
+            }
+
+            setTodayStickers(prev => [...prev, newSticker]);
+
+            setTimeout(() => {
+                setIsOpened(false);
+                setSelectedSticker(newSticker);
+                playSound(revealAudio);
+            }, 1500);  // 追加したステッカーが即座に反映されるか確認
         }
-        setTodayStickers(prev => [...prev, newSticker]);
-        setTimeout(() => {
-            setIsOpened(false);
-            setSelectedSticker(newSticker);
-            playSound(revealAudio);
-        }, 1500);
     };
 
     const handleCardClick = (event) => {
@@ -95,8 +112,9 @@ function App() {
                         className="wafer-image" 
                         onClick={handleCardClick} 
                     />
+                    <p>Remaining: {remaining}</p>
                     <button onClick={openWafer} className="button">
-                        {remaining > 0 ? 'Open a Wafer' : 'Open Wafer'}
+                        {remaining > 0 ? 'Open a Wafer' : 'No More Wafers'}
                     </button>
                     <button onClick={() => {
                         playSound(viewStickersAudio);
@@ -104,6 +122,7 @@ function App() {
                     }} className="button">
                         CollectionBook
                     </button>
+
                     <div className="collected-stickers">
                         {todayStickers.map((sticker, index) => (
                             <img
@@ -118,8 +137,19 @@ function App() {
                             />
                         ))}
                     </div>
+
+                    {/* デバッグ用に収集されたステッカーリストを表示 */}
+                    <div className="debug-collected-stickers">
+                        <h2>Collected Stickers:</h2>
+                        <ul>
+                            {collectedStickers.map((sticker, index) => (
+                                <li key={index}>{sticker.name}</li>
+                            ))}
+                        </ul>
+                    </div>
                 </div>
             )}
+
             {page === "collection" && (
                 <CollectionBook
                     allStickers={stickersData}
@@ -130,9 +160,10 @@ function App() {
                     }}
                 />
             )}
+
             {selectedSticker && (
                 <div className="sticker-popup" onClick={closeStickerDetail}>
-                    <div className="sticker-popup-content">
+                    <div className="popup-content">
                         <img src={selectedSticker.image} alt="Selected Sticker" className="sticker-large" />
                         <button onClick={closeStickerDetail} className="button">Close</button>
                     </div>
