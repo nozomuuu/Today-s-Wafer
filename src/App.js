@@ -46,11 +46,6 @@ function App() {
         };
     }, []);
 
-    // collectedStickersの変更をローカルストレージに反映
-    useEffect(() => {
-        localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
-    }, [collectedStickers]);
-
     // 音声を確実に再生するための関数
     const playSound = (audio) => {
         if (audio && audio.paused) {
@@ -69,14 +64,21 @@ function App() {
             playSound(openAudio);
             setIsOpened(true);
             setRemaining(remaining - 1);
+
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-            setCollectedStickers([...collectedStickers, newSticker]);
+
+            // ステッカーを追加し、ローカルストレージへ保存
+            const updatedStickers = [...collectedStickers, newSticker];
+            setCollectedStickers(updatedStickers);
+            localStorage.setItem('collectedStickers', JSON.stringify(updatedStickers));
+
             setTodayStickers(prev => [...prev, newSticker]);
+
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
                 playSound(revealAudio);
-            }, 1500); // SEの再生タイミングを調整
+            }, 1500);
         }
     };
 
