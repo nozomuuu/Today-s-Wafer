@@ -11,9 +11,9 @@ import viewStickersSound from './sounds/view-stickers.mp3';
 function App() {
     const [isOpened, setIsOpened] = useState(false);
     const [remaining, setRemaining] = useState(3);
-    const [collectedStickers, setCollectedStickers] = useState(
-        JSON.parse(localStorage.getItem('collectedStickers')) || []
-    );
+    const [collectedStickers, setCollectedStickers] = useState(() => {
+        return JSON.parse(localStorage.getItem('collectedStickers')) || [];
+    });
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
     const [page, setPage] = useState("main");
@@ -28,7 +28,6 @@ function App() {
             openAudio.play().catch(() => {});
             revealAudio.play().catch(() => {});
             viewStickersAudio.play().catch(() => {});
-
             openAudio.pause();
             revealAudio.pause();
             viewStickersAudio.pause();
@@ -40,13 +39,16 @@ function App() {
         };
 
         document.addEventListener('touchstart', handleFirstTap);
-
         return () => {
             document.removeEventListener('touchstart', handleFirstTap);
         };
     }, []);
 
-    // 音声を確実に再生するための関数
+    // ローカルストレージへ確実に同期
+    useEffect(() => {
+        localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
+    }, [collectedStickers]);
+
     const playSound = (audio) => {
         if (audio && audio.paused) {
             audio.currentTime = 0;
@@ -63,16 +65,17 @@ function App() {
         if (remaining > 0) {
             playSound(openAudio);
             setIsOpened(true);
-            setRemaining(remaining - 1);
+            setRemaining(prevRemaining => prevRemaining - 1);
 
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
 
-            // ステッカーを追加し、ローカルストレージへ保存
-            const updatedStickers = [...collectedStickers, newSticker];
-            setCollectedStickers(updatedStickers);
-            localStorage.setItem('collectedStickers', JSON.stringify(updatedStickers));
+            setCollectedStickers(prevStickers => {
+                const updatedStickers = [...prevStickers, newSticker];
+                localStorage.setItem('collectedStickers', JSON.stringify(updatedStickers));
+                return updatedStickers;
+            });
 
-            setTodayStickers(prev => [...prev, newSticker]);
+            setTodayStickers(prevToday => [...prevToday, newSticker]);
 
             setTimeout(() => {
                 setIsOpened(false);
@@ -96,11 +99,11 @@ function App() {
             {page === "main" && (
                 <div className="main-container">
                     <h1 className="title">Today's Wafer</h1>
-                    <img 
-                        src={isOpened ? waferOpened : waferClosed} 
-                        alt="Wafer" 
-                        className="wafer-image" 
-                        onClick={handleCardClick} 
+                    <img
+                        src={isOpened ? waferOpened : waferClosed}
+                        alt="Wafer"
+                        className="wafer-image"
+                        onClick={handleCardClick}
                     />
                     <p>Remaining: {remaining}</p>
                     <button onClick={openWafer} className="button">
