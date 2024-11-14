@@ -22,7 +22,6 @@ function App() {
     const revealAudio = new Audio(revealSound);
     const viewStickersAudio = new Audio(viewStickersSound);
 
-    // 初回タップでオーディオを有効化
     useEffect(() => {
         const handleFirstTap = () => {
             openAudio.play().catch(() => {});
@@ -46,12 +45,10 @@ function App() {
         };
     }, []);
 
-    // collectedStickersの変更をローカルストレージに反映
     useEffect(() => {
         localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
     }, [collectedStickers]);
 
-    // 音声を確実に再生するための関数
     const playSound = (audio) => {
         if (audio && audio.paused) {
             audio.currentTime = 0;
@@ -70,13 +67,19 @@ function App() {
             setIsOpened(true);
             setRemaining(remaining - 1);
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-            setCollectedStickers([...collectedStickers, newSticker]);
-            setTodayStickers(prev => [...prev, newSticker]);
+            
+            // ステッカーの追加を関数型で行うことで、正しく更新を行う
+            setCollectedStickers(prevStickers => {
+                const updatedStickers = [...prevStickers, newSticker];
+                setTodayStickers(prev => [...prev, newSticker]);
+                return updatedStickers;
+            });
+
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
                 playSound(revealAudio);
-            }, 1500); // SEの再生タイミングを調整
+            }, 1500);
         }
     };
 
