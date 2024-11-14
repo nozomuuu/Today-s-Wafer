@@ -51,6 +51,7 @@ function App() {
         localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
     }, [collectedStickers]);
 
+    // 音声を確実に再生するための関数
     const playSound = (audio) => {
         if (audio && audio.paused) {
             audio.currentTime = 0;
@@ -69,23 +70,25 @@ function App() {
             setIsOpened(true);
             setRemaining(remaining - 1);
 
-            // 重複を排除する処理を追加
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-            const isDuplicate = collectedStickers.some(sticker => sticker.id === newSticker.id);
-            if (!isDuplicate) {
-                setCollectedStickers(prev => {
-                    const updatedStickers = [...prev, newSticker];
+            setTodayStickers(prev => [...prev, newSticker]);
+
+            // 新しいステッカーがcollectedStickersにない場合のみ追加
+            setCollectedStickers(prevStickers => {
+                const isDuplicate = prevStickers.some(sticker => sticker.id === newSticker.id);
+                if (!isDuplicate) {
+                    const updatedStickers = [...prevStickers, newSticker];
                     localStorage.setItem('collectedStickers', JSON.stringify(updatedStickers));
                     return updatedStickers;
-                });
-                setTodayStickers(prev => [...prev, newSticker]);
-            }
+                }
+                return prevStickers;
+            });
 
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
                 playSound(revealAudio);
-            }, 1500);
+            }, 1500); // SEの再生タイミングを調整
         }
     };
 
@@ -97,14 +100,6 @@ function App() {
     };
 
     const closeStickerDetail = () => setSelectedSticker(null);
-
-    // リセットボタン機能の追加
-    const resetStickers = () => {
-        setCollectedStickers([]);
-        setTodayStickers([]);
-        setRemaining(3);
-        localStorage.removeItem('collectedStickers');
-    };
 
     return (
         <div className="app">
@@ -127,7 +122,6 @@ function App() {
                     }} className="button">
                         CollectionBook
                     </button>
-                    <button onClick={resetStickers} className="button">Reset Stickers</button>
                     <div className="collected-stickers">
                         {todayStickers.map((sticker, index) => (
                             <img
