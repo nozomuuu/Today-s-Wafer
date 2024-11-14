@@ -12,9 +12,8 @@ function App() {
     const [isOpened, setIsOpened] = useState(false);
     const [remaining, setRemaining] = useState(3);
     const [collectedStickers, setCollectedStickers] = useState(() => {
-        // 初期化時にlocalStorageからデータを取得
         const savedStickers = JSON.parse(localStorage.getItem('collectedStickers')) || [];
-        return savedStickers;
+        return new Set(savedStickers.map(sticker => sticker.id));
     });
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
@@ -48,9 +47,9 @@ function App() {
         };
     }, []);
 
-    // collectedStickersの変更をlocalStorageに確実に保存
+    // collectedStickersの変更をローカルストレージに確実に保存
     useEffect(() => {
-        localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
+        localStorage.setItem('collectedStickers', JSON.stringify(Array.from(collectedStickers)));
     }, [collectedStickers]);
 
     const playSound = (audio) => {
@@ -73,12 +72,11 @@ function App() {
 
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
 
-            // すでに取得していない場合のみ追加
-            if (!collectedStickers.some(sticker => sticker.id === newSticker.id)) {
-                setCollectedStickers(prev => [...prev, newSticker]);
+            // 新しいステッカーの追加と記録
+            if (!collectedStickers.has(newSticker.id)) {
+                setCollectedStickers(prev => new Set(prev).add(newSticker.id));
+                setTodayStickers(prev => [...prev, newSticker]);
             }
-
-            setTodayStickers(prev => [...prev, newSticker]);
             
             setTimeout(() => {
                 setIsOpened(false);
@@ -137,7 +135,7 @@ function App() {
             {page === "collection" && (
                 <CollectionBook
                     allStickers={stickersData}
-                    ownedStickers={collectedStickers}
+                    ownedStickers={Array.from(collectedStickers).map(id => stickersData.find(sticker => sticker.id === id))}
                     goBack={() => {
                         playSound(viewStickersAudio);
                         setPage("main");
