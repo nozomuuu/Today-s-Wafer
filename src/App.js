@@ -12,7 +12,7 @@ import viewStickersSound from './sounds/view-stickers.mp3';
 
 function App() {
     const [isOpened, setIsOpened] = useState(false);
-    const [remaining, setRemaining] = useState(3);  // 回数制限
+    const [remaining, setRemaining] = useState(3);  // デバッグ中は制限を解除して確認してください
     const [collectedStickers, setCollectedStickers] = useState(
         JSON.parse(localStorage.getItem('collectedStickers')) || []
     );
@@ -73,14 +73,15 @@ function App() {
 
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
 
-            // 同じステッカーがない場合だけ追加
-            if (!collectedStickers.find(sticker => sticker.id === newSticker.id)) {
-                setCollectedStickers(prev => {
+            // 新しいステッカーを確認して追加
+            setCollectedStickers(prev => {
+                if (!prev.find(sticker => sticker.id === newSticker.id)) {
                     const updatedStickers = [...prev, newSticker];
                     localStorage.setItem('collectedStickers', JSON.stringify(updatedStickers));
                     return updatedStickers;
-                });
-            }
+                }
+                return prev;
+            });
 
             setTodayStickers(prev => [...prev, newSticker]);
 
@@ -88,7 +89,7 @@ function App() {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
                 playSound(revealAudio);
-            }, 1500);  // 追加したステッカーが即座に反映されるか確認
+            }, 1500);
         }
     };
 
@@ -136,16 +137,6 @@ function App() {
                                 }}
                             />
                         ))}
-                    </div>
-
-                    {/* デバッグ用に収集されたステッカーリストを表示 */}
-                    <div className="debug-collected-stickers">
-                        <h2>Collected Stickers:</h2>
-                        <ul>
-                            {collectedStickers.map((sticker, index) => (
-                                <li key={index}>{sticker.name}</li>
-                            ))}
-                        </ul>
                     </div>
                 </div>
             )}
