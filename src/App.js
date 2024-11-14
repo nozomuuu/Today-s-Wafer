@@ -20,17 +20,19 @@ function App() {
     const revealAudio = new Audio(revealSound);
     const viewStickersAudio = new Audio(viewStickersSound);
 
-    // オーディオ初期設定
+    // 初期ロード時にオーディオを準備
     useEffect(() => {
         openAudio.load();
         revealAudio.load();
         viewStickersAudio.load();
 
+        // 初回タップでオーディオを有効化
         const handleFirstTap = () => {
             openAudio.play().catch(() => {});
             revealAudio.play().catch(() => {});
             viewStickersAudio.play().catch(() => {});
 
+            // 一度再生させた後すぐ停止
             openAudio.pause();
             revealAudio.pause();
             viewStickersAudio.pause();
@@ -38,16 +40,18 @@ function App() {
             revealAudio.currentTime = 0;
             viewStickersAudio.currentTime = 0;
 
+            // リスナーを削除
             document.removeEventListener('touchstart', handleFirstTap);
         };
 
+        // モバイルでの初回タップを監視
         document.addEventListener('touchstart', handleFirstTap);
+
         return () => {
             document.removeEventListener('touchstart', handleFirstTap);
         };
     }, []);
 
-    // 音声を再生するヘルパー関数
     const playSound = (audio) => {
         if (audio && audio.paused) {
             audio.currentTime = 0;
@@ -60,24 +64,18 @@ function App() {
         }
     };
 
-    // ウエハース開封アクション
     const openWafer = () => {
         if (remaining > 0) {
             playSound(openAudio);
             setIsOpened(true);
             setRemaining(remaining - 1);
-
-            // 新しいステッカーをランダムに選択し、既存の収集に追加
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-            if (!collectedStickers.some(sticker => sticker.id === newSticker.id)) {
-                setCollectedStickers([...collectedStickers, newSticker]);
-            }
+            setCollectedStickers([...collectedStickers, newSticker]);
             setTodayStickers(prev => [...prev, newSticker]);
-
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
-                playSound(revealAudio); // ポップアップと同時に再生
+                playSound(revealAudio);
             }, 1500);
         }
     };
