@@ -68,18 +68,24 @@ function App() {
             playSound(openAudio);
             setIsOpened(true);
             setRemaining(remaining - 1);
+
+            // 重複を排除する処理を追加
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-            setCollectedStickers(prevStickers => {
-                const updatedStickers = [...prevStickers, newSticker];
-                localStorage.setItem('collectedStickers', JSON.stringify(updatedStickers));
-                return updatedStickers;
-            });
-            setTodayStickers(prev => [...prev, newSticker]);
+            const isDuplicate = collectedStickers.some(sticker => sticker.id === newSticker.id);
+            if (!isDuplicate) {
+                setCollectedStickers(prev => {
+                    const updatedStickers = [...prev, newSticker];
+                    localStorage.setItem('collectedStickers', JSON.stringify(updatedStickers));
+                    return updatedStickers;
+                });
+                setTodayStickers(prev => [...prev, newSticker]);
+            }
+
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
                 playSound(revealAudio);
-            }, 1500); // SEの再生タイミングを調整
+            }, 1500);
         }
     };
 
@@ -92,17 +98,16 @@ function App() {
 
     const closeStickerDetail = () => setSelectedSticker(null);
 
-    // リセットボタンでローカルストレージを削除する関数
-    const handleReset = () => {
-        localStorage.removeItem('collectedStickers');
+    // リセットボタン機能の追加
+    const resetStickers = () => {
         setCollectedStickers([]);
         setTodayStickers([]);
         setRemaining(3);
+        localStorage.removeItem('collectedStickers');
     };
 
     return (
         <div className="app">
-            <button onClick={handleReset} className="button reset-button">Reset Data</button>
             {page === "main" && (
                 <div className="main-container">
                     <h1 className="title">Today's Wafer</h1>
@@ -122,6 +127,7 @@ function App() {
                     }} className="button">
                         CollectionBook
                     </button>
+                    <button onClick={resetStickers} className="button">Reset Stickers</button>
                     <div className="collected-stickers">
                         {todayStickers.map((sticker, index) => (
                             <img
