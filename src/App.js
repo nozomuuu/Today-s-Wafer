@@ -11,7 +11,11 @@ import viewStickersSound from './sounds/view-stickers.mp3';
 function App() {
     const [isOpened, setIsOpened] = useState(false);
     const [remaining, setRemaining] = useState(3);
-    const [collectedStickers, setCollectedStickers] = useState([]);
+    const [collectedStickers, setCollectedStickers] = useState(() => {
+        // localStorageからステッカー情報を読み込む
+        const savedStickers = localStorage.getItem('collectedStickers');
+        return savedStickers ? JSON.parse(savedStickers) : [];
+    });
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
     const [page, setPage] = useState("main");
@@ -20,29 +24,47 @@ function App() {
     const revealAudio = new Audio(revealSound);
     const viewStickersAudio = new Audio(viewStickersSound);
 
-    // 初回ロード時のオーディオ設定（スマホで初回のタッチでオーディオが有効になるように）
     useEffect(() => {
         openAudio.load();
         revealAudio.load();
         viewStickersAudio.load();
 
         const handleFirstTap = () => {
-            [openAudio, revealAudio, viewStickersAudio].forEach(audio => {
-                audio.play().catch(() => {});
-                audio.pause();
-                audio.currentTime = 0;
-            });
+            openAudio.play().catch(() => {});
+            revealAudio.play().catch(() => {});
+            viewStickersAudio.play().catch(() => {});
+            
+            openAudio.pause();
+            revealAudio.pause();
+            viewStickersAudio.pause();
+            openAudio.currentTime = 0;
+            revealAudio.currentTime = 0;
+            viewStickersAudio.currentTime = 0;
+
             document.removeEventListener('touchstart', handleFirstTap);
         };
 
         document.addEventListener('touchstart', handleFirstTap);
-        return () => document.removeEventListener('touchstart', handleFirstTap);
+        return () => {
+            document.removeEventListener('touchstart', handleFirstTap);
+        };
     }, []);
 
-    // 音声再生の共通関数
+    // localStorageにステッカーを保存
+    useEffect(() => {
+        localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
+    }, [collectedStickers]);
+
     const playSound = (audio) => {
-        audio.currentTime = 0;
-        audio.play().catch(error => console.error("Audio playback failed:", error));
+        if (audio && audio.paused) {
+            audio.currentTime = 0;
+            audio.play().catch(error => {
+                console.error("Audio playback failed:", error);
+                setTimeout(() => {
+                    audio.play().catch(err => console.error("Retrying audio playback failed:", err));
+                }, 500);
+            });
+        }
     };
 
     const openWafer = () => {
@@ -50,19 +72,25 @@ function App() {
             playSound(openAudio);
             setIsOpened(true);
             setRemaining(remaining - 1);
-
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-            setCollectedStickers(prev => {
-                const updated = [...prev, newSticker];
-                setTodayStickers(updated);  // todayStickersも更新して反映
-                return updated;
+            setCollectedStickers(prevStickers => {
+                const updatedStickers = [...prevStickers, newSticker];
+                localStorage.setItem('collectedStickers', JSON.stringify(updatedStickers));
+                return updatedStickers;
             });
-
+            setTodayStickers(prev => [...prev, newSticker]);
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
-                playSound(revealAudio); // ポップアップ表示と同時に再生
-            }, 1500); // 1.5秒後にポップアップとともに再生
+                playSound(revealAudio);
+            }, 1500);
+        }
+    };
+
+    const handleCardClick = (event) => {
+        if (event.target.classList.contains("wafer-image")) {
+            playSound(viewStickersAudio);
+            setIsOpened(!isOpened);
         }
     };
 
@@ -70,20 +98,25 @@ function App() {
 
     return (
         <div className="app">
-            {page === "main" ? (
+            {page === "main" && (
                 <div className="main-container">
                     <h1 className="title">Today's Wafer</h1>
                     <img 
                         src={isOpened ? waferOpened : waferClosed} 
                         alt="Wafer" 
                         className="wafer-image" 
-                        onClick={() => setIsOpened(!isOpened)} 
+                        onClick={handleCardClick} 
                     />
                     <p>Remaining: {remaining}</p>
                     <button onClick={openWafer} className="button">
                         {remaining > 0 ? 'Open a Wafer' : 'No More Wafers'}
                     </button>
-                    <button onClick={() => setPage("collection")} className="button">CollectionBook</button>
+                    <button onClick={() => {
+                        playSound(viewStickersAudio);
+                        setPage("collection");
+                    }} className="button">
+                        CollectionBook
+                    </button>
                     <div className="collected-stickers">
                         {todayStickers.map((sticker, index) => (
                             <img
@@ -99,11 +132,15 @@ function App() {
                         ))}
                     </div>
                 </div>
-            ) : (
+            )}
+            {page === "collection" && (
                 <CollectionBook
                     allStickers={stickersData}
                     ownedStickers={collectedStickers}
-                    goBack={() => setPage("main")}
+                    goBack={() => {
+                        playSound(viewStickersAudio);
+                        setPage("main");
+                    }}
                 />
             )}
             {selectedSticker && (
