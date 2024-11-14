@@ -11,11 +11,9 @@ import viewStickersSound from './sounds/view-stickers.mp3';
 function App() {
     const [isOpened, setIsOpened] = useState(false);
     const [remaining, setRemaining] = useState(3);
-    const [collectedStickers, setCollectedStickers] = useState(() => {
-        // localStorageからステッカー情報を読み込む
-        const savedStickers = localStorage.getItem('collectedStickers');
-        return savedStickers ? JSON.parse(savedStickers) : [];
-    });
+    const [collectedStickers, setCollectedStickers] = useState(
+        JSON.parse(localStorage.getItem('collectedStickers')) || []
+    );
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
     const [page, setPage] = useState("main");
@@ -24,16 +22,13 @@ function App() {
     const revealAudio = new Audio(revealSound);
     const viewStickersAudio = new Audio(viewStickersSound);
 
+    // 初回タップでオーディオを有効化
     useEffect(() => {
-        openAudio.load();
-        revealAudio.load();
-        viewStickersAudio.load();
-
         const handleFirstTap = () => {
             openAudio.play().catch(() => {});
             revealAudio.play().catch(() => {});
             viewStickersAudio.play().catch(() => {});
-            
+
             openAudio.pause();
             revealAudio.pause();
             viewStickersAudio.pause();
@@ -45,16 +40,18 @@ function App() {
         };
 
         document.addEventListener('touchstart', handleFirstTap);
+
         return () => {
             document.removeEventListener('touchstart', handleFirstTap);
         };
     }, []);
 
-    // localStorageにステッカーを保存
+    // collectedStickersの変更をローカルストレージに反映
     useEffect(() => {
         localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
     }, [collectedStickers]);
 
+    // 音声を確実に再生するための関数
     const playSound = (audio) => {
         if (audio && audio.paused) {
             audio.currentTime = 0;
@@ -73,17 +70,13 @@ function App() {
             setIsOpened(true);
             setRemaining(remaining - 1);
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-            setCollectedStickers(prevStickers => {
-                const updatedStickers = [...prevStickers, newSticker];
-                localStorage.setItem('collectedStickers', JSON.stringify(updatedStickers));
-                return updatedStickers;
-            });
+            setCollectedStickers([...collectedStickers, newSticker]);
             setTodayStickers(prev => [...prev, newSticker]);
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
                 playSound(revealAudio);
-            }, 1500);
+            }, 1500); // SEの再生タイミングを調整
         }
     };
 
