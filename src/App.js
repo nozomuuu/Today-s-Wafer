@@ -11,9 +11,9 @@ import viewStickersSound from './sounds/view-stickers.mp3';
 function App() {
     const [isOpened, setIsOpened] = useState(false);
     const [remaining, setRemaining] = useState(3);
-    const [collectedStickers, setCollectedStickers] = useState(() => {
-        return JSON.parse(localStorage.getItem('collectedStickers')) || [];
-    });
+    const [collectedStickers, setCollectedStickers] = useState(
+        JSON.parse(localStorage.getItem('collectedStickers')) || []
+    );
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
     const [page, setPage] = useState("main");
@@ -28,6 +28,7 @@ function App() {
             openAudio.play().catch(() => {});
             revealAudio.play().catch(() => {});
             viewStickersAudio.play().catch(() => {});
+
             openAudio.pause();
             revealAudio.pause();
             viewStickersAudio.pause();
@@ -39,12 +40,13 @@ function App() {
         };
 
         document.addEventListener('touchstart', handleFirstTap);
+
         return () => {
             document.removeEventListener('touchstart', handleFirstTap);
         };
     }, []);
 
-    // ローカルストレージへ確実に同期
+    // collectedStickersの変更をローカルストレージに反映
     useEffect(() => {
         localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
     }, [collectedStickers]);
@@ -65,23 +67,19 @@ function App() {
         if (remaining > 0) {
             playSound(openAudio);
             setIsOpened(true);
-            setRemaining(prevRemaining => prevRemaining - 1);
-
+            setRemaining(remaining - 1);
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-
             setCollectedStickers(prevStickers => {
                 const updatedStickers = [...prevStickers, newSticker];
                 localStorage.setItem('collectedStickers', JSON.stringify(updatedStickers));
                 return updatedStickers;
             });
-
-            setTodayStickers(prevToday => [...prevToday, newSticker]);
-
+            setTodayStickers(prev => [...prev, newSticker]);
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
                 playSound(revealAudio);
-            }, 1500);
+            }, 1500); // SEの再生タイミングを調整
         }
     };
 
@@ -94,16 +92,25 @@ function App() {
 
     const closeStickerDetail = () => setSelectedSticker(null);
 
+    // リセットボタンでローカルストレージを削除する関数
+    const handleReset = () => {
+        localStorage.removeItem('collectedStickers');
+        setCollectedStickers([]);
+        setTodayStickers([]);
+        setRemaining(3);
+    };
+
     return (
         <div className="app">
+            <button onClick={handleReset} className="button reset-button">Reset Data</button>
             {page === "main" && (
                 <div className="main-container">
                     <h1 className="title">Today's Wafer</h1>
-                    <img
-                        src={isOpened ? waferOpened : waferClosed}
-                        alt="Wafer"
-                        className="wafer-image"
-                        onClick={handleCardClick}
+                    <img 
+                        src={isOpened ? waferOpened : waferClosed} 
+                        alt="Wafer" 
+                        className="wafer-image" 
+                        onClick={handleCardClick} 
                     />
                     <p>Remaining: {remaining}</p>
                     <button onClick={openWafer} className="button">
