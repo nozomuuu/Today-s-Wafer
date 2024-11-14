@@ -67,7 +67,7 @@ function App() {
             setRemaining(remaining - 1);
 
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-
+            
             if (!collectedStickers.some(sticker => sticker.id === newSticker.id)) {
                 const updatedStickers = [...collectedStickers, newSticker];
                 setCollectedStickers(updatedStickers);
