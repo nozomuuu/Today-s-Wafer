@@ -8,7 +8,6 @@ import openSound from './sounds/wafer-open.mp3';
 import revealSound from './sounds/sticker-reveal.mp3';
 import viewStickersSound from './sounds/view-stickers.mp3';
 
-// ローカルストレージにデータを保存する関数
 function saveToLocalStorage(key, data) {
     try {
         console.log(`Saving data to localStorage with key: ${key}`);
@@ -19,7 +18,6 @@ function saveToLocalStorage(key, data) {
     }
 }
 
-// ローカルストレージからデータを取得する関数
 function loadFromLocalStorage(key) {
     try {
         const data = JSON.parse(localStorage.getItem(key));
@@ -31,7 +29,6 @@ function loadFromLocalStorage(key) {
     }
 }
 
-// 新しいステッカーをユニークに追加する関数
 function addUniqueSticker(newSticker, collectedStickers) {
     if (!collectedStickers.some(sticker => sticker.image === newSticker.image)) {
         collectedStickers.push(newSticker);
@@ -53,7 +50,6 @@ function App() {
     const revealAudio = new Audio(revealSound);
     const viewStickersAudio = new Audio(viewStickersSound);
 
-    // 初回タップで音声再生を準備
     useEffect(() => {
         const handleFirstTap = () => {
             openAudio.play().catch(() => {});
@@ -71,7 +67,6 @@ function App() {
         return () => document.removeEventListener('touchstart', handleFirstTap);
     }, []);
 
-    // collectedStickersが変更されるたびにローカルストレージに保存
     useEffect(() => {
         saveToLocalStorage('collectedStickers', collectedStickers);
     }, [collectedStickers]);
@@ -91,18 +86,17 @@ function App() {
             playSound(openAudio);
             setIsOpened(true);
             setRemaining(remaining - 1);
-
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
 
             setCollectedStickers(prev => {
                 const updatedStickers = [...prev];
                 addUniqueSticker(newSticker, updatedStickers);
                 console.log("Updated collectedStickers (after adding new sticker):", updatedStickers);
+                saveToLocalStorage('collectedStickers', updatedStickers);
                 return updatedStickers;
             });
 
             setTodayStickers(prev => [...prev, newSticker]);
-
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
