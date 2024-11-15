@@ -24,7 +24,7 @@ function loadFromLocalStorage(key) {
     try {
         const data = JSON.parse(localStorage.getItem(key));
         console.log(`Data loaded from localStorage with key: ${key}`, data);
-        return data || [];
+        return Array.isArray(data) ? data : []; // データが配列でない場合は空配列を返す
     } catch (error) {
         console.error('Error loading from localStorage:', error);
         return [];
@@ -33,8 +33,8 @@ function loadFromLocalStorage(key) {
 
 // ステッカーを重複なく追加する関数
 function addUniqueSticker(newSticker, collectedStickers) {
-    // IDまたは画像で重複チェックを行い、ない場合のみ追加
-    if (!collectedStickers.some(sticker => sticker.id === newSticker.id || sticker.image === newSticker.image)) {
+    // IDで重複チェックを行い、ない場合のみ追加
+    if (!collectedStickers.some(sticker => sticker.id === newSticker.id)) {
         collectedStickers.push(newSticker);
         console.log('New sticker added to collection:', newSticker);
     } else {
@@ -99,7 +99,7 @@ function App() {
 
             // 重複をチェックしてステッカーを追加
             setCollectedStickers(prev => {
-                const updatedStickers = [...prev]; // 新しい配列を作成して参照を更新
+                const updatedStickers = [...prev];
                 addUniqueSticker(newSticker, updatedStickers);
                 console.log("Updated collectedStickers (after adding new sticker):", updatedStickers);
                 return updatedStickers;
