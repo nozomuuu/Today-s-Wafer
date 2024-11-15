@@ -9,8 +9,9 @@ import revealSound from './sounds/sticker-reveal.mp3';
 import viewStickersSound from './sounds/view-stickers.mp3';
 
 function App() {
+    // ステートの初期設定
     const [isOpened, setIsOpened] = useState(false);
-    const [remaining, setRemaining] = useState(Infinity); // 開封制限を一時的に無効化
+    const [remaining, setRemaining] = useState(Infinity); // 開封制限を解除
     const [collectedStickers, setCollectedStickers] = useState(
         JSON.parse(localStorage.getItem('collectedStickers')) || []
     );
@@ -46,10 +47,38 @@ function App() {
         };
     }, []);
 
-    // collectedStickersの変更をローカルストレージに反映
+    // `collectedStickers`の更新時に`localStorage`を更新
     useEffect(() => {
         localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
     }, [collectedStickers]);
+
+    // 新しいステッカーをコレクションに追加する関数（重複チェック込み）
+    const addStickerToCollection = (newSticker) => {
+        setCollectedStickers((prevStickers) => {
+            const isAlreadyCollected = prevStickers.some(sticker => sticker.image === newSticker.image);
+            if (isAlreadyCollected) return prevStickers;
+            const updatedStickers = [...prevStickers, newSticker];
+            localStorage.setItem('collectedStickers', JSON.stringify(updatedStickers));
+            return updatedStickers;
+        });
+    };
+
+    // 開封ボタンを押したときの処理
+    const openWafer = () => {
+        if (remaining > 0) {
+            playSound(openAudio);
+            setIsOpened(true);
+            setRemaining(remaining - 1);
+            const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
+            addStickerToCollection(newSticker);
+            setTodayStickers(prev => [...prev, newSticker]);
+            setTimeout(() => {
+                setIsOpened(false);
+                setSelectedSticker(newSticker);
+                playSound(revealAudio);
+            }, 1500); // SEの再生タイミングを調整
+        }
+    };
 
     // 音声を確実に再生するための関数
     const playSound = (audio) => {
@@ -64,27 +93,7 @@ function App() {
         }
     };
 
-    const openWafer = () => {
-        if (remaining > 0) {
-            playSound(openAudio);
-            setIsOpened(true);
-            setRemaining(prev => prev - 1);
-
-            const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-            // 既存のステッカーと重複しない場合に追加
-            if (!collectedStickers.some(sticker => sticker.image === newSticker.image)) {
-                setCollectedStickers(prev => [...prev, newSticker]);
-            }
-            setTodayStickers(prev => [...prev, newSticker]);
-
-            setTimeout(() => {
-                setIsOpened(false);
-                setSelectedSticker(newSticker);
-                playSound(revealAudio);
-            }, 1500);
-        }
-    };
-
+    // カードをクリックしたときの処理
     const handleCardClick = (event) => {
         if (event.target.classList.contains("wafer-image")) {
             playSound(viewStickersAudio);
