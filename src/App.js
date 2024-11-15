@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 import waferClosed from './images/wafer1.webp';
 import waferOpened from './images/wafer2.webp';
@@ -10,13 +10,14 @@ import viewStickersSound from './sounds/view-stickers.mp3';
 
 function App() {
     const [isOpened, setIsOpened] = useState(false);
-    const [remaining, setRemaining] = useState(10); // 一旦制限を解除
+    const [remaining, setRemaining] = useState(Infinity); // 一旦制限を無くすためにInfinityに
     const [collectedStickers, setCollectedStickers] = useState(
         JSON.parse(localStorage.getItem('collectedStickers')) || []
     );
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
     const [page, setPage] = useState("main");
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false); // ボタンの多重押し防止
 
     const openAudio = new Audio(openSound);
     const revealAudio = new Audio(revealSound);
@@ -46,12 +47,12 @@ function App() {
         };
     }, []);
 
-    // collectedStickersの変更をローカルストレージに反映
+    // collectedStickersの変更をローカルストレージに保存
     useEffect(() => {
-        console.log("Saving collectedStickers to localStorage:", collectedStickers);
         localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
     }, [collectedStickers]);
 
+    // 音声再生関数
     const playSound = (audio) => {
         if (audio && audio.paused) {
             audio.currentTime = 0;
@@ -64,35 +65,35 @@ function App() {
         }
     };
 
-    const openWafer = () => {
-        if (remaining > 0) {
+    // ワッファー開封処理
+    const openWafer = useCallback(() => {
+        if (remaining > 0 && !isButtonDisabled) {
             playSound(openAudio);
+            setIsButtonDisabled(true); // ボタンを一時的に無効化
             setIsOpened(true);
             setRemaining(remaining - 1);
 
+            // 新しいステッカーをランダムで取得
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-            console.log("New sticker drawn:", newSticker);
 
-            setCollectedStickers(prev => {
-                const updatedStickers = Array.from(new Set([...prev, newSticker]));
-                console.log("Updated collectedStickers:", updatedStickers);
-                localStorage.setItem('collectedStickers', JSON.stringify(updatedStickers));
+            // 重複を避けつつコレクションに追加
+            setCollectedStickers(prevStickers => {
+                const updatedStickers = [...prevStickers];
+                if (!updatedStickers.some(sticker => sticker.image === newSticker.image)) {
+                    updatedStickers.push(newSticker);
+                }
                 return updatedStickers;
             });
 
-            setTodayStickers(prev => {
-                const updatedTodayStickers = [...prev, newSticker];
-                console.log("Today's stickers after opening:", updatedTodayStickers);
-                return updatedTodayStickers;
-            });
-
+            setTodayStickers(prev => [...prev, newSticker]);
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
                 playSound(revealAudio);
+                setIsButtonDisabled(false); // ボタンを再度有効化
             }, 1500);
         }
-    };
+    }, [remaining, isButtonDisabled]);
 
     const handleCardClick = (event) => {
         if (event.target.classList.contains("wafer-image")) {
@@ -115,7 +116,7 @@ function App() {
                         onClick={handleCardClick} 
                     />
                     <p>Remaining: {remaining}</p>
-                    <button onClick={openWafer} className="button">
+                    <button onClick={openWafer} className="button" disabled={isButtonDisabled}>
                         {remaining > 0 ? 'Open a Wafer' : 'No More Wafers'}
                     </button>
                     <button onClick={() => {
