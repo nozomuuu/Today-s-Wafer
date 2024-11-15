@@ -24,7 +24,7 @@ function loadFromLocalStorage(key) {
     try {
         const data = JSON.parse(localStorage.getItem(key));
         console.log(`Data loaded from localStorage with key: ${key}`, data);
-        return Array.isArray(data) ? data : []; // データが配列でない場合は空配列を返す
+        return data || [];
     } catch (error) {
         console.error('Error loading from localStorage:', error);
         return [];
@@ -33,8 +33,7 @@ function loadFromLocalStorage(key) {
 
 // ステッカーを重複なく追加する関数
 function addUniqueSticker(newSticker, collectedStickers) {
-    // IDで重複チェックを行い、ない場合のみ追加
-    if (!collectedStickers.some(sticker => sticker.id === newSticker.id)) {
+    if (!collectedStickers.some(sticker => sticker.image === newSticker.image)) {
         collectedStickers.push(newSticker);
         console.log('New sticker added to collection:', newSticker);
     } else {
