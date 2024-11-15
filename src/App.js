@@ -10,10 +10,11 @@ import viewStickersSound from './sounds/view-stickers.mp3';
 
 function App() {
     const [isOpened, setIsOpened] = useState(false);
-    const [remaining, setRemaining] = useState(3);  // 開封回数を一時的に無制限にしても良い
-    const [collectedStickers, setCollectedStickers] = useState(
-        JSON.parse(localStorage.getItem('collectedStickers')) || []
-    );
+    const [remaining, setRemaining] = useState(null); // 一旦制限解除
+    const [collectedStickers, setCollectedStickers] = useState(() => {
+        const savedStickers = JSON.parse(localStorage.getItem('collectedStickers'));
+        return savedStickers ? Array.from(new Set(savedStickers)) : [];
+    });
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
     const [page, setPage] = useState("main");
@@ -22,7 +23,6 @@ function App() {
     const revealAudio = new Audio(revealSound);
     const viewStickersAudio = new Audio(viewStickersSound);
 
-    // 初期ロード時にオーディオを有効化
     useEffect(() => {
         const handleFirstTap = () => {
             openAudio.play().catch(() => {});
@@ -42,17 +42,14 @@ function App() {
         };
     }, []);
 
-    // collectedStickersの変更をローカルストレージに反映
     useEffect(() => {
         localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
     }, [collectedStickers]);
 
-    // 音声を確実に再生するための関数
     const playSound = (audio) => {
         if (audio && audio.paused) {
             audio.currentTime = 0;
             audio.play().catch(error => {
-                console.error("Audio playback failed:", error);
                 setTimeout(() => {
                     audio.play().catch(err => console.error("Retrying audio playback failed:", err));
                 }, 500);
@@ -61,28 +58,24 @@ function App() {
     };
 
     const openWafer = () => {
-        if (!isOpened && remaining > 0) {
-            setIsOpened(true);
-            playSound(openAudio);
-            setRemaining(prev => prev - 1);
+        playSound(openAudio);
+        setIsOpened(true);
+        const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
 
-            const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
+        // 重複を防ぎ、収集済みステッカーを更新
+        setCollectedStickers(prev => {
+            const updatedStickers = Array.from(new Set([...prev, newSticker]));
+            localStorage.setItem('collectedStickers', JSON.stringify(updatedStickers));
+            return updatedStickers;
+        });
 
-            // 重複しないステッカーを追加
-            if (!collectedStickers.some(sticker => sticker.id === newSticker.id)) {
-                const updatedStickers = [...collectedStickers, newSticker];
-                setCollectedStickers(updatedStickers);
-                localStorage.setItem('collectedStickers', JSON.stringify(updatedStickers));
-                console.log("Collected stickers updated:", updatedStickers);
-            }
-
-            setTodayStickers(prev => [...prev, newSticker]);
-            setTimeout(() => {
-                setIsOpened(false);
-                setSelectedSticker(newSticker);
-                playSound(revealAudio);
-            }, 1500); 
-        }
+        setTodayStickers(prev => [...prev, newSticker]);
+        
+        setTimeout(() => {
+            setIsOpened(false);
+            setSelectedSticker(newSticker);
+            playSound(revealAudio);
+        }, 1500);
     };
 
     const handleCardClick = (event) => {
@@ -105,9 +98,8 @@ function App() {
                         className="wafer-image" 
                         onClick={handleCardClick} 
                     />
-                    <p>Remaining: {remaining}</p>
                     <button onClick={openWafer} className="button">
-                        {remaining > 0 ? 'Open a Wafer' : 'No More Wafers'}
+                        Open a Wafer
                     </button>
                     <button onClick={() => {
                         playSound(viewStickersAudio);
@@ -143,7 +135,7 @@ function App() {
             )}
             {selectedSticker && (
                 <div className="sticker-popup" onClick={closeStickerDetail}>
-                    <div className="sticker-popup-content">
+                    <div className="popup-content">
                         <img src={selectedSticker.image} alt="Selected Sticker" className="sticker-large" />
                         <button onClick={closeStickerDetail} className="button">Close</button>
                     </div>
