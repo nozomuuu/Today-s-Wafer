@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import waferClosed from './images/wafer1.webp';
 import waferOpened from './images/wafer2.webp';
@@ -10,7 +10,7 @@ import viewStickersSound from './sounds/view-stickers.mp3';
 
 function App() {
     const [isOpened, setIsOpened] = useState(false);
-    const [remaining, setRemaining] = useState(Infinity); // デバッグ用に回数制限を外す
+    const [remaining, setRemaining] = useState(Infinity); // 回数制限を無効化
     const [collectedStickers, setCollectedStickers] = useState(
         JSON.parse(localStorage.getItem('collectedStickers')) || []
     );
@@ -27,27 +27,20 @@ function App() {
             openAudio.play().catch(() => {});
             revealAudio.play().catch(() => {});
             viewStickersAudio.play().catch(() => {});
-
             openAudio.pause();
             revealAudio.pause();
             viewStickersAudio.pause();
             openAudio.currentTime = 0;
             revealAudio.currentTime = 0;
             viewStickersAudio.currentTime = 0;
-
             document.removeEventListener('touchstart', handleFirstTap);
         };
-
         document.addEventListener('touchstart', handleFirstTap);
-
-        return () => {
-            document.removeEventListener('touchstart', handleFirstTap);
-        };
+        return () => document.removeEventListener('touchstart', handleFirstTap);
     }, []);
 
     useEffect(() => {
         localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
-        console.log("Updated collectedStickers in localStorage:", collectedStickers);
     }, [collectedStickers]);
 
     const playSound = (audio) => {
@@ -55,38 +48,39 @@ function App() {
             audio.currentTime = 0;
             audio.play().catch(error => {
                 console.error("Audio playback failed:", error);
-                setTimeout(() => {
-                    audio.play().catch(err => console.error("Retrying audio playback failed:", err));
-                }, 500);
+                setTimeout(() => audio.play().catch(err => console.error("Retry failed:", err)), 500);
             });
         }
     };
 
-    const openWafer = useCallback(() => {
+    const openWafer = () => {
         if (remaining > 0) {
             playSound(openAudio);
             setIsOpened(true);
             setRemaining(remaining - 1);
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
 
-            setCollectedStickers(prevStickers => {
-                const updatedStickers = [...prevStickers, newSticker];
-                const uniqueStickers = Array.from(new Map(updatedStickers.map(item => [item.image, item])).values());
+            // 重複しないようにステッカーを追加
+            setCollectedStickers(prev => {
+                const updated = [...prev, newSticker];
                 console.log("New sticker drawn:", newSticker);
-                console.log("Updated collectedStickers (before filtering):", updatedStickers);
+                console.log("Updated collectedStickers (before filtering):", updated);
+                const uniqueStickers = Array.from(new Set(updated.map(s => s.image))).map(image => 
+                    updated.find(s => s.image === image)
+                );
                 console.log("Updated collectedStickers (after filtering):", uniqueStickers);
+                localStorage.setItem('collectedStickers', JSON.stringify(uniqueStickers));
                 return uniqueStickers;
             });
 
             setTodayStickers(prev => [...prev, newSticker]);
-
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
                 playSound(revealAudio);
             }, 1500);
         }
-    }, [remaining]);
+    };
 
     const handleCardClick = (event) => {
         if (event.target.classList.contains("wafer-image")) {
