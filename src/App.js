@@ -11,7 +11,9 @@ import viewStickersSound from './sounds/view-stickers.mp3';
 // ローカルストレージにデータを保存する関数
 function saveToLocalStorage(key, data) {
     try {
+        console.log(`Saving data to localStorage with key: ${key}`);
         localStorage.setItem(key, JSON.stringify(data));
+        console.log(`Data successfully saved:`, data);
     } catch (error) {
         console.error('Error saving to localStorage:', error);
     }
@@ -21,7 +23,8 @@ function saveToLocalStorage(key, data) {
 function loadFromLocalStorage(key) {
     try {
         const data = JSON.parse(localStorage.getItem(key));
-        return Array.isArray(data) ? data : [];
+        console.log(`Data loaded from localStorage with key: ${key}`, data);
+        return Array.isArray(data) ? data : []; // データが配列でない場合は空配列を返す
     } catch (error) {
         console.error('Error loading from localStorage:', error);
         return [];
@@ -30,14 +33,17 @@ function loadFromLocalStorage(key) {
 
 // ステッカーを重複なく追加する関数
 function addUniqueSticker(newSticker, collectedStickers) {
-    if (!collectedStickers.some(sticker => sticker.image === newSticker.image)) {
+    if (!collectedStickers.some(sticker => sticker.id === newSticker.id)) {
         collectedStickers.push(newSticker);
+        console.log('New sticker added to collection:', newSticker);
+    } else {
+        console.log('Duplicate sticker not added:', newSticker);
     }
 }
 
 function App() {
     const [isOpened, setIsOpened] = useState(false);
-    const [remaining, setRemaining] = useState(Infinity);
+    const [remaining, setRemaining] = useState(Infinity); // 回数制限を無効化
     const [collectedStickers, setCollectedStickers] = useState(loadFromLocalStorage('collectedStickers'));
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
@@ -47,16 +53,6 @@ function App() {
     const openAudio = new Audio(openSound);
     const revealAudio = new Audio(revealSound);
     const viewStickersAudio = new Audio(viewStickersSound);
-
-    // 音声を再生する関数
-    const playSound = (audio) => {
-        if (audio && audio.paused) {
-            audio.currentTime = 0;
-            audio.play().catch(error => {
-                console.error("Audio playback failed:", error);
-            });
-        }
-    };
 
     // 初回タップ時に音声を準備する
     useEffect(() => {
@@ -81,6 +77,17 @@ function App() {
         saveToLocalStorage('collectedStickers', collectedStickers);
     }, [collectedStickers]);
 
+    // 音声を再生する関数
+    const playSound = (audio) => {
+        if (audio && audio.paused) {
+            audio.currentTime = 0;
+            audio.play().catch(error => {
+                console.error("Audio playback failed:", error);
+                setTimeout(() => audio.play().catch(err => console.error("Retry failed:", err)), 500);
+            });
+        }
+    };
+
     // ウエハースを開ける処理
     const openWafer = () => {
         if (remaining > 0) {
@@ -93,6 +100,7 @@ function App() {
             setCollectedStickers(prev => {
                 const updatedStickers = [...prev];
                 addUniqueSticker(newSticker, updatedStickers);
+                console.log("Updated collectedStickers (after adding new sticker):", updatedStickers);
                 return updatedStickers;
             });
 
