@@ -10,7 +10,7 @@ import viewStickersSound from './sounds/view-stickers.mp3';
 
 function App() {
     const [isOpened, setIsOpened] = useState(false);
-    const [remaining, setRemaining] = useState(3); // 一日の回数制限を外す場合は適宜変更
+    const [remaining, setRemaining] = useState(Infinity); // デバッグ用に回数制限を外す
     const [collectedStickers, setCollectedStickers] = useState(
         JSON.parse(localStorage.getItem('collectedStickers')) || []
     );
@@ -46,6 +46,7 @@ function App() {
     }, []);
 
     useEffect(() => {
+        // ローカルストレージへの保存を `useEffect` で安定化させる
         localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
         console.log("Updated collectedStickers in localStorage:", collectedStickers);
     }, [collectedStickers]);
@@ -70,8 +71,7 @@ function App() {
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
             setCollectedStickers(prevStickers => {
                 const updatedStickers = [...prevStickers, newSticker];
-                const uniqueStickers = Array.from(new Set(updatedStickers.map(s => s.image)))
-                    .map(image => updatedStickers.find(s => s.image === image));
+                const uniqueStickers = Array.from(new Map(updatedStickers.map(item => [item.image, item])).values());
                 console.log("New sticker drawn:", newSticker);
                 console.log("Updated collectedStickers (before filtering):", updatedStickers);
                 console.log("Updated collectedStickers (after filtering):", uniqueStickers);
