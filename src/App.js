@@ -8,6 +8,8 @@ import openSound from './sounds/wafer-open.mp3';
 import revealSound from './sounds/sticker-reveal.mp3';
 import viewStickersSound from './sounds/view-stickers.mp3';
 
+const MAX_COLLECTION_SIZE = 72; // コレクションの最大サイズ
+
 // ローカルストレージにデータを保存する関数
 function saveToLocalStorage(key, data) {
     try {
@@ -33,11 +35,13 @@ function loadFromLocalStorage(key) {
 
 // ステッカーを重複なく追加する関数
 function addUniqueSticker(newSticker, collectedStickers) {
-    if (!collectedStickers.some(sticker => sticker.image === newSticker.image)) {
+    if (!collectedStickers.some(sticker => sticker.image === newSticker.image) && collectedStickers.length < MAX_COLLECTION_SIZE) {
         collectedStickers.push(newSticker);
         console.log('New sticker added to collection:', newSticker);
-    } else {
+    } else if (collectedStickers.some(sticker => sticker.image === newSticker.image)) {
         console.log('Duplicate sticker not added:', newSticker);
+    } else {
+        console.log('Collection is full. Cannot add more stickers.');
     }
 }
 
@@ -90,7 +94,7 @@ function App() {
 
     // ウエハースを開ける処理
     const openWafer = () => {
-        if (remaining > 0) {
+        if (remaining > 0 && collectedStickers.length < MAX_COLLECTION_SIZE) {
             playSound(openAudio);
             setIsOpened(true);
             setRemaining(remaining - 1);
@@ -110,6 +114,8 @@ function App() {
                 setSelectedSticker(newSticker);
                 playSound(revealAudio);
             }, 1500);
+        } else if (collectedStickers.length >= MAX_COLLECTION_SIZE) {
+            console.log("Cannot open more wafers. Collection is full.");
         }
     };
 
