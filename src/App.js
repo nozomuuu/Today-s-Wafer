@@ -9,9 +9,8 @@ import revealSound from './sounds/sticker-reveal.mp3';
 import viewStickersSound from './sounds/view-stickers.mp3';
 
 function App() {
-    // ステートの初期設定
     const [isOpened, setIsOpened] = useState(false);
-    const [remaining, setRemaining] = useState(Infinity); // 開封制限を解除
+    const [remaining, setRemaining] = useState(3);  // 開封回数を一時的に無制限にしても良い
     const [collectedStickers, setCollectedStickers] = useState(
         JSON.parse(localStorage.getItem('collectedStickers')) || []
     );
@@ -23,62 +22,30 @@ function App() {
     const revealAudio = new Audio(revealSound);
     const viewStickersAudio = new Audio(viewStickersSound);
 
-    // 初回タップでオーディオを有効化
+    // 初期ロード時にオーディオを有効化
     useEffect(() => {
         const handleFirstTap = () => {
             openAudio.play().catch(() => {});
             revealAudio.play().catch(() => {});
             viewStickersAudio.play().catch(() => {});
-
             openAudio.pause();
             revealAudio.pause();
             viewStickersAudio.pause();
             openAudio.currentTime = 0;
             revealAudio.currentTime = 0;
             viewStickersAudio.currentTime = 0;
-
             document.removeEventListener('touchstart', handleFirstTap);
         };
-
         document.addEventListener('touchstart', handleFirstTap);
-
         return () => {
             document.removeEventListener('touchstart', handleFirstTap);
         };
     }, []);
 
-    // `collectedStickers`の更新時に`localStorage`を更新
+    // collectedStickersの変更をローカルストレージに反映
     useEffect(() => {
         localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
     }, [collectedStickers]);
-
-    // 新しいステッカーをコレクションに追加する関数（重複チェック込み）
-    const addStickerToCollection = (newSticker) => {
-        setCollectedStickers((prevStickers) => {
-            const isAlreadyCollected = prevStickers.some(sticker => sticker.image === newSticker.image);
-            if (isAlreadyCollected) return prevStickers;
-            const updatedStickers = [...prevStickers, newSticker];
-            localStorage.setItem('collectedStickers', JSON.stringify(updatedStickers));
-            return updatedStickers;
-        });
-    };
-
-    // 開封ボタンを押したときの処理
-    const openWafer = () => {
-        if (remaining > 0) {
-            playSound(openAudio);
-            setIsOpened(true);
-            setRemaining(remaining - 1);
-            const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-            addStickerToCollection(newSticker);
-            setTodayStickers(prev => [...prev, newSticker]);
-            setTimeout(() => {
-                setIsOpened(false);
-                setSelectedSticker(newSticker);
-                playSound(revealAudio);
-            }, 1500); // SEの再生タイミングを調整
-        }
-    };
 
     // 音声を確実に再生するための関数
     const playSound = (audio) => {
@@ -93,7 +60,31 @@ function App() {
         }
     };
 
-    // カードをクリックしたときの処理
+    const openWafer = () => {
+        if (!isOpened && remaining > 0) {
+            setIsOpened(true);
+            playSound(openAudio);
+            setRemaining(prev => prev - 1);
+
+            const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
+
+            // 重複しないステッカーを追加
+            if (!collectedStickers.some(sticker => sticker.id === newSticker.id)) {
+                const updatedStickers = [...collectedStickers, newSticker];
+                setCollectedStickers(updatedStickers);
+                localStorage.setItem('collectedStickers', JSON.stringify(updatedStickers));
+                console.log("Collected stickers updated:", updatedStickers);
+            }
+
+            setTodayStickers(prev => [...prev, newSticker]);
+            setTimeout(() => {
+                setIsOpened(false);
+                setSelectedSticker(newSticker);
+                playSound(revealAudio);
+            }, 1500); 
+        }
+    };
+
     const handleCardClick = (event) => {
         if (event.target.classList.contains("wafer-image")) {
             playSound(viewStickersAudio);
