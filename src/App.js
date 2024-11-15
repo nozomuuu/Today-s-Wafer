@@ -1,5 +1,3 @@
-// App.js
-
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import waferClosed from './images/wafer1.webp';
@@ -13,9 +11,11 @@ import viewStickersSound from './sounds/view-stickers.mp3';
 function App() {
     const [isOpened, setIsOpened] = useState(false);
     const [remaining, setRemaining] = useState(3);
-    const [collectedStickers, setCollectedStickers] = useState(
-        JSON.parse(localStorage.getItem('collectedStickers')) || []
-    );
+    const [collectedStickers, setCollectedStickers] = useState(() => {
+        // ローカルストレージから保存済みのステッカー情報を読み込み、存在しない場合は空の配列を返す
+        const storedStickers = localStorage.getItem('collectedStickers');
+        return storedStickers ? JSON.parse(storedStickers) : [];
+    });
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
     const [page, setPage] = useState("main");
@@ -71,20 +71,23 @@ function App() {
             playSound(openAudio);
             setIsOpened(true);
             setRemaining(remaining - 1);
+
+            // 新しいステッカーをランダムに選び、既に存在しない場合に追加
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-            
-            // 重複チェックとステッカー追加
             if (!collectedStickers.some(sticker => sticker.image === newSticker.image)) {
                 const updatedStickers = [...collectedStickers, newSticker];
                 setCollectedStickers(updatedStickers);
-                localStorage.setItem('collectedStickers', JSON.stringify(updatedStickers));
+                setTodayStickers(prev => [...prev, newSticker]);
+            } else {
+                // 重複する場合は本日のステッカーとしてのみ追加
+                setTodayStickers(prev => [...prev, newSticker]);
             }
-            setTodayStickers(prev => [...prev, newSticker]);
+
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
                 playSound(revealAudio);
-            }, 1500); // SEの再生タイミングを調整
+            }, 1500);
         }
     };
 
