@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 import waferClosed from './images/wafer1.webp';
 import waferOpened from './images/wafer2.webp';
@@ -46,7 +46,6 @@ function App() {
     }, []);
 
     useEffect(() => {
-        // ローカルストレージへの保存を `useEffect` で安定化させる
         localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
         console.log("Updated collectedStickers in localStorage:", collectedStickers);
     }, [collectedStickers]);
@@ -63,12 +62,13 @@ function App() {
         }
     };
 
-    const openWafer = () => {
+    const openWafer = useCallback(() => {
         if (remaining > 0) {
             playSound(openAudio);
             setIsOpened(true);
             setRemaining(remaining - 1);
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
+
             setCollectedStickers(prevStickers => {
                 const updatedStickers = [...prevStickers, newSticker];
                 const uniqueStickers = Array.from(new Map(updatedStickers.map(item => [item.image, item])).values());
@@ -77,14 +77,16 @@ function App() {
                 console.log("Updated collectedStickers (after filtering):", uniqueStickers);
                 return uniqueStickers;
             });
+
             setTodayStickers(prev => [...prev, newSticker]);
+
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
                 playSound(revealAudio);
             }, 1500);
         }
-    };
+    }, [remaining]);
 
     const handleCardClick = (event) => {
         if (event.target.classList.contains("wafer-image")) {
