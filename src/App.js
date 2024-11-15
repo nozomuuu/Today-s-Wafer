@@ -10,7 +10,7 @@ import viewStickersSound from './sounds/view-stickers.mp3';
 
 function App() {
     const [isOpened, setIsOpened] = useState(false);
-    const [remaining, setRemaining] = useState(3); // 開封制限を一時的に無効化する場合はこの数を大きくします
+    const [remaining, setRemaining] = useState(100); // 一時的に回数制限を大きく設定
     const [collectedStickers, setCollectedStickers] = useState([]);
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
