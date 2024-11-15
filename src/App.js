@@ -1,3 +1,5 @@
+// App.js
+
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import waferClosed from './images/wafer1.webp';
@@ -10,11 +12,10 @@ import viewStickersSound from './sounds/view-stickers.mp3';
 
 function App() {
     const [isOpened, setIsOpened] = useState(false);
-    const [remaining, setRemaining] = useState(Infinity); // 回数制限を解除
-    const [collectedStickers, setCollectedStickers] = useState(() => {
-        const storedStickers = JSON.parse(localStorage.getItem('collectedStickers'));
-        return storedStickers ? new Set(storedStickers.map(sticker => JSON.stringify(sticker))) : new Set();
-    });
+    const [remaining, setRemaining] = useState(3);
+    const [collectedStickers, setCollectedStickers] = useState(
+        JSON.parse(localStorage.getItem('collectedStickers')) || []
+    );
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
     const [page, setPage] = useState("main");
@@ -23,6 +24,7 @@ function App() {
     const revealAudio = new Audio(revealSound);
     const viewStickersAudio = new Audio(viewStickersSound);
 
+    // 初回タップでオーディオを有効化
     useEffect(() => {
         const handleFirstTap = () => {
             openAudio.play().catch(() => {});
@@ -46,12 +48,12 @@ function App() {
         };
     }, []);
 
+    // collectedStickersの変更をローカルストレージに反映
     useEffect(() => {
-        // Setを配列に変換してlocalStorageに保存
-        localStorage.setItem('collectedStickers', JSON.stringify(Array.from(collectedStickers).map(sticker => JSON.parse(sticker))));
-        console.log("現在のcollectedStickers:", Array.from(collectedStickers).map(sticker => JSON.parse(sticker))); // デバッグ用
+        localStorage.setItem('collectedStickers', JSON.stringify(collectedStickers));
     }, [collectedStickers]);
 
+    // 音声を確実に再生するための関数
     const playSound = (audio) => {
         if (audio && audio.paused) {
             audio.currentTime = 0;
@@ -70,20 +72,26 @@ function App() {
             setIsOpened(true);
             setRemaining(remaining - 1);
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-
-            setCollectedStickers(prev => {
-                const updatedStickers = new Set(prev);
-                updatedStickers.add(JSON.stringify(newSticker));
-                return updatedStickers;
-            });
-
+            
+            // 重複チェックとステッカー追加
+            if (!collectedStickers.some(sticker => sticker.image === newSticker.image)) {
+                const updatedStickers = [...collectedStickers, newSticker];
+                setCollectedStickers(updatedStickers);
+                localStorage.setItem('collectedStickers', JSON.stringify(updatedStickers));
+            }
             setTodayStickers(prev => [...prev, newSticker]);
-
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
                 playSound(revealAudio);
-            }, 1500);
+            }, 1500); // SEの再生タイミングを調整
+        }
+    };
+
+    const handleCardClick = (event) => {
+        if (event.target.classList.contains("wafer-image")) {
+            playSound(viewStickersAudio);
+            setIsOpened(!isOpened);
         }
     };
 
@@ -98,12 +106,16 @@ function App() {
                         src={isOpened ? waferOpened : waferClosed} 
                         alt="Wafer" 
                         className="wafer-image" 
+                        onClick={handleCardClick} 
                     />
                     <p>Remaining: {remaining}</p>
                     <button onClick={openWafer} className="button">
                         {remaining > 0 ? 'Open a Wafer' : 'No More Wafers'}
                     </button>
-                    <button onClick={() => setPage("collection")} className="button">
+                    <button onClick={() => {
+                        playSound(viewStickersAudio);
+                        setPage("collection");
+                    }} className="button">
                         CollectionBook
                     </button>
                     <div className="collected-stickers">
@@ -113,7 +125,10 @@ function App() {
                                 src={sticker.image}
                                 alt={`Sticker ${index + 1}`}
                                 className="sticker-small"
-                                onClick={() => setSelectedSticker(sticker)}
+                                onClick={() => {
+                                    setSelectedSticker(sticker);
+                                    playSound(revealAudio);
+                                }}
                             />
                         ))}
                     </div>
@@ -122,8 +137,11 @@ function App() {
             {page === "collection" && (
                 <CollectionBook
                     allStickers={stickersData}
-                    ownedStickers={Array.from(collectedStickers).map(sticker => JSON.parse(sticker))}
-                    goBack={() => setPage("main")}
+                    ownedStickers={collectedStickers}
+                    goBack={() => {
+                        playSound(viewStickersAudio);
+                        setPage("main");
+                    }}
                 />
             )}
             {selectedSticker && (
