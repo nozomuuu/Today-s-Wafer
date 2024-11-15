@@ -33,7 +33,7 @@ function loadFromLocalStorage(key) {
 
 // ステッカーを重複なく追加する関数
 function addUniqueSticker(newSticker, collectedStickers) {
-    if (!collectedStickers.some(sticker => sticker.id === newSticker.id)) {
+    if (!collectedStickers.some(sticker => sticker.id === newSticker.id)) { // ID でチェック
         collectedStickers.push(newSticker);
         console.log('New sticker added to collection:', newSticker);
     } else {
