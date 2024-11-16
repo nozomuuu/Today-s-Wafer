@@ -34,9 +34,8 @@ function loadFromLocalStorage(key) {
 // ステッカーを重複なく追加する関数
 function addUniqueSticker(newSticker, collectedStickers) {
     if (!collectedStickers.some(sticker => sticker.id === newSticker.id)) {
-        const updatedStickers = [...collectedStickers, newSticker];
         console.log('New sticker added to collection:', newSticker);
-        return updatedStickers;
+        return [...collectedStickers, newSticker];
     } else {
         console.log('Duplicate sticker not added:', newSticker);
         return collectedStickers;
@@ -45,7 +44,7 @@ function addUniqueSticker(newSticker, collectedStickers) {
 
 function App() {
     const [isOpened, setIsOpened] = useState(false);
-    const [remaining, setRemaining] = useState(Infinity); // 開封回数を無制限に設定
+    const [remaining, setRemaining] = useState(Infinity); // 回数制限を無制限に設定
     const [collectedStickers, setCollectedStickers] = useState(loadFromLocalStorage('collectedStickers'));
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
@@ -95,6 +94,7 @@ function App() {
         if (remaining > 0) {
             playSound(openAudio);
             setIsOpened(true);
+            setRemaining(remaining - 1);
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
 
             // 重複をチェックしてステッカーを追加
