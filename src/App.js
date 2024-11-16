@@ -20,7 +20,8 @@ function saveToLocalStorage(key, data) {
 // ローカルストレージからデータを読み込む関数
 function loadFromLocalStorage(key) {
     try {
-        return JSON.parse(localStorage.getItem(key)) || [];
+        const data = JSON.parse(localStorage.getItem(key));
+        return data || [];
     } catch (error) {
         console.error('Error loading from localStorage:', error);
         return [];
@@ -29,80 +30,62 @@ function loadFromLocalStorage(key) {
 
 // ステッカーを重複なく追加する関数
 function addUniqueSticker(newSticker, collectedStickers) {
-    const isDuplicate = collectedStickers.some(sticker => sticker.image === newSticker.image);
-    if (!isDuplicate) {
+    if (!collectedStickers.some(sticker => sticker.image === newSticker.image)) {
         collectedStickers.push(newSticker);
-        return true;
     }
-    return false;
 }
 
 function App() {
     const [isOpened, setIsOpened] = useState(false);
-    const [remaining, setRemaining] = useState(Infinity); // 無限に設定
+    const [remaining, setRemaining] = useState(Infinity); // 無制限の設定
     const [collectedStickers, setCollectedStickers] = useState(loadFromLocalStorage('collectedStickers'));
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
     const [page, setPage] = useState("main");
 
-    // 音声の設定
+    // 音声オブジェクトの作成
     const openAudio = new Audio(openSound);
     const revealAudio = new Audio(revealSound);
     const viewStickersAudio = new Audio(viewStickersSound);
 
     useEffect(() => {
-        document.addEventListener('touchstart', handleFirstTap);
-        return () => document.removeEventListener('touchstart', handleFirstTap);
+        // 初期化時にローカルストレージから読み込み
+        setCollectedStickers(loadFromLocalStorage('collectedStickers'));
     }, []);
 
-    function handleFirstTap() {
-        openAudio.play().catch(() => {});
-        revealAudio.play().catch(() => {});
-        viewStickersAudio.play().catch(() => {});
-        openAudio.pause();
-        revealAudio.pause();
-        viewStickersAudio.pause();
-        openAudio.currentTime = 0;
-        revealAudio.currentTime = 0;
-        viewStickersAudio.currentTime = 0;
-        document.removeEventListener('touchstart', handleFirstTap);
-    }
-
+    // collectedStickersが更新されたらローカルストレージに保存
     useEffect(() => {
         saveToLocalStorage('collectedStickers', collectedStickers);
     }, [collectedStickers]);
 
-    const playSound = (audio) => {
-        if (audio && audio.paused) {
-            audio.currentTime = 0;
-            audio.play().catch(() => {});
-        }
-    };
-
+    // ウエハースを開ける処理
     const openWafer = () => {
-        if (remaining > 0) {
-            playSound(openAudio);
-            setIsOpened(true);
-            setRemaining(prev => prev - 1);
-            const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
+        playSound(openAudio);
+        setIsOpened(true);
+        const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
 
-            setCollectedStickers(prev => {
-                const updatedStickers = [...prev];
-                if (addUniqueSticker(newSticker, updatedStickers)) {
-                    setTodayStickers(todays => [...todays, newSticker]);
-                }
-                return updatedStickers;
-            });
+        // 重複をチェックしてステッカーを追加
+        setCollectedStickers(prev => {
+            const updatedStickers = [...prev];
+            addUniqueSticker(newSticker, updatedStickers);
+            return updatedStickers;
+        });
 
-            setTimeout(() => {
-                setIsOpened(false);
-                setSelectedSticker(newSticker);
-                playSound(revealAudio);
-            }, 1500);
-        }
+        setTodayStickers(prev => [...prev, newSticker]);
+        setTimeout(() => {
+            setIsOpened(false);
+            setSelectedSticker(newSticker);
+            playSound(revealAudio);
+        }, 1500);
     };
 
-    const closeStickerDetail = () => setSelectedSticker(null);
+    // カードのクリックイベントを処理
+    const handleCardClick = (event) => {
+        if (event.target.classList.contains("wafer-image")) {
+            playSound(viewStickersAudio);
+            setIsOpened(!isOpened);
+        }
+    };
 
     return (
         <div className="app">
@@ -113,7 +96,7 @@ function App() {
                         src={isOpened ? waferOpened : waferClosed} 
                         alt="Wafer" 
                         className="wafer-image" 
-                        onClick={() => setIsOpened(!isOpened)} 
+                        onClick={handleCardClick} 
                     />
                     <p>Remaining: {remaining}</p>
                     <button onClick={openWafer} className="button">
@@ -143,10 +126,9 @@ function App() {
                 />
             )}
             {selectedSticker && (
-                <div className="sticker-popup" onClick={closeStickerDetail}>
+                <div className="sticker-popup" onClick={() => setSelectedSticker(null)}>
                     <div className="sticker-popup-content">
                         <img src={selectedSticker.image} alt="Selected Sticker" className="sticker-large" />
-                        <button onClick={closeStickerDetail} className="button">Close</button>
                     </div>
                 </div>
             )}
