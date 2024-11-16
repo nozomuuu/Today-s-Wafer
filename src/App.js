@@ -34,10 +34,12 @@ function loadFromLocalStorage(key) {
 // ステッカーを重複なく追加する関数
 function addUniqueSticker(newSticker, collectedStickers) {
     if (!collectedStickers.some(sticker => sticker.id === newSticker.id)) {
-        collectedStickers.push(newSticker);
+        const updatedStickers = [...collectedStickers, newSticker];
         console.log('New sticker added to collection:', newSticker);
+        return updatedStickers;
     } else {
         console.log('Duplicate sticker not added:', newSticker);
+        return collectedStickers;
     }
 }
 
@@ -98,8 +100,7 @@ function App() {
 
             // 重複をチェックしてステッカーを追加
             setCollectedStickers(prev => {
-                const updatedStickers = [...prev];
-                addUniqueSticker(newSticker, updatedStickers);
+                const updatedStickers = addUniqueSticker(newSticker, prev);
                 console.log("Updated collectedStickers (after adding new sticker):", updatedStickers);
                 return updatedStickers;
             });
