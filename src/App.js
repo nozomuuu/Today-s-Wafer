@@ -11,8 +11,9 @@ import viewStickersSound from './sounds/view-stickers.mp3';
 // ローカルストレージにデータを保存する関数
 function saveToLocalStorage(key, data) {
     try {
-        console.log(`Saving data to localStorage with key: ${key}`, data);
+        console.log(`Saving data to localStorage with key: ${key}`);
         localStorage.setItem(key, JSON.stringify(data));
+        console.log(`Data successfully saved:`, data);
     } catch (error) {
         console.error('Error saving to localStorage:', error);
     }
@@ -23,7 +24,7 @@ function loadFromLocalStorage(key) {
     try {
         const data = JSON.parse(localStorage.getItem(key));
         console.log(`Data loaded from localStorage with key: ${key}`, data);
-        return Array.isArray(data) ? data : [];
+        return Array.isArray(data) ? data : []; // データが配列でない場合は空配列を返す
     } catch (error) {
         console.error('Error loading from localStorage:', error);
         return [];
@@ -31,13 +32,14 @@ function loadFromLocalStorage(key) {
 }
 
 // ステッカーを重複なく追加する関数
-function addUniqueSticker(newSticker, stickersArray) {
-    if (!stickersArray.some(sticker => sticker.id === newSticker.id)) {
-        console.log('New sticker added:', newSticker);
-        return [...stickersArray, newSticker];
+function addUniqueSticker(newSticker, collectedStickers) {
+    if (!collectedStickers.some(sticker => sticker.id === newSticker.id)) {
+        const updatedStickers = [...collectedStickers, newSticker];
+        console.log('New sticker added to collection:', newSticker);
+        return updatedStickers;
     } else {
         console.log('Duplicate sticker not added:', newSticker);
-        return stickersArray;
+        return collectedStickers;
     }
 }
 
@@ -96,16 +98,14 @@ function App() {
             setRemaining(remaining - 1);
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
 
-            // 重複をチェックしてtodayStickersに追加
-            setTodayStickers(prev => addUniqueSticker(newSticker, prev));
-
-            // 重複をチェックしてcollectedStickersに追加
+            // 重複をチェックしてステッカーを追加
             setCollectedStickers(prev => {
                 const updatedStickers = addUniqueSticker(newSticker, prev);
-                console.log("Updated collectedStickers:", updatedStickers);
+                console.log("Updated collectedStickers (after adding new sticker):", updatedStickers);
                 return updatedStickers;
             });
 
+            setTodayStickers(prev => [...prev, newSticker]);
             setTimeout(() => {
                 setIsOpened(false);
                 setSelectedSticker(newSticker);
