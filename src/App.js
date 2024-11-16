@@ -11,9 +11,7 @@ import viewStickersSound from './sounds/view-stickers.mp3';
 // ローカルストレージにデータを保存する関数
 function saveToLocalStorage(key, data) {
     try {
-        console.log(`Saving data to localStorage with key: ${key}`);
         localStorage.setItem(key, JSON.stringify(data));
-        console.log(`Data successfully saved:`, data);
     } catch (error) {
         console.error('Error saving to localStorage:', error);
     }
@@ -23,8 +21,7 @@ function saveToLocalStorage(key, data) {
 function loadFromLocalStorage(key) {
     try {
         const data = JSON.parse(localStorage.getItem(key));
-        console.log(`Data loaded from localStorage with key: ${key}`, data);
-        return Array.isArray(data) ? data : []; // データが配列でない場合は空配列を返す
+        return Array.isArray(data) ? data : [];
     } catch (error) {
         console.error('Error loading from localStorage:', error);
         return [];
@@ -34,18 +31,14 @@ function loadFromLocalStorage(key) {
 // ステッカーを重複なく追加する関数
 function addUniqueSticker(newSticker, collectedStickers) {
     if (!collectedStickers.some(sticker => sticker.id === newSticker.id)) {
-        const updatedStickers = [...collectedStickers, newSticker];
-        console.log('New sticker added to collection:', newSticker);
-        return updatedStickers;
-    } else {
-        console.log('Duplicate sticker not added:', newSticker);
-        return collectedStickers;
+        return [...collectedStickers, newSticker];
     }
+    return collectedStickers;
 }
 
 function App() {
     const [isOpened, setIsOpened] = useState(false);
-    const [remaining, setRemaining] = useState(Infinity); // 回数制限を無効化
+    const [remaining, setRemaining] = useState(30); // 回数制限を適用
     const [collectedStickers, setCollectedStickers] = useState(loadFromLocalStorage('collectedStickers'));
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
@@ -83,10 +76,7 @@ function App() {
     const playSound = (audio) => {
         if (audio && audio.paused) {
             audio.currentTime = 0;
-            audio.play().catch(error => {
-                console.error("Audio playback failed:", error);
-                setTimeout(() => audio.play().catch(err => console.error("Retry failed:", err)), 500);
-            });
+            audio.play().catch(error => console.error("Audio playback failed:", error));
         }
     };
 
@@ -95,13 +85,12 @@ function App() {
         if (remaining > 0) {
             playSound(openAudio);
             setIsOpened(true);
-            setRemaining(remaining - 1);
+            setRemaining(prev => prev - 1); // 回数を減らす
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
 
             // 重複をチェックしてステッカーを追加
             setCollectedStickers(prev => {
                 const updatedStickers = addUniqueSticker(newSticker, prev);
-                console.log("Updated collectedStickers (after adding new sticker):", updatedStickers);
                 return updatedStickers;
             });
 
