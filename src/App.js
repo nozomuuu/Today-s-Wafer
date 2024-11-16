@@ -24,7 +24,7 @@ function loadFromLocalStorage(key) {
     try {
         const data = JSON.parse(localStorage.getItem(key));
         console.log(`Data loaded from localStorage with key: ${key}`, data);
-        return Array.isArray(data) ? data : [];
+        return Array.isArray(data) ? data : []; // データが配列でない場合は空配列を返す
     } catch (error) {
         console.error('Error loading from localStorage:', error);
         return [];
@@ -33,7 +33,7 @@ function loadFromLocalStorage(key) {
 
 // ステッカーを重複なく追加する関数
 function addUniqueSticker(newSticker, collectedStickers) {
-    if (!collectedStickers.some(sticker => sticker.image === newSticker.image)) {
+    if (!collectedStickers.some(sticker => sticker.id === newSticker.id)) {
         const updatedStickers = [...collectedStickers, newSticker];
         console.log('New sticker added to collection:', newSticker);
         return updatedStickers;
@@ -45,7 +45,7 @@ function addUniqueSticker(newSticker, collectedStickers) {
 
 function App() {
     const [isOpened, setIsOpened] = useState(false);
-    const [remaining, setRemaining] = useState(30); // 開封回数を30回に制限
+    const [remaining, setRemaining] = useState(Infinity); // 開封回数を無制限に設定
     const [collectedStickers, setCollectedStickers] = useState(loadFromLocalStorage('collectedStickers'));
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
@@ -95,7 +95,6 @@ function App() {
         if (remaining > 0) {
             playSound(openAudio);
             setIsOpened(true);
-            setRemaining(remaining - 1);
             const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
 
             // 重複をチェックしてステッカーを追加
