@@ -18,32 +18,24 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
     };
 
     useEffect(() => {
-        const savedSlots = JSON.parse(localStorage.getItem('stickerSlots'));
-        const newSlots = Array(72).fill({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`, isNew: false });
-        let filledIndices = new Set();
+        // 以前の所持ステッカーのデータを取得
+        const previousOwnedStickers = JSON.parse(localStorage.getItem('previousOwnedStickers')) || [];
+        const newStickers = ownedStickers.filter(sticker => !previousOwnedStickers.includes(sticker.id));
 
-        // savedSlotsが存在する場合は、そこからデータを読み込み
-        if (savedSlots) {
-            savedSlots.forEach((slot, index) => {
-                newSlots[index] = slot;
-                if (slot.image !== `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`) {
-                    filledIndices.add(index); // ステッカーがセットされている位置を保持
-                }
-            });
-        }
-
-        // 新しいステッカーをランダムな空のスロットに配置
-        ownedStickers.forEach((sticker) => {
-            let randomIndex;
-            do {
-                randomIndex = Math.floor(Math.random() * newSlots.length);
-            } while (filledIndices.has(randomIndex));
-            newSlots[randomIndex] = { ...sticker, isNew: true };
-            filledIndices.add(randomIndex);
+        // スロットを初期化し、全ての所持ステッカーを反映させる
+        const slots = Array(72).fill({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`, isNew: false });
+        
+        ownedStickers.forEach((sticker, index) => {
+            if (index < slots.length) {
+                slots[index] = { ...sticker, isNew: newStickers.some(newSticker => newSticker.id === sticker.id) };
+            }
         });
 
-        setStickerSlots(newSlots);
-        localStorage.setItem('stickerSlots', JSON.stringify(newSlots));
+        setStickerSlots(slots);
+        
+        // スロットと所持ステッカーのデータをローカルストレージに保存
+        localStorage.setItem('stickerSlots', JSON.stringify(slots));
+        localStorage.setItem('previousOwnedStickers', JSON.stringify(ownedStickers.map(s => s.id)));
     }, [ownedStickers]);
 
     const cycleCards = (index) => {
