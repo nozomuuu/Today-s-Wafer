@@ -18,19 +18,19 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
     };
 
     useEffect(() => {
-        // 72スロット全体を生成し、所持しているステッカーをランダムに配置
+        // ローカルストレージに保存されたスロットを取得
         const savedSlots = JSON.parse(localStorage.getItem('stickerSlots'));
-        if (savedSlots) {
+        if (savedSlots && savedSlots.length === 72) {
             setStickerSlots(savedSlots);
         } else {
+            // 72スロットの初期化と所持ステッカーのランダム配置
             const slots = Array(72).fill({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp` });
-            let stickerIndex = 0;
-            for (let i = 0; i < 72; i++) {
-                if (stickerIndex < ownedStickers.length) {
-                    slots[i] = ownedStickers[stickerIndex];
-                    stickerIndex++;
-                }
-            }
+            let availableIndices = Array.from({ length: 72 }, (_, i) => i);
+            ownedStickers.forEach(sticker => {
+                // ランダムなインデックスを取得してステッカーを配置
+                const randomIndex = availableIndices.splice(Math.floor(Math.random() * availableIndices.length), 1)[0];
+                slots[randomIndex] = sticker;
+            });
             setStickerSlots(slots);
             localStorage.setItem('stickerSlots', JSON.stringify(slots));
         }
