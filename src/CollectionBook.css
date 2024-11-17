@@ -67,7 +67,6 @@
     cursor: pointer;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
     z-index: 5;
-    transform: translateX(0);
 }
 
 .back-button:hover {

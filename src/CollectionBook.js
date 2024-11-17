@@ -8,27 +8,8 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
     const [selectedSticker, setSelectedSticker] = useState(null);
     const [stickerSlots, setStickerSlots] = useState([]);
 
-    // Audio elements
     const viewStickersAudio = new Audio(viewStickersSound);
     const revealAudio = new Audio(stickerRevealSound);
-
-    // Initialize sticker slots
-    useEffect(() => {
-        const initializeStickers = () => {
-            const slots = Array(72).fill(null);
-            ownedStickers.forEach((sticker) => {
-                let randomIndex;
-                do {
-                    randomIndex = Math.floor(Math.random() * 72);
-                } while (slots[randomIndex] !== null);
-                slots[randomIndex] = sticker;
-            });
-            setStickerSlots(slots);
-        };
-        if (ownedStickers.length > 0) {
-            initializeStickers();
-        }
-    }, [ownedStickers]);
 
     const playSound = (audio) => {
         if (audio && audio.paused) {
@@ -36,6 +17,25 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
             audio.play().catch(err => console.error("Audio playback error:", err));
         }
     };
+
+    useEffect(() => {
+        const savedSlots = JSON.parse(localStorage.getItem('stickerSlots'));
+        if (savedSlots && savedSlots.length >= ownedStickers.length) {
+            setStickerSlots(savedSlots);
+        } else {
+            const totalSlots = Math.max(72, ownedStickers.length);
+            const slots = Array(totalSlots).fill({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp` });
+            ownedStickers.forEach(sticker => {
+                let randomIndex;
+                do {
+                    randomIndex = Math.floor(Math.random() * totalSlots);
+                } while (slots[randomIndex]?.id);
+                slots[randomIndex] = sticker;
+            });
+            setStickerSlots(slots);
+            localStorage.setItem('stickerSlots', JSON.stringify(slots));
+        }
+    }, [ownedStickers]);
 
     const cycleCards = (index) => {
         playSound(viewStickersAudio);
@@ -75,14 +75,14 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
                 >
                     <h2 className="collection-title">Touch and Change Card</h2>
                     <div className="sticker-grid">
-                        {Array.from({ length: 24 }).map((_, j) => (
+                        {stickerSlots.slice(cardIndex * 24, (cardIndex + 1) * 24).map((sticker, j) => (
                             <div
                                 key={j}
                                 className="sticker-item"
-                                onClick={() => handleStickerClick(stickerSlots[j + cardIndex * 24])}
+                                onClick={() => handleStickerClick(sticker)}
                             >
                                 <img
-                                    src={stickerSlots[j + cardIndex * 24]?.image || `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`}
+                                    src={sticker.image}
                                     alt={`Sticker ${j + 1}`}
                                     className="sticker-image"
                                 />
