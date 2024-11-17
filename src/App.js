@@ -8,17 +8,22 @@ import openSound from './sounds/wafer-open.mp3';
 import revealSound from './sounds/sticker-reveal.mp3';
 import viewStickersSound from './sounds/view-stickers.mp3';
 
+// ローカルストレージにデータを保存する関数
 function saveToLocalStorage(key, data) {
     try {
+        console.log(`Saving data to localStorage with key: ${key}`);
         localStorage.setItem(key, JSON.stringify(data));
+        console.log(`Data successfully saved:`, data);
     } catch (error) {
         console.error('Error saving to localStorage:', error);
     }
 }
 
+// ローカルストレージからデータを読み込む関数
 function loadFromLocalStorage(key) {
     try {
         const data = JSON.parse(localStorage.getItem(key));
+        console.log(`Data loaded from localStorage with key: ${key}`, data);
         return data || [];
     } catch (error) {
         console.error('Error loading from localStorage:', error);
@@ -26,36 +31,40 @@ function loadFromLocalStorage(key) {
     }
 }
 
+// ステッカーを重複なく追加する関数
 function addUniqueSticker(newSticker, collectedStickers) {
     if (!collectedStickers.some(sticker => sticker.image === newSticker.image)) {
         collectedStickers.push(newSticker);
+        console.log('New sticker added to collection:', newSticker);
+    } else {
+        console.log('Duplicate sticker not added:', newSticker);
     }
 }
 
+// 音声を再生する関数
 function playSound(audio) {
     if (audio && audio.paused) {
         audio.currentTime = 0;
         audio.play().catch(error => {
             console.error("Audio playback failed:", error);
-            setTimeout(() => {
-                audio.play().catch(error => console.error("Retry audio playback failed:", error));
-            }, 1000);
         });
     }
 }
 
 function App() {
     const [isOpened, setIsOpened] = useState(false);
-    const [remaining, setRemaining] = useState(Infinity);
+    const [remaining, setRemaining] = useState(Infinity); // 回数制限を無効化
     const [collectedStickers, setCollectedStickers] = useState(loadFromLocalStorage('collectedStickers'));
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
     const [page, setPage] = useState("main");
 
+    // 音声オブジェクトの作成
     const openAudio = new Audio(openSound);
     const revealAudio = new Audio(revealSound);
     const viewStickersAudio = new Audio(viewStickersSound);
 
+    // 初回タップ時に音声を準備する
     useEffect(() => {
         const handleFirstTap = () => {
             openAudio.play().catch(() => {});
@@ -73,18 +82,22 @@ function App() {
         return () => document.removeEventListener('touchstart', handleFirstTap);
     }, []);
 
+    // collectedStickersが更新されたらローカルストレージに保存
     useEffect(() => {
         saveToLocalStorage('collectedStickers', collectedStickers);
     }, [collectedStickers]);
 
+    // ウエハースを開ける処理
     const openWafer = () => {
         playSound(openAudio);
         setIsOpened(true);
         const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
 
+        // 重複をチェックしてステッカーを追加
         setCollectedStickers(prev => {
             const updatedStickers = [...prev];
             addUniqueSticker(newSticker, updatedStickers);
+            console.log("Updated collectedStickers (after adding new sticker):", updatedStickers);
             return updatedStickers;
         });
 
@@ -96,6 +109,7 @@ function App() {
         }, 1500);
     };
 
+    // カードのクリックイベントを処理
     const handleCardClick = (event) => {
         if (event.target.classList.contains("wafer-image")) {
             playSound(viewStickersAudio);
@@ -103,6 +117,7 @@ function App() {
         }
     };
 
+    // ステッカー詳細のポップアップを閉じる
     const closeStickerDetail = () => setSelectedSticker(null);
 
     return (
