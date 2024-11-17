@@ -34,6 +34,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
 }
 
 .sticker-image {
@@ -44,17 +45,28 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
-/* 各カードの色合いを微妙に変化させる */
-.collection-book:nth-child(1) {
-    background-color: #fdf3e7;
+.new-badge {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: #FF4081;
+    color: white;
+    padding: 2px 5px;
+    font-size: 10px;
+    border-radius: 3px;
+    font-weight: bold;
 }
 
-.collection-book:nth-child(2) {
-    background-color: #f9e7d4;
-}
-
-.collection-book:nth-child(3) {
-    background-color: #f5dcc1;
+.popup-new-badge {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    background-color: #FF4081;
+    color: white;
+    padding: 4px 8px;
+    font-size: 14px;
+    border-radius: 5px;
+    font-weight: bold;
 }
 
 .back-button {
@@ -107,15 +119,4 @@
     cursor: pointer;
     margin-top: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.new-badge {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
-    padding: 2px 5px;
-    font-size: 10px;
-    border-radius: 3px;
 }

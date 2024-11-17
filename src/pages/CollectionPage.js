@@ -18,7 +18,6 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
     };
 
     useEffect(() => {
-        // 最新の所持ステッカー情報をスロットに更新する
         const updatedSlots = [];
         const newStickerIds = new Set(ownedStickers.map(sticker => sticker.id));
 
