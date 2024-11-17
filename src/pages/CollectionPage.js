@@ -18,29 +18,24 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
     };
 
     useEffect(() => {
-        // ローカルストレージから保存されたデータを取得
-        const previousOwnedIds = JSON.parse(localStorage.getItem('previousOwnedStickers')) || [];
+        // 新たに取得されたステッカーも含めた情報を表示させる
+        const savedSlots = JSON.parse(localStorage.getItem('stickerSlots')) || [];
+        const newStickerIds = new Set(ownedStickers.map(sticker => sticker.id));
 
-        // 新しく追加されたステッカーに "isNew" フラグを設定
-        const newStickers = ownedStickers.map(sticker => ({
-            ...sticker,
-            isNew: !previousOwnedIds.includes(sticker.id),
+        // 保存されたスロットと現在の所持ステッカーを比較し、更新する
+        const updatedSlots = savedSlots.map(slot => ({
+            ...slot,
+            isNew: newStickerIds.has(slot.id) && !slot.isDisplayed,  // NEWを表示する条件
         }));
-
-        // スロットを72個用意し、所持ステッカーを割り当てる
-        const slots = Array(72).fill({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`, isNew: false });
-        newStickers.forEach((sticker, index) => {
-            if (index < slots.length) {
-                slots[index] = sticker;
+        
+        ownedStickers.forEach(sticker => {
+            if (!updatedSlots.some(slot => slot.id === sticker.id)) {
+                updatedSlots.push({ ...sticker, isNew: true });
             }
         });
 
-        // スロットとステッカー情報を設定
-        setStickerSlots(slots);
-
-        // 最新の所持ステッカーIDをローカルストレージに保存
-        localStorage.setItem('stickerSlots', JSON.stringify(slots));
-        localStorage.setItem('previousOwnedStickers', JSON.stringify(ownedStickers.map(sticker => sticker.id)));
+        setStickerSlots(updatedSlots);
+        localStorage.setItem('stickerSlots', JSON.stringify(updatedSlots));
     }, [ownedStickers]);
 
     const cycleCards = (index) => {
@@ -58,6 +53,13 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
         if (sticker) {
             setSelectedSticker(sticker);
             playSound(revealAudio);
+
+            // NEWフラグをfalseにし、ローカルストレージに保存
+            const updatedSlots = stickerSlots.map(slot => 
+                slot.id === sticker.id ? { ...slot, isNew: false } : slot
+            );
+            setStickerSlots(updatedSlots);
+            localStorage.setItem('stickerSlots', JSON.stringify(updatedSlots));
         }
     };
 
@@ -104,6 +106,7 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
                 <div className="popup">
                     <div className="popup-content">
                         <img src={selectedSticker.image} alt="Selected Sticker" className="popup-image" />
+                        {selectedSticker.isNew && <div className="popup-new-badge">NEW</div>}
                         <button onClick={closePopup} className="close-popup-button">Close</button>
                     </div>
                 </div>
