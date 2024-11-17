@@ -20,15 +20,15 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
 
     useEffect(() => {
         const savedSlots = JSON.parse(localStorage.getItem('stickerSlots'));
-        if (savedSlots && savedSlots.length >= ownedStickers.length) {
+        if (savedSlots) {
             setStickerSlots(savedSlots);
         } else {
-            const totalSlots = Math.max(72, ownedStickers.length);
-            const slots = Array(totalSlots).fill({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp` });
+            // ステッカー数に応じて動的に表示
+            const slots = Array(72).fill({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp` });
             ownedStickers.forEach(sticker => {
                 let randomIndex;
                 do {
-                    randomIndex = Math.floor(Math.random() * totalSlots);
+                    randomIndex = Math.floor(Math.random() * slots.length);
                 } while (slots[randomIndex]?.id);
                 slots[randomIndex] = sticker;
             });
