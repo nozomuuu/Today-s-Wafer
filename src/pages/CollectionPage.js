@@ -18,25 +18,23 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
     };
 
     useEffect(() => {
-        // 新たに取得されたステッカーも含めた情報を表示させる
-        const savedSlots = JSON.parse(localStorage.getItem('stickerSlots')) || [];
+        // 最新の所持ステッカー情報をスロットに更新する
+        const updatedSlots = [];
         const newStickerIds = new Set(ownedStickers.map(sticker => sticker.id));
 
-        // 保存されたスロットと現在の所持ステッカーを比較し、更新する
-        const updatedSlots = savedSlots.map(slot => ({
-            ...slot,
-            isNew: newStickerIds.has(slot.id) && !slot.isDisplayed,  // NEWを表示する条件
-        }));
-        
-        ownedStickers.forEach(sticker => {
-            if (!updatedSlots.some(slot => slot.id === sticker.id)) {
-                updatedSlots.push({ ...sticker, isNew: true });
-            }
-        });
+        // 72スロットを生成し、所持しているステッカーを配置する
+        for (let i = 0; i < 72; i++) {
+            const sticker = ownedStickers[i] || null;
+            updatedSlots.push({
+                ...sticker,
+                isNew: sticker ? newStickerIds.has(sticker.id) : false, // NEWステッカーの判定
+                image: sticker ? sticker.image : `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`,
+            });
+        }
 
         setStickerSlots(updatedSlots);
         localStorage.setItem('stickerSlots', JSON.stringify(updatedSlots));
-    }, [ownedStickers]);
+    }, [ownedStickers]); // ownedStickersが変わるたびにリロード
 
     const cycleCards = (index) => {
         playSound(viewStickersAudio);
@@ -54,8 +52,8 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
             setSelectedSticker(sticker);
             playSound(revealAudio);
 
-            // NEWフラグをfalseにし、ローカルストレージに保存
-            const updatedSlots = stickerSlots.map(slot => 
+            // クリックされたステッカーのisNewフラグをfalseにして保存
+            const updatedSlots = stickerSlots.map(slot =>
                 slot.id === sticker.id ? { ...slot, isNew: false } : slot
             );
             setStickerSlots(updatedSlots);
@@ -90,7 +88,7 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
                                 onClick={() => handleStickerClick(sticker)}
                             >
                                 <img
-                                    src={sticker.image || `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`}
+                                    src={sticker.image}
                                     alt={`Sticker ${j + 1}`}
                                     className="sticker-image"
                                 />
