@@ -18,24 +18,29 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
     };
 
     useEffect(() => {
-        // 以前の所持ステッカーのデータを取得
-        const previousOwnedStickers = JSON.parse(localStorage.getItem('previousOwnedStickers')) || [];
-        const newStickers = ownedStickers.filter(sticker => !previousOwnedStickers.includes(sticker.id));
+        // ローカルストレージから保存されたデータを取得
+        const previousOwnedIds = JSON.parse(localStorage.getItem('previousOwnedStickers')) || [];
 
-        // スロットを初期化し、全ての所持ステッカーを反映させる
+        // 新しく追加されたステッカーに "isNew" フラグを設定
+        const newStickers = ownedStickers.map(sticker => ({
+            ...sticker,
+            isNew: !previousOwnedIds.includes(sticker.id),
+        }));
+
+        // スロットを72個用意し、所持ステッカーを割り当てる
         const slots = Array(72).fill({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`, isNew: false });
-        
-        ownedStickers.forEach((sticker, index) => {
+        newStickers.forEach((sticker, index) => {
             if (index < slots.length) {
-                slots[index] = { ...sticker, isNew: newStickers.some(newSticker => newSticker.id === sticker.id) };
+                slots[index] = sticker;
             }
         });
 
+        // スロットとステッカー情報を設定
         setStickerSlots(slots);
-        
-        // スロットと所持ステッカーのデータをローカルストレージに保存
+
+        // 最新の所持ステッカーIDをローカルストレージに保存
         localStorage.setItem('stickerSlots', JSON.stringify(slots));
-        localStorage.setItem('previousOwnedStickers', JSON.stringify(ownedStickers.map(s => s.id)));
+        localStorage.setItem('previousOwnedStickers', JSON.stringify(ownedStickers.map(sticker => sticker.id)));
     }, [ownedStickers]);
 
     const cycleCards = (index) => {
