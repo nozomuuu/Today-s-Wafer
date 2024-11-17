@@ -23,18 +23,18 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
         if (savedSlots) {
             setStickerSlots(savedSlots);
         } else {
-            const slots = Array(allStickers.length).fill({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp` });
+            const slots = Array(72).fill({ image: ${process.env.PUBLIC_URL}/images/stickers/wafer3.webp });
             ownedStickers.forEach(sticker => {
                 let randomIndex;
                 do {
-                    randomIndex = Math.floor(Math.random() * slots.length);
+                    randomIndex = Math.floor(Math.random() * 72);
                 } while (slots[randomIndex]?.id);
                 slots[randomIndex] = sticker;
             });
             setStickerSlots(slots);
             localStorage.setItem('stickerSlots', JSON.stringify(slots));
         }
-    }, [ownedStickers, allStickers]);
+    }, [ownedStickers]);
 
     const cycleCards = (index) => {
         playSound(viewStickersAudio);
@@ -61,10 +61,10 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
             {cardIndexes.map((cardIndex, i) => (
                 <div
                     key={cardIndex}
-                    className={`collection-book ${i === 0 ? "top-card" : ""}`}
+                    className={collection-book ${i === 0 ? "top-card" : ""}}
                     style={{
                         zIndex: 3 - i,
-                        transform: `translateX(${i * 40}px) translateY(${i * 5}px) scale(${1 - i * 0.05})`,
+                        transform: translateX(${i * 40}px) translateY(${i * 5}px) scale(${1 - i * 0.05}),
                     }}
                     onClick={(e) => {
                         if (e.target.className !== 'sticker-image') {
@@ -74,15 +74,15 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
                 >
                     <h2 className="collection-title">Touch and Change Card</h2>
                     <div className="sticker-grid">
-                        {stickerSlots.slice(cardIndex * 24, (cardIndex + 1) * 24).map((sticker, j) => (
+                        {Array.from({ length: 24 }).map((_, j) => (
                             <div
                                 key={j}
                                 className="sticker-item"
-                                onClick={() => handleStickerClick(sticker)}
+                                onClick={() => handleStickerClick(stickerSlots[j + cardIndex * 24])}
                             >
                                 <img
-                                    src={sticker?.image || `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`}
-                                    alt={`Sticker ${j + 1}`}
+                                    src={stickerSlots[j + cardIndex * 24]?.image || ${process.env.PUBLIC_URL}/images/stickers/wafer3.webp}
+                                    alt={Sticker ${j + 1}}
                                     className="sticker-image"
                                 />
                             </div>
