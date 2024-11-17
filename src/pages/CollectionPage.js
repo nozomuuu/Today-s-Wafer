@@ -1,17 +1,61 @@
-import React from 'react';
-import './CollectionPage.css';
+import React, { useState, useEffect } from 'react';
+import './CollectionBook.css';
 import stickerRevealSound from './sounds/sticker-reveal.mp3';
 import viewStickersSound from './sounds/view-stickers.mp3';
 
-// Wafer image path using PUBLIC_URL
-const waferImage = process.env.PUBLIC_URL + '/images/stickers/wafer3.webp';
-
-function CollectionPage({ allStickers, ownedStickers, goBack }) {
+function CollectionBook({ allStickers, ownedStickers, goBack }) {
     const [cardIndexes, setCardIndexes] = useState([0, 1, 2]);
     const [selectedSticker, setSelectedSticker] = useState(null);
+    const [stickerSlots, setStickerSlots] = useState([]);
+    const viewStickersAudio = new Audio(viewStickersSound);
+    const revealAudio = new Audio(stickerRevealSound);
+
+    const playSound = (audio) => {
+        if (audio && audio.paused) {
+            audio.currentTime = 0;
+            audio.play().catch(err => console.error("Audio playback error:", err));
+        }
+    };
+
+    useEffect(() => {
+        // すべての所持ステッカーをスロットに確実に反映させるロジック
+        const savedSlots = JSON.parse(localStorage.getItem('stickerSlots'));
+        
+        // 保存されたスロットがある場合は読み込む
+        if (savedSlots && savedSlots.length >= ownedStickers.length) {
+            setStickerSlots(savedSlots);
+        } else {
+            // 72スロットを動的に生成し、所持ステッカーをランダムに配置
+            const slots = Array(72).fill({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp` });
+            let filledIndices = new Set();
+
+            ownedStickers.forEach((sticker) => {
+                let randomIndex;
+                do {
+                    randomIndex = Math.floor(Math.random() * slots.length);
+                } while (filledIndices.has(randomIndex)); // 重複を防止
+                slots[randomIndex] = sticker;
+                filledIndices.add(randomIndex);
+            });
+
+            // 今後のステッカー追加に備え、スロットが埋まったら自動で追加
+            while (filledIndices.size < ownedStickers.length) {
+                slots.push({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp` });
+                let randomIndex;
+                do {
+                    randomIndex = Math.floor(Math.random() * slots.length);
+                } while (filledIndices.has(randomIndex));
+                slots[randomIndex] = ownedStickers[filledIndices.size];
+                filledIndices.add(randomIndex);
+            }
+
+            setStickerSlots(slots);
+            localStorage.setItem('stickerSlots', JSON.stringify(slots));
+        }
+    }, [ownedStickers]);
 
     const cycleCards = (index) => {
-        new Audio(viewStickersSound).play();
+        playSound(viewStickersAudio);
         if (index === 0) {
             setCardIndexes([cardIndexes[1], cardIndexes[2], cardIndexes[0]]);
         } else if (index === 1) {
@@ -22,9 +66,9 @@ function CollectionPage({ allStickers, ownedStickers, goBack }) {
     };
 
     const handleStickerClick = (sticker) => {
-        if (ownedStickers.includes(sticker)) {
+        if (sticker) {
             setSelectedSticker(sticker);
-            new Audio(stickerRevealSound).play();
+            playSound(revealAudio);
         }
     };
 
@@ -48,14 +92,14 @@ function CollectionPage({ allStickers, ownedStickers, goBack }) {
                 >
                     <h2 className="collection-title">Touch and Change Card</h2>
                     <div className="sticker-grid">
-                        {Array.from({ length: 24 }).map((_, j) => (
+                        {stickerSlots.slice(cardIndex * 24, (cardIndex + 1) * 24).map((sticker, j) => (
                             <div
                                 key={j}
                                 className="sticker-item"
-                                onClick={() => handleStickerClick(allStickers[j + cardIndex * 24])}
+                                onClick={() => handleStickerClick(sticker)}
                             >
                                 <img
-                                    src={ownedStickers.includes(allStickers[j + cardIndex * 24]) ? allStickers[j + cardIndex * 24].image : waferImage}
+                                    src={sticker.image || `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`}
                                     alt={`Sticker ${j + 1}`}
                                     className="sticker-image"
                                 />
@@ -78,4 +122,4 @@ function CollectionPage({ allStickers, ownedStickers, goBack }) {
     );
 }
 
-export default CollectionPage;
+export default CollectionBook;
