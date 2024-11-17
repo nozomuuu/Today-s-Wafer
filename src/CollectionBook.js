@@ -18,7 +18,6 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
         }
     };
 
-    // Initialize sticker slots or load from localStorage
     useEffect(() => {
         const savedSlots = JSON.parse(localStorage.getItem('stickerSlots'));
         if (savedSlots) {
@@ -29,11 +28,11 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
                 let randomIndex;
                 do {
                     randomIndex = Math.floor(Math.random() * 72);
-                } while (slots[randomIndex]?.id);  // 空スロットが見つかるまでランダムインデックスを選択
+                } while (slots[randomIndex]?.id);
                 slots[randomIndex] = sticker;
             });
             setStickerSlots(slots);
-            localStorage.setItem('stickerSlots', JSON.stringify(slots));  // 配置を保存
+            localStorage.setItem('stickerSlots', JSON.stringify(slots));
         }
     }, [ownedStickers]);
 
