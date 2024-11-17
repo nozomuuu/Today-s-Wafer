@@ -8,6 +8,11 @@
     z-index: 2;
 }
 
+.collection-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
 .collection-book {
     position: absolute;
     top: 30px;
