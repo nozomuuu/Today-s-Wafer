@@ -18,18 +18,18 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
         }
     };
 
+    // Sticker slots initialization or update
     useEffect(() => {
         const savedSlots = JSON.parse(localStorage.getItem('stickerSlots'));
-        if (savedSlots && savedSlots.length >= ownedStickers.length) {
+        if (savedSlots && savedSlots.length === ownedStickers.length) {
             setStickerSlots(savedSlots);
         } else {
-            // Initialize with empty slots and fill with owned stickers
             const slots = Array(72).fill({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp` });
             ownedStickers.forEach(sticker => {
                 let randomIndex;
                 do {
-                    randomIndex = Math.floor(Math.random() * slots.length);
-                } while (slots[randomIndex]?.id); // Prevent overwriting stickers
+                    randomIndex = Math.floor(Math.random() * 72);
+                } while (slots[randomIndex]?.id);
                 slots[randomIndex] = sticker;
             });
             setStickerSlots(slots);
@@ -49,7 +49,7 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
     };
 
     const handleStickerClick = (sticker) => {
-        if (sticker && sticker.id) {
+        if (sticker) {
             setSelectedSticker(sticker);
             playSound(revealAudio);
         }
