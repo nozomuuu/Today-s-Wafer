@@ -18,40 +18,28 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
     };
 
     useEffect(() => {
-        // すべての所持ステッカーをスロットに確実に反映させるロジック
-        const savedSlots = JSON.parse(localStorage.getItem('stickerSlots'));
-        
-        // 保存されたスロットがある場合は読み込む
-        if (savedSlots && savedSlots.length >= ownedStickers.length) {
-            setStickerSlots(savedSlots);
-        } else {
-            // 72スロットを動的に生成し、所持ステッカーをランダムに配置
-            const slots = Array(72).fill({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp` });
-            let filledIndices = new Set();
+        // スロットが72以上あることを確認し、全ての所持ステッカーを反映させるロジック
+        const savedSlots = JSON.parse(localStorage.getItem('stickerSlots')) || [];
+        let slots = savedSlots.length >= 72 ? savedSlots : Array(72).fill({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp` });
 
-            ownedStickers.forEach((sticker) => {
-                let randomIndex;
-                do {
-                    randomIndex = Math.floor(Math.random() * slots.length);
-                } while (filledIndices.has(randomIndex)); // 重複を防止
-                slots[randomIndex] = sticker;
-                filledIndices.add(randomIndex);
-            });
+        let filledIndices = new Set(slots.map((slot, index) => slot.image !== `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp` ? index : null).filter(index => index !== null));
 
-            // 今後のステッカー追加に備え、スロットが埋まったら自動で追加
-            while (filledIndices.size < ownedStickers.length) {
-                slots.push({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp` });
-                let randomIndex;
-                do {
-                    randomIndex = Math.floor(Math.random() * slots.length);
-                } while (filledIndices.has(randomIndex));
-                slots[randomIndex] = ownedStickers[filledIndices.size];
-                filledIndices.add(randomIndex);
-            }
+        ownedStickers.forEach((sticker) => {
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * slots.length);
+            } while (filledIndices.has(randomIndex)); // 重複を防止
+            slots[randomIndex] = sticker;
+            filledIndices.add(randomIndex);
+        });
 
-            setStickerSlots(slots);
-            localStorage.setItem('stickerSlots', JSON.stringify(slots));
+        // 必要に応じて空のスロットを追加
+        while (slots.length < 72) {
+            slots.push({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp` });
         }
+
+        setStickerSlots(slots);
+        localStorage.setItem('stickerSlots', JSON.stringify(slots));
     }, [ownedStickers]);
 
     const cycleCards = (index) => {
@@ -66,7 +54,7 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
     };
 
     const handleStickerClick = (sticker) => {
-        if (sticker) {
+        if (sticker && sticker.image !== `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`) {
             setSelectedSticker(sticker);
             playSound(revealAudio);
         }
