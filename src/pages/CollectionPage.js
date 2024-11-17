@@ -18,22 +18,21 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
     };
 
     useEffect(() => {
-        const updatedSlots = [];
+        const savedSlots = JSON.parse(localStorage.getItem('stickerSlots')) || [];
         const newStickerIds = new Set(ownedStickers.map(sticker => sticker.id));
 
-        // 72スロットを生成し、所持しているステッカーを配置する
-        for (let i = 0; i < 72; i++) {
-            const sticker = ownedStickers[i] || null;
-            updatedSlots.push({
-                ...sticker,
-                isNew: sticker ? newStickerIds.has(sticker.id) : false, // NEWステッカーの判定
-                image: sticker ? sticker.image : `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`,
-            });
-        }
+        const updatedSlots = Array(72).fill().map((_, i) => {
+            const ownedSticker = ownedStickers[i] || null;
+            return {
+                ...ownedSticker,
+                isNew: ownedSticker ? newStickerIds.has(ownedSticker.id) && !savedSlots.some(slot => slot.id === ownedSticker.id) : false,
+                image: ownedSticker ? ownedSticker.image : `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`
+            };
+        });
 
         setStickerSlots(updatedSlots);
         localStorage.setItem('stickerSlots', JSON.stringify(updatedSlots));
-    }, [ownedStickers]); // ownedStickersが変わるたびにリロード
+    }, [ownedStickers]); // ownedStickersの変更を監視して更新
 
     const cycleCards = (index) => {
         playSound(viewStickersAudio);
@@ -50,17 +49,19 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
         if (sticker) {
             setSelectedSticker(sticker);
             playSound(revealAudio);
+        }
+    };
 
-            // クリックされたステッカーのisNewフラグをfalseにして保存
-            const updatedSlots = stickerSlots.map(slot =>
-                slot.id === sticker.id ? { ...slot, isNew: false } : slot
+    const closePopup = () => {
+        if (selectedSticker) {
+            const updatedSlots = stickerSlots.map(slot => 
+                slot.id === selectedSticker.id ? { ...slot, isNew: false } : slot
             );
             setStickerSlots(updatedSlots);
             localStorage.setItem('stickerSlots', JSON.stringify(updatedSlots));
         }
+        setSelectedSticker(null);
     };
-
-    const closePopup = () => setSelectedSticker(null);
 
     return (
         <div className="collection-container">
