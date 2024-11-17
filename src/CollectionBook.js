@@ -20,16 +20,16 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
 
     useEffect(() => {
         const savedSlots = JSON.parse(localStorage.getItem('stickerSlots'));
-        if (savedSlots) {
+        if (savedSlots && savedSlots.length >= ownedStickers.length) {
             setStickerSlots(savedSlots);
         } else {
-            // ステッカー数に応じて動的に表示
+            // Initialize with empty slots and fill with owned stickers
             const slots = Array(72).fill({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp` });
             ownedStickers.forEach(sticker => {
                 let randomIndex;
                 do {
                     randomIndex = Math.floor(Math.random() * slots.length);
-                } while (slots[randomIndex]?.id);
+                } while (slots[randomIndex]?.id); // Prevent overwriting stickers
                 slots[randomIndex] = sticker;
             });
             setStickerSlots(slots);
@@ -49,7 +49,7 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
     };
 
     const handleStickerClick = (sticker) => {
-        if (sticker) {
+        if (sticker && sticker.id) {
             setSelectedSticker(sticker);
             playSound(revealAudio);
         }
@@ -75,14 +75,14 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
                 >
                     <h2 className="collection-title">Touch and Change Card</h2>
                     <div className="sticker-grid">
-                        {stickerSlots.slice(cardIndex * 24, (cardIndex + 1) * 24).map((sticker, j) => (
+                        {Array.from({ length: 24 }).map((_, j) => (
                             <div
                                 key={j}
                                 className="sticker-item"
-                                onClick={() => handleStickerClick(sticker)}
+                                onClick={() => handleStickerClick(stickerSlots[j + cardIndex * 24])}
                             >
                                 <img
-                                    src={sticker.image}
+                                    src={stickerSlots[j + cardIndex * 24]?.image || `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`}
                                     alt={`Sticker ${j + 1}`}
                                     className="sticker-image"
                                 />
