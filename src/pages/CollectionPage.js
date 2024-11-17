@@ -18,23 +18,20 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
     };
 
     useEffect(() => {
-        const savedSlots = JSON.parse(localStorage.getItem('stickerSlots')) || [];
+        // 最新の所持ステッカー情報をスロットに更新する
+        const previousSlots = JSON.parse(localStorage.getItem('stickerSlots')) || [];
         const newStickerIds = new Set(ownedStickers.map(sticker => sticker.id));
+        const updatedSlots = [];
 
-        // 保存されたスロットがある場合は、更新を反映する
-        let updatedSlots = [];
-        if (savedSlots.length >= ownedStickers.length) {
-            updatedSlots = savedSlots.map((slot, index) => ({
-                ...slot,
-                isNew: newStickerIds.has(slot.id), // NEWフラグを現在の所持リストに基づき設定
-            }));
-        } else {
-            // 初回またはスロットが不足している場合にスロットを再生成
-            updatedSlots = Array(72).fill(null).map((_, i) => ({
-                ...(ownedStickers[i] || {}),
-                isNew: newStickerIds.has(ownedStickers[i]?.id),
-                image: ownedStickers[i]?.image || `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`,
-            }));
+        // 72スロットを生成し、所持しているステッカーを配置する
+        for (let i = 0; i < 72; i++) {
+            const sticker = ownedStickers[i] || null;
+            const isNew = sticker && (!previousSlots[i] || previousSlots[i].id !== sticker.id);
+            updatedSlots.push({
+                ...sticker,
+                isNew: isNew, // NEWステッカーの判定
+                image: sticker ? sticker.image : `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`,
+            });
         }
 
         setStickerSlots(updatedSlots);
@@ -57,6 +54,7 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
             setSelectedSticker(sticker);
             playSound(revealAudio);
 
+            // クリックされたステッカーのisNewフラグをfalseにして保存
             const updatedSlots = stickerSlots.map(slot =>
                 slot.id === sticker.id ? { ...slot, isNew: false } : slot
             );
