@@ -18,28 +18,44 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
     };
 
     useEffect(() => {
-        // スロットが72以上あることを確認し、全ての所持ステッカーを反映させるロジック
-        const savedSlots = JSON.parse(localStorage.getItem('stickerSlots')) || [];
-        let slots = savedSlots.length >= 72 ? savedSlots : Array(72).fill({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp` });
+        // すべての所持ステッカーをスロットに確実に反映させ、NEWラベルを設定するロジック
+        const savedSlots = JSON.parse(localStorage.getItem('stickerSlots'));
+        
+        // 保存されたスロットがある場合は読み込み、所持ステッカーが増えた場合は追加する
+        if (savedSlots && savedSlots.length >= ownedStickers.length) {
+            const updatedSlots = savedSlots.map((slot, index) => ({
+                ...slot,
+                isNew: index >= savedSlots.length - ownedStickers.length,
+            }));
+            setStickerSlots(updatedSlots);
+        } else {
+            // 72スロットを動的に生成し、所持ステッカーをランダムに配置
+            const slots = Array(72).fill({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`, isNew: false });
+            let filledIndices = new Set();
 
-        let filledIndices = new Set(slots.map((slot, index) => slot.image !== `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp` ? index : null).filter(index => index !== null));
+            ownedStickers.forEach((sticker, index) => {
+                let randomIndex;
+                do {
+                    randomIndex = Math.floor(Math.random() * slots.length);
+                } while (filledIndices.has(randomIndex)); // 重複を防止
+                slots[randomIndex] = { ...sticker, isNew: true };
+                filledIndices.add(randomIndex);
+            });
 
-        ownedStickers.forEach((sticker) => {
-            let randomIndex;
-            do {
-                randomIndex = Math.floor(Math.random() * slots.length);
-            } while (filledIndices.has(randomIndex)); // 重複を防止
-            slots[randomIndex] = sticker;
-            filledIndices.add(randomIndex);
-        });
+            // 所持しているステッカーがスロットを超える場合に備え、自動的にスロットを追加
+            while (filledIndices.size < ownedStickers.length) {
+                slots.push({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`, isNew: false });
+                let randomIndex;
+                do {
+                    randomIndex = Math.floor(Math.random() * slots.length);
+                } while (filledIndices.has(randomIndex));
+                slots[randomIndex] = { ...ownedStickers[filledIndices.size], isNew: true };
+                filledIndices.add(randomIndex);
+            }
 
-        // 必要に応じて空のスロットを追加
-        while (slots.length < 72) {
-            slots.push({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp` });
+            setStickerSlots(slots);
+            localStorage.setItem('stickerSlots', JSON.stringify(slots));
         }
-
-        setStickerSlots(slots);
-        localStorage.setItem('stickerSlots', JSON.stringify(slots));
     }, [ownedStickers]);
 
     const cycleCards = (index) => {
@@ -54,7 +70,7 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
     };
 
     const handleStickerClick = (sticker) => {
-        if (sticker && sticker.image !== `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`) {
+        if (sticker) {
             setSelectedSticker(sticker);
             playSound(revealAudio);
         }
@@ -91,6 +107,7 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
                                     alt={`Sticker ${j + 1}`}
                                     className="sticker-image"
                                 />
+                                {sticker.isNew && <div className="new-badge">NEW</div>}
                             </div>
                         ))}
                     </div>
