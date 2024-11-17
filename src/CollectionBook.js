@@ -7,6 +7,7 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
     const [cardIndexes, setCardIndexes] = useState([0, 1, 2]);
     const [selectedSticker, setSelectedSticker] = useState(null);
     const [stickerSlots, setStickerSlots] = useState([]);
+
     const viewStickersAudio = new Audio(viewStickersSound);
     const revealAudio = new Audio(stickerRevealSound);
 
@@ -17,25 +18,24 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
         }
     };
 
+    // Initialize sticker slots or load from localStorage
     useEffect(() => {
-        // ローカルストレージからスロットの情報を取得、なければ新しく生成
         const savedSlots = JSON.parse(localStorage.getItem('stickerSlots'));
-        if (savedSlots && savedSlots.length >= allStickers.length) {
+        if (savedSlots) {
             setStickerSlots(savedSlots);
         } else {
-            // 所有しているステッカーを重複なくランダムにスロットに配置
-            const slots = Array(allStickers.length).fill({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp` });
+            const slots = Array(72).fill({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp` });
             ownedStickers.forEach(sticker => {
                 let randomIndex;
                 do {
-                    randomIndex = Math.floor(Math.random() * allStickers.length);
+                    randomIndex = Math.floor(Math.random() * 72);
                 } while (slots[randomIndex]?.id);  // 空スロットが見つかるまでランダムインデックスを選択
                 slots[randomIndex] = sticker;
             });
             setStickerSlots(slots);
-            localStorage.setItem('stickerSlots', JSON.stringify(slots));  // 新しいスロット配置を保存
+            localStorage.setItem('stickerSlots', JSON.stringify(slots));  // 配置を保存
         }
-    }, [ownedStickers, allStickers]);
+    }, [ownedStickers]);
 
     const cycleCards = (index) => {
         playSound(viewStickersAudio);
@@ -75,14 +75,14 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
                 >
                     <h2 className="collection-title">Touch and Change Card</h2>
                     <div className="sticker-grid">
-                        {stickerSlots.slice(cardIndex * 24, (cardIndex + 1) * 24).map((sticker, j) => (
+                        {Array.from({ length: 24 }).map((_, j) => (
                             <div
                                 key={j}
                                 className="sticker-item"
-                                onClick={() => handleStickerClick(sticker)}
+                                onClick={() => handleStickerClick(stickerSlots[j + cardIndex * 24])}
                             >
                                 <img
-                                    src={sticker.image || `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`}
+                                    src={stickerSlots[j + cardIndex * 24]?.image || `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`}
                                     alt={`Sticker ${j + 1}`}
                                     className="sticker-image"
                                 />

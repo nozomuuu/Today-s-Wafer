@@ -3,19 +3,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 100px;
+    padding-top: 100px; /* メインメニューと一致する位置 */
     background: none;
-    z-index: 2;
-}
-
-.collection-title {
-    font-size: 24px;
-    margin-bottom: 20px;
+    z-index: 2; /* 明示的に前面 */
 }
 
 .collection-book {
     position: absolute;
-    top: 30px;
+    top: 30px; /* メインメニューのカードと一致させる */
     width: 300px;
     padding: 20px;
     background-color: #fdf3e7;
@@ -23,7 +18,7 @@
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s ease, background-color 0.3s ease;
     overflow: hidden;
-    z-index: 3;
+    z-index: 3; /* カードの背景より前 */
 }
 
 .sticker-grid {
@@ -60,9 +55,10 @@
     background-color: #f5dcc1;
 }
 
+/* Back to Main ボタン */
 .back-button {
     position: relative;
-    margin-top: 550px;
+    margin-top: 550px; /* カードの下に配置 */
     padding: 10px 20px;
     font-size: 16px;
     background-color: #a5673f;
@@ -71,8 +67,8 @@
     border-radius: 8px;
     cursor: pointer;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-    z-index: 5;
-    transform: translateX(0);
+    z-index: 5; /* 他の要素の上に表示 */
+    transform: translateX(0); /* 横に動かないように設定 */
 }
 
 .back-button:hover {
