@@ -8,8 +8,27 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
     const [selectedSticker, setSelectedSticker] = useState(null);
     const [stickerSlots, setStickerSlots] = useState([]);
 
+    // Audio elements
     const viewStickersAudio = new Audio(viewStickersSound);
     const revealAudio = new Audio(stickerRevealSound);
+
+    // Initialize sticker slots
+    useEffect(() => {
+        const initializeStickers = () => {
+            const slots = Array(72).fill(null);
+            ownedStickers.forEach((sticker) => {
+                let randomIndex;
+                do {
+                    randomIndex = Math.floor(Math.random() * 72);
+                } while (slots[randomIndex] !== null);
+                slots[randomIndex] = sticker;
+            });
+            setStickerSlots(slots);
+        };
+        if (ownedStickers.length > 0) {
+            initializeStickers();
+        }
+    }, [ownedStickers]);
 
     const playSound = (audio) => {
         if (audio && audio.paused) {
@@ -17,24 +36,6 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
             audio.play().catch(err => console.error("Audio playback error:", err));
         }
     };
-
-    useEffect(() => {
-        const savedSlots = JSON.parse(localStorage.getItem('stickerSlots'));
-        if (savedSlots) {
-            setStickerSlots(savedSlots);
-        } else {
-            const slots = Array(72).fill({ image: ${process.env.PUBLIC_URL}/images/stickers/wafer3.webp });
-            ownedStickers.forEach(sticker => {
-                let randomIndex;
-                do {
-                    randomIndex = Math.floor(Math.random() * 72);
-                } while (slots[randomIndex]?.id);
-                slots[randomIndex] = sticker;
-            });
-            setStickerSlots(slots);
-            localStorage.setItem('stickerSlots', JSON.stringify(slots));
-        }
-    }, [ownedStickers]);
 
     const cycleCards = (index) => {
         playSound(viewStickersAudio);
@@ -61,10 +62,10 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
             {cardIndexes.map((cardIndex, i) => (
                 <div
                     key={cardIndex}
-                    className={collection-book ${i === 0 ? "top-card" : ""}}
+                    className={`collection-book ${i === 0 ? "top-card" : ""}`}
                     style={{
                         zIndex: 3 - i,
-                        transform: translateX(${i * 40}px) translateY(${i * 5}px) scale(${1 - i * 0.05}),
+                        transform: `translateX(${i * 40}px) translateY(${i * 5}px) scale(${1 - i * 0.05})`,
                     }}
                     onClick={(e) => {
                         if (e.target.className !== 'sticker-image') {
@@ -81,8 +82,8 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
                                 onClick={() => handleStickerClick(stickerSlots[j + cardIndex * 24])}
                             >
                                 <img
-                                    src={stickerSlots[j + cardIndex * 24]?.image || ${process.env.PUBLIC_URL}/images/stickers/wafer3.webp}
-                                    alt={Sticker ${j + 1}}
+                                    src={stickerSlots[j + cardIndex * 24]?.image || `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`}
+                                    alt={`Sticker ${j + 1}`}
                                     className="sticker-image"
                                 />
                             </div>
