@@ -96,13 +96,13 @@ function App() {
         }, 1500);
     };
 
-    const handleCollectionButtonClick = () => {
-        playSound(viewStickersAudio); // サウンドエフェクトを追加
+    const showCollectionBook = () => {
+        playSound(viewStickersAudio);
         setPage("collection");
     };
 
-    const handleBackButtonClick = () => {
-        playSound(viewStickersAudio); // サウンドエフェクトを追加
+    const goBackToMain = () => {
+        playSound(viewStickersAudio);
         setPage("main");
     };
 
@@ -121,12 +121,12 @@ function App() {
                     <button onClick={openWafer} className="button open-wafer-button">
                         Open a Wafer
                     </button>
-                    <button onClick={handleCollectionButtonClick} className="button collection-book-button">
+                    <button onClick={showCollectionBook} className="button collection-book-button">
                         CollectionBook
                     </button>
-                    <div className="collected-stickers" style={{ gridTemplateColumns: 'repeat(5, 1fr)' }}>
+                    <div className="collected-stickers">
                         {todayStickers.map((sticker, index) => (
-                            <div key={index} className="sticker-small-container">
+                            <div key={index} className="sticker-item">
                                 <img
                                     src={sticker.image}
                                     alt={`Sticker ${index + 1}`}
@@ -143,15 +143,15 @@ function App() {
                 <CollectionBook
                     allStickers={stickersData}
                     ownedStickers={collectedStickers}
-                    goBack={handleBackButtonClick}
+                    goBack={goBackToMain}
                 />
             )}
             {selectedSticker && (
                 <div className="sticker-popup" onClick={() => setSelectedSticker(null)}>
-                    <div className="sticker-popup-content">
+                    <div className="popup-content">
                         <img src={selectedSticker.image} alt="Selected Sticker" className="sticker-large" />
+                        <button onClick={() => setSelectedSticker(null)} className="close-popup-button">Close</button>
                         {selectedSticker.isNew && <div className="popup-new-badge">NEW</div>}
-                        <button onClick={() => setSelectedSticker(null)} className="button close-popup-button">Close</button>
                     </div>
                 </div>
             )}
