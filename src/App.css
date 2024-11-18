@@ -56,11 +56,13 @@ body {
 }
 
 .collected-stickers {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 5列レイアウトに変更 */
+  gap: 10px;
   justify-content: center;
   margin-top: 20px;
-  flex-wrap: wrap;
 }
+
 
 .sticker-small {
   width: 50px;
