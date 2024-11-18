@@ -88,6 +88,19 @@
     font-weight: bold;
 }
 
+/* ポップアップ用NEWバッジのデザイン */
+.popup-new-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #FF4081;
+    color: white;
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
 .popup {
     position: fixed;
     top: 0;
@@ -102,6 +115,7 @@
 }
 
 .popup-content {
+    position: relative;
     background-color: #fff0e0;
     padding: 20px;
     border-radius: 12px;
@@ -127,35 +141,4 @@
     cursor: pointer;
     margin-top: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-/* 追加のスタイル調整 */
-.collection-container,
-.collection-book,
-.sticker-image,
-.back-button,
-.card-item {
-    outline: none;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-user-select: none;
-    user-select: none;
-}
-
-.card-item:focus,
-.sticker-image:focus,
-.back-button:focus {
-    outline: none;
-    box-shadow: none;
-}
-
-.popup-new-badge {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background-color: #FF4081;
-    color: white;
-    padding: 4px 8px;
-    font-size: 12px;
-    border-radius: 5px;
-    font-weight: bold;
 }

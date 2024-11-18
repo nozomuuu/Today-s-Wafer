@@ -98,7 +98,6 @@ function App() {
 
     return (
         <div className="app">
-            {/* Main Page */}
             {page === "main" && (
                 <div className="main-container">
                     <h1 className="title">Today's Wafer</h1>
@@ -128,7 +127,6 @@ function App() {
                     </div>
                 </div>
             )}
-            {/* CollectionBook Page */}
             {page === "collection" && (
                 <CollectionBook
                     allStickers={stickersData}
@@ -136,12 +134,12 @@ function App() {
                     goBack={() => setPage("main")}
                 />
             )}
-            {/* Sticker Popup */}
             {selectedSticker && (
                 <div className="sticker-popup" onClick={() => setSelectedSticker(null)}>
                     <div className="sticker-popup-content">
                         <img src={selectedSticker.image} alt="Selected Sticker" className="sticker-large" />
-                        <button onClick={() => setSelectedSticker(null)} className="button">Close</button>
+                        {selectedSticker.isNew && <div className="popup-new-badge">NEW</div>}
+                        <button onClick={() => setSelectedSticker(null)} className="button close-popup-button">Close</button>
                     </div>
                 </div>
             )}
