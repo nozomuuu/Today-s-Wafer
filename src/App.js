@@ -68,7 +68,10 @@ function App() {
             return updatedStickers;
         });
 
-        setTodayStickers(prev => [...prev, { ...newSticker, isNew: true }]);
+        setTodayStickers(prev => [
+            ...prev,
+            { ...newSticker, isNew: !collectedStickers.some(sticker => sticker.image === newSticker.image) }
+        ]);
         setTimeout(() => {
             setIsOpened(false);
             setSelectedSticker({ ...newSticker, isNew: true });
@@ -101,7 +104,7 @@ function App() {
                     </button>
                     <div className="collected-stickers">
                         {todayStickers.map((sticker, index) => (
-                            <div key={index} className="sticker-item">
+                            <div key={index} className="sticker-item" onClick={() => setSelectedSticker(sticker)}>
                                 <img
                                     src={sticker.image}
                                     alt={`Sticker ${index + 1}`}
