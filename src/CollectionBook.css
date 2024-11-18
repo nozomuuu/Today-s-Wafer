@@ -25,6 +25,7 @@
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 8px;
+    padding-top: 10px;
 }
 
 .sticker-item {
@@ -57,13 +58,13 @@
 
 .collection-book:nth-child(2) {
     background-color: #f9e7d4;
-    transform: translateX(10px) translateY(10px) scale(0.95);
+    transform: translateX(15px) translateY(15px) scale(0.95);
     z-index: 2;
 }
 
 .collection-book:nth-child(3) {
     background-color: #f5dcc1;
-    transform: translateX(20px) translateY(20px) scale(0.9);
+    transform: translateX(30px) translateY(30px) scale(0.9);
     z-index: 1;
 }
 
