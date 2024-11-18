@@ -23,7 +23,7 @@
 
 .sticker-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr); /* 5列レイアウトに設定 */
     gap: 10px;
 }
 
@@ -33,7 +33,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative; /* NEWバッジの位置指定のためにpositionを追加 */
+    position: relative;
 }
 
 .sticker-image {
@@ -69,6 +69,7 @@
     cursor: pointer;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
     z-index: 5;
+    transition: background-color 0.3s ease;
 }
 
 .back-button:hover {
@@ -86,6 +87,7 @@
     font-size: 10px;
     border-radius: 3px;
     font-weight: bold;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* ポップアップ用NEWバッジのデザイン */
@@ -99,6 +101,7 @@
     font-size: 10px;
     border-radius: 3px;
     font-weight: bold;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .popup {
@@ -141,4 +144,9 @@
     cursor: pointer;
     margin-top: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+}
+
+.close-popup-button:hover {
+    background-color: #e67e22;
 }
