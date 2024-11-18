@@ -28,7 +28,7 @@ function loadFromLocalStorage(key) {
 
 function addUniqueSticker(newSticker, collectedStickers) {
     if (!collectedStickers.some(sticker => sticker.image === newSticker.image)) {
-        collectedStickers.push(newSticker);
+        collectedStickers.push({ ...newSticker, isNew: true });
     }
 }
 
@@ -54,21 +54,24 @@ function App() {
     const viewStickersAudio = new Audio(viewStickersSound);
 
     useEffect(() => {
-        const handleFirstTap = () => {
-            openAudio.play().catch(() => {});
-            revealAudio.play().catch(() => {});
-            viewStickersAudio.play().catch(() => {});
-            openAudio.pause();
-            revealAudio.pause();
-            viewStickersAudio.pause();
-            openAudio.currentTime = 0;
-            revealAudio.currentTime = 0;
-            viewStickersAudio.currentTime = 0;
-            document.removeEventListener('touchstart', handleFirstTap);
-        };
         document.addEventListener('touchstart', handleFirstTap);
         return () => document.removeEventListener('touchstart', handleFirstTap);
     }, []);
+
+    const handleFirstTap = () => {
+        openAudio.play().catch(() => {});
+        revealAudio.play().catch(() => {});
+        viewStickersAudio.play().catch(() => {});
+        resetAudio([openAudio, revealAudio, viewStickersAudio]);
+        document.removeEventListener('touchstart', handleFirstTap);
+    };
+
+    const resetAudio = (audioList) => {
+        audioList.forEach(audio => {
+            audio.pause();
+            audio.currentTime = 0;
+        });
+    };
 
     useEffect(() => {
         saveToLocalStorage('collectedStickers', collectedStickers);
@@ -93,17 +96,9 @@ function App() {
         }, 1500);
     };
 
-    const handleCardClick = (event) => {
-        if (event.target.classList.contains("wafer-image")) {
-            playSound(viewStickersAudio);
-            setIsOpened(!isOpened);
-        }
-    };
-
-    const closeStickerDetail = () => setSelectedSticker(null);
-
     return (
         <div className="app">
+            {/* Main Page */}
             {page === "main" && (
                 <div className="main-container">
                     <h1 className="title">Today's Wafer</h1>
@@ -111,16 +106,13 @@ function App() {
                         src={isOpened ? waferOpened : waferClosed} 
                         alt="Wafer" 
                         className="wafer-image" 
-                        onClick={handleCardClick} 
+                        onClick={() => playSound(viewStickersAudio)} 
                     />
                     <p>Remaining: {remaining === Infinity ? "Unlimited" : remaining}</p>
                     <button onClick={openWafer} className="button open-wafer-button">
                         Open a Wafer
                     </button>
-                    <button onClick={() => {
-                        playSound(viewStickersAudio);
-                        setPage("collection");
-                    }} className="button collection-book-button">
+                    <button onClick={() => setPage("collection")} className="button collection-book-button">
                         CollectionBook
                     </button>
                     <div className="collected-stickers">
@@ -130,30 +122,26 @@ function App() {
                                 src={sticker.image}
                                 alt={`Sticker ${index + 1}`}
                                 className="sticker-small"
-                                onClick={() => {
-                                    setSelectedSticker(sticker);
-                                    playSound(revealAudio);
-                                }}
+                                onClick={() => setSelectedSticker(sticker)}
                             />
                         ))}
                     </div>
                 </div>
             )}
+            {/* CollectionBook Page */}
             {page === "collection" && (
                 <CollectionBook
                     allStickers={stickersData}
                     ownedStickers={collectedStickers}
-                    goBack={() => {
-                        playSound(viewStickersAudio);
-                        setPage("main");
-                    }}
+                    goBack={() => setPage("main")}
                 />
             )}
+            {/* Sticker Popup */}
             {selectedSticker && (
-                <div className="sticker-popup" onClick={closeStickerDetail}>
+                <div className="sticker-popup" onClick={() => setSelectedSticker(null)}>
                     <div className="sticker-popup-content">
                         <img src={selectedSticker.image} alt="Selected Sticker" className="sticker-large" />
-                        <button onClick={closeStickerDetail} className="button">Close</button>
+                        <button onClick={() => setSelectedSticker(null)} className="button">Close</button>
                     </div>
                 </div>
             )}
