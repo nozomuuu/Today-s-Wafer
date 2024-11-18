@@ -1,3 +1,4 @@
+// App.js - ウエハース開封画面の改善
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import waferClosed from './images/wafer1.webp';
@@ -68,10 +69,10 @@ function App() {
             return updatedStickers;
         });
 
-        setTodayStickers(prev => [...prev, newSticker]);
+        setTodayStickers(prev => [...prev, { ...newSticker, isNew: true }]); // isNewフラグを付加して todayStickers に追加
         setTimeout(() => {
             setIsOpened(false);
-            setSelectedSticker(newSticker);
+            setSelectedSticker({ ...newSticker, isNew: true });
             playSound(revealAudio);
         }, 1500);
     };
