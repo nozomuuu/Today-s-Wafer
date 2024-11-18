@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './CollectionBook.css';
+import StickerPopup from './StickerPopup'; // StickerPopupコンポーネントの読み込み
 import stickerRevealSound from './sounds/sticker-reveal.mp3';
 import viewStickersSound from './sounds/view-stickers.mp3';
 
@@ -18,33 +19,28 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
     };
 
     useEffect(() => {
-        // ローカルストレージに保存されたスロットを取得
-        const savedSlots = JSON.parse(localStorage.getItem('stickerSlots'));
-        if (savedSlots && savedSlots.length === 72) {
-            setStickerSlots(savedSlots);
-        } else {
-            // 72スロットの初期化と所持ステッカーのランダム配置
-            const slots = Array(72).fill({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp` });
-            let availableIndices = Array.from({ length: 72 }, (_, i) => i);
-            ownedStickers.forEach(sticker => {
-                // ランダムなインデックスを取得してステッカーを配置
-                const randomIndex = availableIndices.splice(Math.floor(Math.random() * availableIndices.length), 1)[0];
-                slots[randomIndex] = sticker;
-            });
-            setStickerSlots(slots);
-            localStorage.setItem('stickerSlots', JSON.stringify(slots));
+        const savedSlots = JSON.parse(localStorage.getItem('stickerSlots')) || [];
+        const newOwnedStickers = ownedStickers.filter(sticker => !savedSlots.some(slot => slot.image === sticker.image));
+        
+        // スロットの更新と新しいステッカーの反映
+        const updatedSlots = [...savedSlots, ...newOwnedStickers];
+        while (updatedSlots.length < 72) {
+            updatedSlots.push({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`, isNew: false });
         }
+
+        setStickerSlots(updatedSlots);
+        localStorage.setItem('stickerSlots', JSON.stringify(updatedSlots));
     }, [ownedStickers]);
 
     const cycleCards = (index) => {
         playSound(viewStickersAudio);
-        if (index === 0) {
-            setCardIndexes([cardIndexes[1], cardIndexes[2], cardIndexes[0]]);
-        } else if (index === 1) {
-            setCardIndexes([cardIndexes[2], cardIndexes[0], cardIndexes[1]]);
-        } else {
-            setCardIndexes([cardIndexes[0], cardIndexes[1], cardIndexes[2]]);
-        }
+        setCardIndexes(prevIndexes => {
+            const newIndexes = [...prevIndexes];
+            const temp = newIndexes[index];
+            newIndexes[index] = newIndexes[(index + 1) % 3];
+            newIndexes[(index + 1) % 3] = temp;
+            return newIndexes;
+        });
     };
 
     const handleStickerClick = (sticker) => {
@@ -67,24 +63,19 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
                         transform: `translateX(${i * 40}px) translateY(${i * 5}px) scale(${1 - i * 0.05})`,
                     }}
                     onClick={(e) => {
-                        if (e.target.className !== 'sticker-image') {
-                            cycleCards(i);
-                        }
+                        if (e.target.className !== 'sticker-image') cycleCards(i);
                     }}
                 >
                     <h2 className="collection-title">Touch and Change Card</h2>
                     <div className="sticker-grid">
                         {stickerSlots.slice(cardIndex * 24, (cardIndex + 1) * 24).map((sticker, j) => (
-                            <div
-                                key={j}
-                                className="sticker-item"
-                                onClick={() => handleStickerClick(sticker)}
-                            >
+                            <div key={j} className="sticker-item" onClick={() => handleStickerClick(sticker)}>
                                 <img
-                                    src={sticker.image || `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`}
+                                    src={sticker.image}
                                     alt={`Sticker ${j + 1}`}
                                     className="sticker-image"
                                 />
+                                {sticker.isNew && <div className="new-badge">NEW</div>}
                             </div>
                         ))}
                     </div>
@@ -93,12 +84,7 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
             <button onClick={goBack} className="back-button">Back to Main</button>
 
             {selectedSticker && (
-                <div className="popup">
-                    <div className="popup-content">
-                        <img src={selectedSticker.image} alt="Selected Sticker" className="popup-image" />
-                        <button onClick={closePopup} className="close-popup-button">Close</button>
-                    </div>
-                </div>
+                <StickerPopup sticker={selectedSticker} closePopup={closePopup} />
             )}
         </div>
     );

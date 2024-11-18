@@ -131,3 +131,18 @@
     outline: none;
     box-shadow: none;
 }
+.sticker-item {
+    position: relative;
+}
+
+.new-badge {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    background-color: #FF4081;
+    color: white;
+    padding: 2px 5px;
+    font-size: 10px;
+    border-radius: 3px;
+    font-weight: bold;
+}

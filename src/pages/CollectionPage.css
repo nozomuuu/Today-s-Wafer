@@ -120,3 +120,18 @@
     margin-top: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
+.sticker-item {
+    position: relative;
+}
+
+.new-badge {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    background-color: #FF4081;
+    color: white;
+    padding: 2px 5px;
+    font-size: 10px;
+    border-radius: 3px;
+    font-weight: bold;
+}
