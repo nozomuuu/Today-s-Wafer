@@ -102,13 +102,14 @@ function App() {
                     <button onClick={goToCollectionBook} className="button collection-book-button">
                         CollectionBook
                     </button>
-                    <div className="collected-stickers">
+                    <div className="collected-stickers" style={{ gridTemplateColumns: 'repeat(5, 1fr)' }}>
                         {todayStickers.map((sticker, index) => (
-                            <div key={index} className="sticker-item" onClick={() => setSelectedSticker(sticker)}>
+                            <div key={index} className="sticker-small-container">
                                 <img
                                     src={sticker.image}
                                     alt={`Sticker ${index + 1}`}
                                     className="sticker-small"
+                                    onClick={() => setSelectedSticker(sticker)}
                                 />
                                 {sticker.isNew && <div className="new-badge">NEW</div>}
                             </div>
