@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './CollectionBook.css';
-import StickerPopup from './StickerPopup';
+import StickerPopup from './StickerPopup'; // StickerPopupコンポーネントの読み込み
 import stickerRevealSound from './sounds/sticker-reveal.mp3';
 import viewStickersSound from './sounds/view-stickers.mp3';
 
@@ -19,18 +19,21 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
     };
 
     useEffect(() => {
-        // 所持ステッカーを最新の情報に基づきスロットに反映
+        // スロットの情報を最新の所持ステッカーに基づいて更新
         const savedSlots = JSON.parse(localStorage.getItem('stickerSlots')) || [];
         const updatedSlots = Array(72).fill(null).map((_, i) => {
             const sticker = ownedStickers.find(s => s.id === i);
             return sticker
-                ? { ...sticker, isNew: !savedSlots.some(slot => slot.id === sticker.id) } // 新規ステッカーのみNEWマークを表示
+                ? {
+                      ...sticker,
+                      isNew: !savedSlots.find(slot => slot.id === sticker.id && slot.isNew === false), // NEWマークの保持
+                  }
                 : { image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`, isNew: false };
         });
 
         setStickerSlots(updatedSlots);
         localStorage.setItem('stickerSlots', JSON.stringify(updatedSlots));
-    }, [ownedStickers]);
+    }, [ownedStickers, allStickers]); // allStickersも依存関係に追加
 
     const cycleCards = (index) => {
         playSound(viewStickersAudio);
@@ -44,18 +47,15 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
     };
 
     const handleStickerClick = (sticker) => {
-        if (sticker && sticker.isNew) {
+        if (sticker) {
             setSelectedSticker(sticker);
             playSound(revealAudio);
 
-            // NEWマークを外す処理
             const updatedSlots = stickerSlots.map(slot =>
                 slot.id === sticker.id ? { ...slot, isNew: false } : slot
             );
             setStickerSlots(updatedSlots);
             localStorage.setItem('stickerSlots', JSON.stringify(updatedSlots));
-        } else if (sticker) {
-            setSelectedSticker(sticker); // すでにNEWマークがない場合もポップアップを表示
         }
     };
 
