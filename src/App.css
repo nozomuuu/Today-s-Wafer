@@ -55,20 +55,24 @@ body {
   transform: translateY(-2px);
 }
 
+/* collected-stickers 5列のグリッドレイアウトを背景内に収め、余白を調整 */
 .collected-stickers {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
+  grid-template-columns: repeat(5, 1fr); /* 5列のレイアウト */
+  gap: 4px; /* ステッカー同士の間隔を狭める */
+  justify-content: center;
   margin-top: 20px;
+  max-width: 280px; /* 背景内に収めるための幅制限 */
+  padding: 0 10px;
 }
 
 .sticker-small {
   width: 50px;
   height: 50px;
-  margin: 5px;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
+
 
 .sticker-popup {
   position: fixed;
