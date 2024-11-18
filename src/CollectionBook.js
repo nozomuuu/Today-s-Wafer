@@ -19,13 +19,11 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
     };
 
     useEffect(() => {
-        // ローカルストレージからステッカーの状態を読み込み、最新の所持ステッカー情報に更新する
+        // 常に最新の所持ステッカー情報を取得し、ロックを防ぐ
         const savedSlots = JSON.parse(localStorage.getItem('stickerSlots')) || [];
-        const newOwnedStickers = ownedStickers.filter(sticker => 
-            !savedSlots.some(slot => slot.image === sticker.image)
-        ).map(sticker => ({ ...sticker, isNew: true }));  // 新しいステッカーにはisNewフラグを付与
-
-        // ステッカースロットを最新の情報で更新
+        const newOwnedStickers = ownedStickers.filter(sticker => !savedSlots.some(slot => slot.image === sticker.image));
+        
+        // スロットの更新と新しいステッカーの反映
         const updatedSlots = [...savedSlots, ...newOwnedStickers];
         while (updatedSlots.length < 72) {
             updatedSlots.push({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`, isNew: false });
@@ -37,13 +35,13 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
 
     const cycleCards = (index) => {
         playSound(viewStickersAudio);
-        if (index === 0) {
-            setCardIndexes([cardIndexes[1], cardIndexes[2], cardIndexes[0]]);
-        } else if (index === 1) {
-            setCardIndexes([cardIndexes[2], cardIndexes[0], cardIndexes[1]]);
-        } else {
-            setCardIndexes([cardIndexes[0], cardIndexes[1], cardIndexes[2]]);
-        }
+        setCardIndexes(prevIndexes => {
+            const newIndexes = [...prevIndexes];
+            const temp = newIndexes[index];
+            newIndexes[index] = newIndexes[(index + 1) % 3];
+            newIndexes[(index + 1) % 3] = temp;
+            return newIndexes;
+        });
     };
 
     const handleStickerClick = (sticker) => {
@@ -51,9 +49,9 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
             setSelectedSticker(sticker);
             playSound(revealAudio);
 
-            // クリックしたステッカーの「NEW」マークを消去
+            // クリックされたステッカーのisNewフラグをオフにして保存
             const updatedSlots = stickerSlots.map(slot =>
-                slot.image === sticker.image ? { ...slot, isNew: false } : slot
+                slot.id === sticker.id ? { ...slot, isNew: false } : slot
             );
             setStickerSlots(updatedSlots);
             localStorage.setItem('stickerSlots', JSON.stringify(updatedSlots));
@@ -73,19 +71,13 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
                         transform: `translateX(${i * 40}px) translateY(${i * 5}px) scale(${1 - i * 0.05})`,
                     }}
                     onClick={(e) => {
-                        if (e.target.className !== 'sticker-image') {
-                            cycleCards(i);
-                        }
+                        if (e.target.className !== 'sticker-image') cycleCards(i);
                     }}
                 >
                     <h2 className="collection-title">Touch and Change Card</h2>
                     <div className="sticker-grid">
                         {stickerSlots.slice(cardIndex * 24, (cardIndex + 1) * 24).map((sticker, j) => (
-                            <div
-                                key={j}
-                                className="sticker-item"
-                                onClick={() => handleStickerClick(sticker)}
-                            >
+                            <div key={j} className="sticker-item" onClick={() => handleStickerClick(sticker)}>
                                 <img
                                     src={sticker.image}
                                     alt={`Sticker ${j + 1}`}
