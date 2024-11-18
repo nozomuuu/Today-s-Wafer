@@ -1,4 +1,3 @@
-// App.js - ウエハース開封画面の改善
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import waferClosed from './images/wafer1.webp';
@@ -102,7 +101,7 @@ function App() {
                     </button>
                     <div className="collected-stickers">
                         {todayStickers.map((sticker, index) => (
-                            <div key={index} className="sticker-item">
+                            <div key={index} className="sticker-item" onClick={() => setSelectedSticker(sticker)}>
                                 <img
                                     src={sticker.image}
                                     alt={`Sticker ${index + 1}`}
