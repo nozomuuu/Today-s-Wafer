@@ -99,6 +99,8 @@ function App() {
     const showCollectionBook = () => {
         playSound(viewStickersAudio);
         setPage("collection");
+        // 最新のステッカー情報を強制的に再読み込みする
+        setCollectedStickers(loadFromLocalStorage('collectedStickers'));
     };
 
     const goBackToMain = () => {
