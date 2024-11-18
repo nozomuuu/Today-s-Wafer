@@ -3,7 +3,7 @@ import './CollectionBook.css';
 
 function StickerPopup({ sticker, closePopup }) {
     return (
-        <div className="popup" onClick={closePopup}>
+        <div className="popup">
             <div className="popup-content">
                 <img src={sticker.image} alt="Selected Sticker" className="popup-image" />
                 {sticker.isNew && <div className="popup-new-badge">NEW</div>}
