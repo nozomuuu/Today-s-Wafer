@@ -15,7 +15,7 @@ body {
   border-radius: 15px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   width: 300px;
-  position: relative;
+  position: relative; /* レイヤーを意識 */
   z-index: 1;
 }
 
@@ -55,84 +55,117 @@ body {
 }
 
 .collected-stickers {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
+  display: flex;
+  justify-content: center;
   margin-top: 20px;
-}
-
-.sticker-small-container {
-  position: relative;
+  flex-wrap: wrap;
 }
 
 .sticker-small {
   width: 50px;
   height: 50px;
+  margin: 5px;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
-.new-badge {
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  background-color: #FF4081;
-  color: white;
-  padding: 2px 5px;
-  font-size: 10px;
-  border-radius: 3px;
-  font-weight: bold;
-}
-
-.popup-new-badge {
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  background-color: #FF4081;
-  color: white;
-  padding: 2px 5px;
-  font-size: 10px;
-  border-radius: 3px;
-  font-weight: bold;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.popup {
+.sticker-popup {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  right: 0;
+  bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 10;
+  justify-content: center;
 }
 
-.popup-content {
-  position: relative;
+.sticker-popup-content {
   background-color: #fff0e0;
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
   text-align: center;
-  width: 200px;
+  max-width: 200px;
 }
 
-.close-popup-button {
-  padding: 8px 16px;
-  font-size: 14px;
-  background-color: #6B4226;
-  color: white;
+.sticker-large {
+  width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.back-button {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 1em;
+  color: #FFF;
+  background: #6B4226;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  margin-top: 10px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.3s ease;
+  transition: all 0.2s ease;
 }
 
-.close-popup-button:hover {
-  background-color: #e67e22;
+.back-button:hover {
+  background: #8B5742;
+  transform: translateY(-2px);
+}
+
+.not-owned-label {
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  font-size: 0.8em;
+  color: red;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 2px 5px;
+  border-radius: 3px;
+}
+.sticker-not-owned {
+  position: relative;
+}
+
+.sticker-item.grayscale {
+  filter: grayscale(100%);
+  opacity: 0.6;
+}
+
+.sticker-item {
+  width: 60px;
+  height: 60px;
+  margin: 5px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.sticker-item:hover {
+  transform: scale(1.05);
+}
+
+.new-badge {
+    position: absolute;
+    top: 5px;
+    left: 5px; /* 左上に配置 */
+    background-color: #FF4081;
+    color: white;
+    padding: 2px 5px;
+    font-size: 10px;
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+.popup-new-badge {
+    position: absolute;
+    top: 5px;
+    left: 5px; /* 左上に配置 */
+    background-color: #FF4081;
+    color: white;
+    padding: 2px 5px;
+    font-size: 10px;
+    border-radius: 3px;
+    font-weight: bold;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
 }

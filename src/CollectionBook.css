@@ -4,14 +4,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 20px;
+    padding-top: 100px;
     background: none;
     z-index: 2;
 }
 
 .collection-book {
     position: absolute;
-    top: 0;
+    top: 30px;
     width: 300px;
     padding: 20px;
     background-color: #fdf3e7;
@@ -24,13 +24,13 @@
 
 .sticker-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 8px;
+    grid-template-columns: repeat(5, 1fr); /* 5列レイアウト */
+    gap: 10px;
 }
 
 .sticker-item {
-    width: 56px;
-    height: 56px;
+    width: 60px;
+    height: 60px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -65,7 +65,8 @@
 }
 
 .back-button {
-    margin-top: 500px;
+    position: relative;
+    margin-top: 550px;
     padding: 10px 20px;
     font-size: 16px;
     background-color: #a5673f;
@@ -86,7 +87,7 @@
 .new-badge {
     position: absolute;
     top: 5px;
-    left: 5px;
+    left: 5px; /* 左上に配置 */
     background-color: #FF4081;
     color: white;
     padding: 2px 5px;
@@ -99,7 +100,7 @@
 .popup-new-badge {
     position: absolute;
     top: 5px;
-    left: 5px;
+    left: 5px; /* 左上に配置 */
     background-color: #FF4081;
     color: white;
     padding: 2px 5px;
@@ -109,6 +110,7 @@
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+/* ポップアップのスタイル */
 .popup {
     position: fixed;
     top: 0;
@@ -123,6 +125,7 @@
 }
 
 .popup-content {
+    position: relative;
     background-color: #fff0e0;
     padding: 20px;
     border-radius: 12px;
@@ -130,6 +133,12 @@
     text-align: center;
     width: 200px;
     max-width: 200px;
+}
+
+.popup-image {
+    width: 100%;
+    height: auto;
+    margin-bottom: 10px;
 }
 
 .close-popup-button {

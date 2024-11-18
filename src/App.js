@@ -68,13 +68,10 @@ function App() {
             return updatedStickers;
         });
 
-        setTodayStickers(prev => [
-            ...prev,
-            { ...newSticker, isNew: !collectedStickers.some(sticker => sticker.image === newSticker.image) }
-        ]);
+        setTodayStickers(prev => [...prev, newSticker]);
         setTimeout(() => {
             setIsOpened(false);
-            setSelectedSticker({ ...newSticker, isNew: true });
+            setSelectedSticker(newSticker);
             playSound(revealAudio);
         }, 1500);
     };
@@ -102,14 +99,13 @@ function App() {
                     <button onClick={goToCollectionBook} className="button collection-book-button">
                         CollectionBook
                     </button>
-                    <div className="collected-stickers" style={{ gridTemplateColumns: 'repeat(5, 1fr)' }}>
+                    <div className="collected-stickers">
                         {todayStickers.map((sticker, index) => (
-                            <div key={index} className="sticker-small-container">
+                            <div key={index} className="sticker-item">
                                 <img
                                     src={sticker.image}
                                     alt={`Sticker ${index + 1}`}
                                     className="sticker-small"
-                                    onClick={() => setSelectedSticker(sticker)}
                                 />
                                 {sticker.isNew && <div className="new-badge">NEW</div>}
                             </div>
