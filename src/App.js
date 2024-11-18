@@ -78,14 +78,14 @@ function App() {
         playSound(openAudio);
         setIsOpened(true);
         const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-
+        
         setCollectedStickers(prev => {
             const updatedStickers = [...prev];
             addUniqueSticker(newSticker, updatedStickers);
             return updatedStickers;
         });
 
-        setTodayStickers(prev => [...prev, { ...newSticker, isNew: true }]);
+        setTodayStickers(prev => [...prev, newSticker]);
         setTimeout(() => {
             setIsOpened(false);
             setSelectedSticker(newSticker);
@@ -125,7 +125,7 @@ function App() {
                     </button>
                     <div className="collected-stickers">
                         {todayStickers.map((sticker, index) => (
-                            <div className="mini-sticker" key={index}>
+                            <div key={index} className="mini-sticker">
                                 <img
                                     src={sticker.image}
                                     alt={`Sticker ${index + 1}`}
@@ -154,7 +154,7 @@ function App() {
             {selectedSticker && (
                 <div className="sticker-popup" onClick={closeStickerDetail}>
                     <div className="sticker-popup-content">
-                        <img src={selectedSticker.image} alt="Selected Sticker" className="sticker-large" />
+                        <img src={selectedSticker.image} alt="Selected Sticker" className="popup-image" />
                         {selectedSticker.isNew && <div className="popup-new-badge">NEW</div>}
                         <button onClick={closeStickerDetail} className="button">Close</button>
                     </div>

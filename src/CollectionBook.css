@@ -148,10 +148,11 @@
     box-shadow: none;
 }
 
+/* ポップアップ用NEWバッジのデザイン */
 .popup-new-badge {
     position: absolute;
     top: 5px;
-    right: 5px;
+    left: 5px;
     background-color: #FF4081;
     color: white;
     padding: 2px 5px;
