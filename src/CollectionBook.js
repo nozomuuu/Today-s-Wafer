@@ -1,3 +1,4 @@
+// CollectionBook.js
 import React, { useState, useEffect } from 'react';
 import './CollectionBook.css';
 import StickerPopup from './StickerPopup';
@@ -19,13 +20,13 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
     };
 
     useEffect(() => {
-        // スロットの情報を最新の所持ステッカーに基づいて更新
+        // 最新の所持ステッカーに基づいてスロットを更新
         const savedSlots = JSON.parse(localStorage.getItem('stickerSlots')) || [];
         const newOwnedStickers = ownedStickers.filter(sticker => 
             !savedSlots.some(slot => slot.image === sticker.image)
         ).map(sticker => ({ ...sticker, isNew: true }));  // 新しいステッカーにはisNewフラグを付与
 
-        // ステッカースロットを最新の情報で更新
+        // 最新情報でステッカースロットを更新
         const updatedSlots = [...savedSlots, ...newOwnedStickers];
         while (updatedSlots.length < 72) {
             updatedSlots.push({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`, isNew: false });

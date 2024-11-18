@@ -1,16 +1,17 @@
+/* CollectionBook.css */
 .collection-container {
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 20px; /* 調整済み */
+    padding-top: 20px;
     background: none;
     z-index: 2;
 }
 
 .collection-book {
     position: absolute;
-    top: 0; /* カードの位置調整 */
+    top: 0;
     width: 300px;
     padding: 20px;
     background-color: #fdf3e7;
@@ -23,12 +24,12 @@
 
 .sticker-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr); /* 5列レイアウト */
-    gap: 8px; /* スペースを縮小し収まりをよくしました */
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
 }
 
 .sticker-item {
-    width: 56px; /* サイズ調整済み */
+    width: 56px;
     height: 56px;
     display: flex;
     justify-content: center;
@@ -50,6 +51,7 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
+/* 各カードの異なる背景色 */
 .collection-book:nth-child(1) {
     background-color: #fdf3e7;
 }
