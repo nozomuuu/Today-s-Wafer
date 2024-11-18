@@ -1,3 +1,4 @@
+// CollectionBook.js
 import React, { useState, useEffect } from 'react';
 import './CollectionBook.css';
 import StickerPopup from './StickerPopup';
@@ -19,13 +20,17 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
     };
 
     useEffect(() => {
+        // ステッカーの状態をローカルストレージから読み込んで設定
         const savedSlots = JSON.parse(localStorage.getItem('stickerSlots')) || [];
-        const updatedSlots = Array(72).fill(null).map((_, i) => {
-            const sticker = ownedStickers.find(s => s.id === i);
-            return sticker
-                ? { ...sticker, isNew: savedSlots.every(slot => slot.id !== sticker.id) }
-                : { image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`, isNew: false };
-        });
+        const newOwnedStickers = ownedStickers.filter(sticker => 
+            !savedSlots.some(slot => slot.image === sticker.image)
+        ).map(sticker => ({ ...sticker, isNew: true }));  // 新しいステッカーにはisNewフラグを付与
+
+        // ステッカースロットを更新
+        const updatedSlots = [...savedSlots, ...newOwnedStickers];
+        while (updatedSlots.length < 72) {
+            updatedSlots.push({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`, isNew: false });
+        }
 
         setStickerSlots(updatedSlots);
         localStorage.setItem('stickerSlots', JSON.stringify(updatedSlots));
@@ -47,8 +52,9 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
             setSelectedSticker(sticker);
             playSound(revealAudio);
 
+            // クリックしたステッカーのNEWマークを消去
             const updatedSlots = stickerSlots.map(slot =>
-                slot.id === sticker.id ? { ...slot, isNew: false } : slot
+                slot.image === sticker.image ? { ...slot, isNew: false } : slot
             );
             setStickerSlots(updatedSlots);
             localStorage.setItem('stickerSlots', JSON.stringify(updatedSlots));

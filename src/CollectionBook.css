@@ -33,7 +33,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative;
+    position: relative; /* NEWバッジの位置指定のためにpositionを追加 */
 }
 
 .sticker-image {
@@ -44,6 +44,7 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
+/* 各カードの異なる背景色 */
 .collection-book:nth-child(1) {
     background-color: #fdf3e7;
 }
@@ -74,6 +75,7 @@
     background-color: #e67e22;
 }
 
+/* NEWバッジのデザイン */
 .new-badge {
     position: absolute;
     top: 5px;
@@ -127,6 +129,7 @@
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+/* 追加のスタイル調整 */
 .collection-container,
 .collection-book,
 .sticker-image,
@@ -148,11 +151,11 @@
 .popup-new-badge {
     position: absolute;
     top: 5px;
-    left: 5px;
+    right: 5px;
     background-color: #FF4081;
     color: white;
-    padding: 2px 5px;
-    font-size: 10px;
-    border-radius: 3px;
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 5px;
     font-weight: bold;
 }
