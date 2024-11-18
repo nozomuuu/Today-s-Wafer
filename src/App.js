@@ -27,8 +27,8 @@ function loadFromLocalStorage(key) {
 }
 
 function addUniqueSticker(newSticker, collectedStickers) {
-    if (!collectedStickers.some(sticker => sticker.image === newSticker.image)) {
-        collectedStickers.push(newSticker);
+    if (!collectedStickers.some(sticker => sticker.id === newSticker.id)) {
+        collectedStickers.push({ ...newSticker, isNew: true }); // `isNew` フラグを設定
     }
 }
 
@@ -78,17 +78,17 @@ function App() {
         playSound(openAudio);
         setIsOpened(true);
         const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
-        
+
         setCollectedStickers(prev => {
             const updatedStickers = [...prev];
             addUniqueSticker(newSticker, updatedStickers);
             return updatedStickers;
         });
 
-        setTodayStickers(prev => [...prev, newSticker]);
+        setTodayStickers(prev => [...prev, { ...newSticker, isNew: true }]);
         setTimeout(() => {
             setIsOpened(false);
-            setSelectedSticker(newSticker);
+            setSelectedSticker({ ...newSticker, isNew: true });
             playSound(revealAudio);
         }, 1500);
     };
@@ -100,7 +100,17 @@ function App() {
         }
     };
 
-    const closeStickerDetail = () => setSelectedSticker(null);
+    const closeStickerDetail = () => {
+        if (selectedSticker) {
+            // `isNew` フラグを false に更新
+            setCollectedStickers(prev =>
+                prev.map(sticker =>
+                    sticker.id === selectedSticker.id ? { ...sticker, isNew: false } : sticker
+                )
+            );
+        }
+        setSelectedSticker(null);
+    };
 
     return (
         <div className="app">
@@ -125,11 +135,11 @@ function App() {
                     </button>
                     <div className="collected-stickers">
                         {todayStickers.map((sticker, index) => (
-                            <div key={index} className="mini-sticker">
+                            <div className="sticker-small" key={index}>
                                 <img
                                     src={sticker.image}
                                     alt={`Sticker ${index + 1}`}
-                                    className="sticker-small"
+                                    className="sticker-image"
                                     onClick={() => {
                                         setSelectedSticker(sticker);
                                         playSound(revealAudio);
@@ -154,7 +164,7 @@ function App() {
             {selectedSticker && (
                 <div className="sticker-popup" onClick={closeStickerDetail}>
                     <div className="sticker-popup-content">
-                        <img src={selectedSticker.image} alt="Selected Sticker" className="popup-image" />
+                        <img src={selectedSticker.image} alt="Selected Sticker" className="sticker-large" />
                         {selectedSticker.isNew && <div className="popup-new-badge">NEW</div>}
                         <button onClick={closeStickerDetail} className="button">Close</button>
                     </div>
