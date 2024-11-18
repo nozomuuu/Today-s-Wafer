@@ -3,16 +3,16 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 100px;
+    padding-top: 80px;
     background: none;
     z-index: 2;
 }
 
 .collection-book {
     position: absolute;
-    top: 30px;
-    width: 300px;
-    padding: 20px;
+    top: 20px;
+    width: 280px;
+    padding: 15px;
     background-color: #fdf3e7;
     border-radius: 12px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
@@ -23,13 +23,13 @@
 
 .sticker-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr); /* 5列レイアウト */
-    gap: 10px;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
 }
 
 .sticker-item {
-    width: 60px;
-    height: 60px;
+    width: 55px;
+    height: 55px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -50,23 +50,27 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
-/* 各カードの異なる背景色 */
+/* カードごとに異なる背景色 */
 .collection-book:nth-child(1) {
     background-color: #fdf3e7;
 }
 
 .collection-book:nth-child(2) {
     background-color: #f9e7d4;
+    transform: translateX(10px) translateY(10px) scale(0.95);
+    z-index: 2;
 }
 
 .collection-book:nth-child(3) {
     background-color: #f5dcc1;
+    transform: translateX(20px) translateY(20px) scale(0.9);
+    z-index: 1;
 }
 
 .back-button {
     position: relative;
-    margin-top: 550px;
-    padding: 10px 20px;
+    margin-top: 520px;
+    padding: 8px 18px;
     font-size: 16px;
     background-color: #a5673f;
     color: white;
@@ -82,11 +86,10 @@
     background-color: #e67e22;
 }
 
-/* NEWバッジのスタイル */
 .new-badge {
     position: absolute;
     top: 5px;
-    left: 5px; /* 左上に配置 */
+    left: 5px;
     background-color: #FF4081;
     color: white;
     padding: 2px 5px;
@@ -95,11 +98,10 @@
     font-weight: bold;
 }
 
-/* ポップアップのNEWバッジ */
 .popup-new-badge {
     position: absolute;
     top: 5px;
-    left: 5px; /* 左上に配置 */
+    left: 5px;
     background-color: #FF4081;
     color: white;
     padding: 2px 5px;
@@ -109,7 +111,6 @@
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* ポップアップのスタイル */
 .popup {
     position: fixed;
     top: 0;
