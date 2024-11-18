@@ -1,3 +1,4 @@
+/* CollectionBook.css */
 .collection-container {
     position: relative;
     display: flex;
@@ -23,7 +24,7 @@
 
 .sticker-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr); /* 5列レイアウトに設定 */
+    grid-template-columns: repeat(5, 1fr); /* 5列レイアウト */
     gap: 10px;
 }
 
@@ -34,6 +35,12 @@
     justify-content: center;
     align-items: center;
     position: relative;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.sticker-item:hover {
+    transform: scale(1.05);
 }
 
 .sticker-image {
@@ -76,6 +83,7 @@
     background-color: #e67e22;
 }
 
+/* NEWバッジのスタイル */
 .new-badge {
     position: absolute;
     top: 5px;
@@ -88,6 +96,7 @@
     font-weight: bold;
 }
 
+/* ポップアップのNEWバッジ */
 .popup-new-badge {
     position: absolute;
     top: 5px;
@@ -101,6 +110,7 @@
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+/* ポップアップのスタイル */
 .popup {
     position: fixed;
     top: 0;

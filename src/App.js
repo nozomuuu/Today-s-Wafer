@@ -68,7 +68,10 @@ function App() {
             return updatedStickers;
         });
 
-        setTodayStickers(prev => [...prev, { ...newSticker, isNew: true }]); // isNewフラグを付加して todayStickers に追加
+        setTodayStickers(prev => [
+            ...prev,
+            { ...newSticker, isNew: !collectedStickers.some(sticker => sticker.image === newSticker.image) }
+        ]);
         setTimeout(() => {
             setIsOpened(false);
             setSelectedSticker({ ...newSticker, isNew: true });
