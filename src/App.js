@@ -54,26 +54,6 @@ function App() {
     const viewStickersAudio = new Audio(viewStickersSound);
 
     useEffect(() => {
-        document.addEventListener('touchstart', handleFirstTap);
-        return () => document.removeEventListener('touchstart', handleFirstTap);
-    }, []);
-
-    const handleFirstTap = () => {
-        openAudio.play().catch(() => {});
-        revealAudio.play().catch(() => {});
-        viewStickersAudio.play().catch(() => {});
-        resetAudio([openAudio, revealAudio, viewStickersAudio]);
-        document.removeEventListener('touchstart', handleFirstTap);
-    };
-
-    const resetAudio = (audioList) => {
-        audioList.forEach(audio => {
-            audio.pause();
-            audio.currentTime = 0;
-        });
-    };
-
-    useEffect(() => {
         saveToLocalStorage('collectedStickers', collectedStickers);
     }, [collectedStickers]);
 
@@ -96,16 +76,9 @@ function App() {
         }, 1500);
     };
 
-    const showCollectionBook = () => {
+    const goToCollectionBook = () => {
         playSound(viewStickersAudio);
         setPage("collection");
-        // 最新のステッカー情報を強制的に再読み込みする
-        setCollectedStickers(loadFromLocalStorage('collectedStickers'));
-    };
-
-    const goBackToMain = () => {
-        playSound(viewStickersAudio);
-        setPage("main");
     };
 
     return (
@@ -123,7 +96,7 @@ function App() {
                     <button onClick={openWafer} className="button open-wafer-button">
                         Open a Wafer
                     </button>
-                    <button onClick={showCollectionBook} className="button collection-book-button">
+                    <button onClick={goToCollectionBook} className="button collection-book-button">
                         CollectionBook
                     </button>
                     <div className="collected-stickers">
@@ -133,7 +106,6 @@ function App() {
                                     src={sticker.image}
                                     alt={`Sticker ${index + 1}`}
                                     className="sticker-small"
-                                    onClick={() => setSelectedSticker(sticker)}
                                 />
                                 {sticker.isNew && <div className="new-badge">NEW</div>}
                             </div>
@@ -145,11 +117,11 @@ function App() {
                 <CollectionBook
                     allStickers={stickersData}
                     ownedStickers={collectedStickers}
-                    goBack={goBackToMain}
+                    goBack={() => setPage("main")}
                 />
             )}
             {selectedSticker && (
-                <div className="sticker-popup" onClick={() => setSelectedSticker(null)}>
+                <div className="popup">
                     <div className="popup-content">
                         <img src={selectedSticker.image} alt="Selected Sticker" className="sticker-large" />
                         <button onClick={() => setSelectedSticker(null)} className="close-popup-button">Close</button>
