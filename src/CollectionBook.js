@@ -35,13 +35,13 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
 
     const cycleCards = (index) => {
         playSound(viewStickersAudio);
-        if (index === 0) {
-            setCardIndexes([cardIndexes[1], cardIndexes[2], cardIndexes[0]]);
-        } else if (index === 1) {
-            setCardIndexes([cardIndexes[2], cardIndexes[0], cardIndexes[1]]);
-        } else {
-            setCardIndexes([cardIndexes[0], cardIndexes[1], cardIndexes[2]]);
-        }
+        setCardIndexes(prev => {
+            const newIndexes = [...prev];
+            const temp = newIndexes[index];
+            newIndexes[index] = newIndexes[(index + 1) % 3];
+            newIndexes[(index + 1) % 3] = temp;
+            return newIndexes;
+        });
     };
 
     const handleStickerClick = (sticker) => {
@@ -70,19 +70,13 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
                         transform: `translateX(${i * 40}px) translateY(${i * 5}px) scale(${1 - i * 0.05})`,
                     }}
                     onClick={(e) => {
-                        if (e.target.className !== 'sticker-image') {
-                            cycleCards(i);
-                        }
+                        if (e.target.className !== 'sticker-image') cycleCards(i);
                     }}
                 >
                     <h2 className="collection-title">Touch and Change Card</h2>
                     <div className="sticker-grid">
                         {stickerSlots.slice(cardIndex * 24, (cardIndex + 1) * 24).map((sticker, j) => (
-                            <div
-                                key={j}
-                                className="sticker-item"
-                                onClick={() => handleStickerClick(sticker)}
-                            >
+                            <div key={j} className="sticker-item" onClick={() => handleStickerClick(sticker)}>
                                 <img
                                     src={sticker.image}
                                     alt={`Sticker ${j + 1}`}
