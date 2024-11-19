@@ -116,15 +116,13 @@ function App() {
                     </button>
                     <div className="collected-stickers">
                         {todayStickers.map((sticker, index) => (
-                            <div key={index} className="sticker-item">
-                                <img
-                                    src={sticker.image}
-                                    alt={`Sticker ${index + 1}`}
-                                    className="sticker-small"
-                                    onClick={() => setSelectedSticker(sticker)}
-                                />
-                                {sticker.isNew && <div className="new-badge">NEW</div>}
-                            </div>
+                            <img
+                                key={index}
+                                src={sticker.image}
+                                alt={`Sticker ${index + 1}`}
+                                className="sticker-small"
+                                onClick={() => setSelectedSticker(sticker)}
+                            />
                         ))}
                     </div>
                 </div>
