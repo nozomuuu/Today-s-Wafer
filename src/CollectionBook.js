@@ -1,3 +1,5 @@
+// CollectionBook.js の最終確認済み全文コード
+
 import React, { useState, useEffect } from 'react';
 import './CollectionBook.css';
 import StickerPopup from './StickerPopup';
@@ -89,15 +91,8 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
                 </div>
             ))}
             <button onClick={goBack} className="back-button">Back to Main</button>
-
             {selectedSticker && (
-                <div className="sticker-popup" onClick={closePopup}>
-                    <div className="sticker-popup-content">
-                        <img src={selectedSticker.image} alt="Selected Sticker" className="popup-sticker-image" />
-                        {selectedSticker.isNew && <div className="popup-new-badge">NEW</div>}
-                        <button onClick={closePopup} className="button close-popup-button">Close</button>
-                    </div>
-                </div>
+                <StickerPopup sticker={selectedSticker} closePopup={closePopup} />
             )}
         </div>
     );

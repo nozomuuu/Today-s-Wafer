@@ -1,3 +1,5 @@
+/* App.css の最終確認済み全文コード */
+
 body {
   display: flex;
   justify-content: center;
@@ -57,7 +59,7 @@ body {
 .collected-stickers {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 4px; /* 間隔の調整 */
+  gap: 4px;
   margin-top: 20px;
 }
 
