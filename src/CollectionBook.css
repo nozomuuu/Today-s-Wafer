@@ -1,3 +1,5 @@
+/* CollectionBook.css */
+
 .collection-container {
     position: relative;
     display: flex;
@@ -12,48 +14,50 @@
 .collection-book {
     position: absolute;
     top: 30px;
-    width: 320px; /* カード幅を少し広げる */
+    width: 300px;
     padding: 20px;
     background-color: #fdf3e7;
     border-radius: 12px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s ease, background-color 0.3s ease;
     overflow: hidden;
+    z-index: 3;
 }
 
 /* 複数のカードスタックの背景色 */
 .collection-book:nth-child(1) {
     background-color: #fdf3e7;
-    transform: translateX(0px) translateY(0px) scale(1); /* 一番上のカード */
 }
 
 .collection-book:nth-child(2) {
     background-color: #f9e7d4;
-    transform: translateX(20px) translateY(5px) scale(0.98); /* 2番目のカードのずれ */
 }
 
 .collection-book:nth-child(3) {
     background-color: #f5dcc1;
-    transform: translateX(40px) translateY(10px) scale(0.96); /* 3番目のカードのずれ */
+}
+
+/* カードのスタッキングとサイズ調整 */
+.top-card {
+    z-index: 5;
+    transform: translateX(0px) translateY(0px) scale(1);
 }
 
 /* ステッカーグリッドの設定 */
 .sticker-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4列レイアウト */
-    gap: 12px; /* ステッカー間の間隔を広げる */
-    margin-bottom: 20px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
 }
 
 /* ステッカーのアイテムスタイル */
 .sticker-item {
-    width: 70px; /* ステッカーの幅を調整 */
-    height: 70px; /* ステッカーの高さを調整 */
+    width: 60px;
+    height: 60px;
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
-    transition: transform 0.2s ease;
 }
 
 .sticker-item:hover {
@@ -150,7 +154,7 @@
 /* 戻るボタンのスタイル */
 .back-button {
     position: relative;
-    margin-top: 500px; /* ボタンの位置を調整 */
+    margin-top: 550px;
     padding: 10px 20px;
     font-size: 16px;
     background-color: #a5673f;
