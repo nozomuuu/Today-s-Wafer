@@ -104,11 +104,6 @@ function App() {
         setPage("collection");
     };
 
-    const handleStickerClick = (sticker) => {
-        playSound(viewStickersAudio);
-        setSelectedSticker(sticker);
-    };
-
     return (
         <div className="app">
             {page === "main" && (
@@ -129,7 +124,7 @@ function App() {
                     </button>
                     <div className="collected-stickers">
                         {todayStickers.map((sticker, index) => (
-                            <div key={index} className="sticker-item" onClick={() => handleStickerClick(sticker)}>
+                            <div key={index} className="sticker-item" onClick={() => { playSound(viewStickersAudio); setSelectedSticker(sticker); }}>
                                 <img
                                     src={sticker.image}
                                     alt={`Sticker ${index + 1}`}
@@ -149,7 +144,7 @@ function App() {
                 />
             )}
             {selectedSticker && (
-                <div className="popup">
+                <div className="popup" onClick={() => setSelectedSticker(null)}>
                     <div className="popup-content">
                         <img src={selectedSticker.image} alt="Selected Sticker" className="sticker-large" />
                         <button onClick={() => setSelectedSticker(null)} className="close-popup-button">Close</button>
