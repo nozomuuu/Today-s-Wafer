@@ -55,10 +55,10 @@ body {
 }
 
 .collected-stickers {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
+  display: flex;
+  justify-content: center;
   margin-top: 20px;
+  flex-wrap: wrap;
 }
 
 .sticker-small {
@@ -67,6 +67,33 @@ body {
   margin: 5px;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.sticker-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sticker-popup-content {
+  background-color: #fff0e0;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  max-width: 200px;
+}
+
+.sticker-large {
+  width: 100%;
+  height: auto;
+  margin-bottom: 10px;
 }
 
 .new-badge {
@@ -92,45 +119,4 @@ body {
   border-radius: 3px;
   font-weight: bold;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.popup {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10;
-}
-
-.popup-content {
-  position: relative;
-  background-color: #fff0e0;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-  text-align: center;
-  width: 200px;
-  max-width: 200px;
-}
-
-.close-popup-button {
-  padding: 8px 16px;
-  font-size: 14px;
-  background-color: #6B4226;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: 10px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.3s ease;
-}
-
-.close-popup-button:hover {
-  background-color: #e67e22;
 }
