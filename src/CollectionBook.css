@@ -46,20 +46,18 @@
 /* ステッカーグリッドの設定 */
 .sticker-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 10px;
 }
 
 /* ステッカーのアイテムスタイル */
 .sticker-item {
+    position: relative;
     width: 60px;
     height: 60px;
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative;
-    cursor: pointer;
-    transition: transform 0.2s ease;
 }
 
 .sticker-item:hover {
