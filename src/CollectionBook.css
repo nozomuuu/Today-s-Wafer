@@ -46,9 +46,8 @@
 /* ステッカーグリッドの設定 */
 .sticker-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr); /* 5列レイアウト */
+    grid-template-columns: repeat(4, 1fr);
     gap: 10px;
-    justify-content: center;
 }
 
 /* ステッカーのアイテムスタイル */
