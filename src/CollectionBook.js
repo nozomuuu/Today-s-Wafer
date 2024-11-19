@@ -1,5 +1,3 @@
-// CollectionBook.js の最終確認済み全文コード
-
 import React, { useState, useEffect } from 'react';
 import './CollectionBook.css';
 import StickerPopup from './StickerPopup';
