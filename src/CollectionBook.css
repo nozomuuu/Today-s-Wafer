@@ -170,3 +170,20 @@
 .back-button:hover {
     background-color: #e67e22;
 }
+.collection-container,
+.collection-book,
+.sticker-image,
+.back-button,
+.card-item {
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.card-item:focus,
+.sticker-image:focus,
+.back-button:focus {
+    outline: none;
+    box-shadow: none;
+}
