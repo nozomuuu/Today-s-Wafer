@@ -104,6 +104,11 @@ function App() {
         setPage("collection");
     };
 
+    const handleStickerClick = (sticker) => {
+        playSound(viewStickersAudio);
+        setSelectedSticker(sticker);
+    };
+
     return (
         <div className="app">
             {page === "main" && (
@@ -124,7 +129,7 @@ function App() {
                     </button>
                     <div className="collected-stickers">
                         {todayStickers.map((sticker, index) => (
-                            <div key={index} className="sticker-item" onClick={() => setSelectedSticker(sticker)}>
+                            <div key={index} className="sticker-item" onClick={() => handleStickerClick(sticker)}>
                                 <img
                                     src={sticker.image}
                                     alt={`Sticker ${index + 1}`}
