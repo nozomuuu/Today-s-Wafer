@@ -57,7 +57,7 @@ body {
 .collected-stickers {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 4px; /* 間隔の調整 */
+  gap: 4px;
   margin-top: 20px;
 }
 
@@ -66,7 +66,6 @@ body {
   height: 50px;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-  position: relative;
 }
 
 .new-badge {

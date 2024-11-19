@@ -1,5 +1,3 @@
-// App.js 修正版（mini-stickerのNEWマークの表示ロジック改善）
-
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import waferClosed from './images/wafer1.webp';
@@ -93,7 +91,7 @@ function App() {
         setTodayStickers(prev => [...prev, { ...newSticker, isNew: true }]);
         setTimeout(() => {
             setIsOpened(false);
-            setSelectedSticker(newSticker);
+            setSelectedSticker({ ...newSticker, isNew: true });
             playSound(revealAudio);
         }, 1500);
     };
@@ -118,12 +116,11 @@ function App() {
                     </button>
                     <div className="collected-stickers">
                         {todayStickers.map((sticker, index) => (
-                            <div key={index} className="sticker-container">
+                            <div key={index} className="sticker-item" onClick={() => {setSelectedSticker(sticker); playSound(revealAudio);}}>
                                 <img
                                     src={sticker.image}
                                     alt={`Sticker ${index + 1}`}
                                     className="sticker-small"
-                                    onClick={() => setSelectedSticker(sticker)}
                                 />
                                 {sticker.isNew && <div className="new-badge">NEW</div>}
                             </div>
@@ -139,11 +136,11 @@ function App() {
                 />
             )}
             {selectedSticker && (
-                <div className="sticker-popup" onClick={() => setSelectedSticker(null)}>
-                    <div className="sticker-popup-content">
+                <div className="popup">
+                    <div className="popup-content">
                         <img src={selectedSticker.image} alt="Selected Sticker" className="sticker-large" />
+                        <button onClick={() => setSelectedSticker(null)} className="close-popup-button">Close</button>
                         {selectedSticker.isNew && <div className="popup-new-badge">NEW</div>}
-                        <button onClick={() => setSelectedSticker(null)} className="button close-popup-button">Close</button>
                     </div>
                 </div>
             )}

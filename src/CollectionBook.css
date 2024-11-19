@@ -6,9 +6,9 @@
     padding-top: 100px;
     background: none;
     z-index: 2;
-  }
-  
-  .collection-book {
+}
+
+.collection-book {
     position: absolute;
     top: 30px;
     width: 300px;
@@ -19,16 +19,15 @@
     transition: transform 0.3s ease, background-color 0.3s ease;
     overflow: hidden;
     z-index: 3;
-    height: 580px; /* カードの縦幅を調整 */
-  }
-  
-  .sticker-grid {
+}
+
+.sticker-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4列に設定 */
-    gap: 15px; /* wafer3.webp同士の間隔を調整 */
-  }
-  
-  .sticker-item {
+    grid-template-columns: repeat(5, 1fr); /* 5列レイアウト */
+    gap: 10px;
+}
+
+.sticker-item {
     width: 60px;
     height: 60px;
     display: flex;
@@ -37,35 +36,36 @@
     position: relative;
     cursor: pointer;
     transition: transform 0.2s ease;
-  }
-  
-  .sticker-item:hover {
+}
+
+.sticker-item:hover {
     transform: scale(1.05);
-  }
-  
-  .sticker-image {
+}
+
+.sticker-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-  }
-  
-  .collection-book:nth-child(1) {
+}
+
+/* 各カードの異なる背景色 */
+.collection-book:nth-child(1) {
     background-color: #fdf3e7;
-  }
-  
-  .collection-book:nth-child(2) {
+}
+
+.collection-book:nth-child(2) {
     background-color: #f9e7d4;
-  }
-  
-  .collection-book:nth-child(3) {
+}
+
+.collection-book:nth-child(3) {
     background-color: #f5dcc1;
-  }
-  
-  .back-button {
+}
+
+.back-button {
     position: relative;
-    margin-top: 10px;
+    margin-top: 550px;
     padding: 10px 20px;
     font-size: 16px;
     background-color: #a5673f;
@@ -76,27 +76,27 @@
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
     z-index: 5;
     transition: background-color 0.3s ease;
-  }
-  
-  .back-button:hover {
+}
+
+.back-button:hover {
     background-color: #e67e22;
-  }
-  
-  /* NEWバッジのスタイル */
-  .new-badge {
+}
+
+/* NEWバッジのスタイル */
+.new-badge {
     position: absolute;
     top: 5px;
-    left: 5px;
+    left: 5px; /* 左上に配置 */
     background-color: #FF4081;
     color: white;
     padding: 2px 5px;
     font-size: 10px;
     border-radius: 3px;
     font-weight: bold;
-  }
-  
-  /* ポップアップのNEWバッジ */
-  .popup-new-badge {
+}
+
+/* ポップアップのNEWバッジ */
+.popup-new-badge {
     position: absolute;
     top: 5px;
     left: 5px; /* 左上に配置 */
@@ -107,9 +107,10 @@
     border-radius: 3px;
     font-weight: bold;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
-  }
-  
-  .popup {
+}
+
+/* ポップアップのスタイル */
+.popup {
     position: fixed;
     top: 0;
     left: 0;
@@ -120,9 +121,9 @@
     justify-content: center;
     align-items: center;
     z-index: 10;
-  }
-  
-  .sticker-popup-content {
+}
+
+.popup-content {
     position: relative;
     background-color: #fff0e0;
     padding: 20px;
@@ -131,15 +132,15 @@
     text-align: center;
     width: 200px;
     max-width: 200px;
-  }
-  
-  .popup-sticker-image {
+}
+
+.popup-image {
     width: 100%;
     height: auto;
     margin-bottom: 10px;
-  }
-  
-  .close-popup-button {
+}
+
+.close-popup-button {
     padding: 8px 16px;
     font-size: 14px;
     background-color: #6B4226;
@@ -150,9 +151,8 @@
     margin-top: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
     transition: background-color 0.3s ease;
-  }
-  
-  .close-popup-button:hover {
+}
+
+.close-popup-button:hover {
     background-color: #e67e22;
-  }
-  
+}
