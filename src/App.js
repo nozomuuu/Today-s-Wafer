@@ -88,12 +88,20 @@ function App() {
             return updatedStickers;
         });
 
-        setTodayStickers(prev => [...prev, newSticker]);
+        setTodayStickers(prev => [
+            ...prev,
+            { ...newSticker, isNew: !collectedStickers.some(sticker => sticker.image === newSticker.image) }
+        ]);
         setTimeout(() => {
             setIsOpened(false);
-            setSelectedSticker(newSticker);
+            setSelectedSticker({ ...newSticker, isNew: true });
             playSound(revealAudio);
         }, 1500);
+    };
+
+    const goToCollectionBook = () => {
+        playSound(viewStickersAudio);
+        setPage("collection");
     };
 
     return (
@@ -111,18 +119,19 @@ function App() {
                     <button onClick={openWafer} className="button open-wafer-button">
                         Open a Wafer
                     </button>
-                    <button onClick={() => setPage("collection")} className="button collection-book-button">
+                    <button onClick={goToCollectionBook} className="button collection-book-button">
                         CollectionBook
                     </button>
                     <div className="collected-stickers">
                         {todayStickers.map((sticker, index) => (
-                            <img
-                                key={index}
-                                src={sticker.image}
-                                alt={`Sticker ${index + 1}`}
-                                className="sticker-small"
-                                onClick={() => setSelectedSticker(sticker)}
-                            />
+                            <div key={index} className="sticker-item" onClick={() => setSelectedSticker(sticker)}>
+                                <img
+                                    src={sticker.image}
+                                    alt={`Sticker ${index + 1}`}
+                                    className="sticker-small"
+                                />
+                                {sticker.isNew && <div className="new-badge">NEW</div>}
+                            </div>
                         ))}
                     </div>
                 </div>
@@ -135,11 +144,11 @@ function App() {
                 />
             )}
             {selectedSticker && (
-                <div className="sticker-popup" onClick={() => setSelectedSticker(null)}>
-                    <div className="sticker-popup-content">
+                <div className="popup">
+                    <div className="popup-content">
                         <img src={selectedSticker.image} alt="Selected Sticker" className="sticker-large" />
+                        <button onClick={() => setSelectedSticker(null)} className="close-popup-button">Close</button>
                         {selectedSticker.isNew && <div className="popup-new-badge">NEW</div>}
-                        <button onClick={() => setSelectedSticker(null)} className="button close-popup-button">Close</button>
                     </div>
                 </div>
             )}
