@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './CollectionBook.css';
+import StickerPopup from './StickerPopup';
 import stickerRevealSound from './sounds/sticker-reveal.mp3';
 import viewStickersSound from './sounds/view-stickers.mp3';
 
@@ -18,22 +19,19 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
     };
 
     useEffect(() => {
-        // 最新の所持ステッカー情報をスロットに更新する
-        const updatedSlots = [];
-        const newStickerIds = new Set(ownedStickers.map(sticker => sticker.id));
+        const savedSlots = JSON.parse(localStorage.getItem('stickerSlots')) || [];
+        const newOwnedStickers = ownedStickers.filter(sticker => 
+            !savedSlots.some(slot => slot.image === sticker.image)
+        ).map(sticker => ({ ...sticker, isNew: true }));
 
-        for (let i = 0; i < 72; i++) {
-            const sticker = ownedStickers[i] || null;
-            updatedSlots.push({
-                ...sticker,
-                isNew: sticker ? newStickerIds.has(sticker.id) : false,
-                image: sticker ? sticker.image : `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`,
-            });
+        const updatedSlots = [...savedSlots, ...newOwnedStickers];
+        while (updatedSlots.length < 72) {
+            updatedSlots.push({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`, isNew: false });
         }
 
         setStickerSlots(updatedSlots);
         localStorage.setItem('stickerSlots', JSON.stringify(updatedSlots));
-    }, [ownedStickers]); // 依存関係にownedStickersを指定し、変化時に再更新
+    }, [ownedStickers]);
 
     const cycleCards = (index) => {
         playSound(viewStickersAudio);
@@ -52,7 +50,7 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
             playSound(revealAudio);
 
             const updatedSlots = stickerSlots.map(slot =>
-                slot.id === sticker.id ? { ...slot, isNew: false } : slot
+                slot.image === sticker.image ? { ...slot, isNew: false } : slot
             );
             setStickerSlots(updatedSlots);
             localStorage.setItem('stickerSlots', JSON.stringify(updatedSlots));
@@ -99,13 +97,7 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
             <button onClick={goBack} className="back-button">Back to Main</button>
 
             {selectedSticker && (
-                <div className="popup">
-                    <div className="popup-content">
-                        <img src={selectedSticker.image} alt="Selected Sticker" className="popup-image" />
-                        {selectedSticker.isNew && <div className="popup-new-badge">NEW</div>}
-                        <button onClick={closePopup} className="close-popup-button">Close</button>
-                    </div>
-                </div>
+                <StickerPopup sticker={selectedSticker} closePopup={closePopup} />
             )}
         </div>
     );
