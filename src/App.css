@@ -55,49 +55,20 @@ body {
 }
 
 .collected-stickers {
-  display: flex;
-  justify-content: center;
-  gap: 10px; /* 間隔を調整 */
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px; /* 間隔の調整 */
   margin-top: 20px;
-  flex-wrap: wrap;
 }
 
 .sticker-small {
   width: 50px;
   height: 50px;
-  margin: 5px;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
-.sticker-popup {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.sticker-popup-content {
-  background-color: #fff0e0;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-  text-align: center;
-  max-width: 200px;
-}
-
-.sticker-large {
-  width: 100%;
-  height: auto;
-  margin-bottom: 10px;
-}
-
-.new-badge, .popup-new-badge {
+.new-badge {
   position: absolute;
   top: 5px;
   left: 5px;
@@ -110,69 +81,59 @@ body {
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* CollectionBook.css */
-.collection-container {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 100px;
-  background: none;
-  z-index: 2;
-}
-
-.collection-book {
-  position: absolute;
-  top: 30px;
-  width: 300px;
-  padding: 20px;
-  background-color: #fdf3e7;
-  border-radius: 12px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease, background-color 0.3s ease;
-  overflow: hidden;
-  z-index: 3;
-  height: 550px; /* 縦幅の調整 */
-}
-
-.sticker-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 15px; /* 画像同士の間隔を調整 */
-}
-
-.sticker-item {
-  width: 60px;
-  height: 60px;
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative;
+  z-index: 10;
 }
 
-.sticker-image {
+.popup-content {
+  position: relative;
+  background-color: #fff0e0;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  max-width: 200px;
+}
+
+.sticker-large {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  height: auto;
 }
 
-.back-button {
-  position: relative;
-  margin-top: 10px;
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #a5673f;
+.popup-new-badge {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  background-color: #FF4081;
+  color: white;
+  padding: 2px 5px;
+  font-size: 10px;
+  border-radius: 3px;
+  font-weight: bold;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.close-popup-button {
+  padding: 8px 16px;
+  font-size: 14px;
+  background-color: #6B4226;
   color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  z-index: 5;
-  transition: background-color 0.3s ease;
+  margin-top: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.back-button:hover {
-  background-color: #e67e22;
+.close-popup-button:hover {
+  background-color: #8B5742;
 }
