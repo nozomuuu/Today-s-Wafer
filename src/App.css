@@ -57,8 +57,9 @@ body {
 .collected-stickers {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 4px;
+  gap: 4px; /* 間隔の調整 */
   margin-top: 20px;
+  justify-content: center;
 }
 
 .sticker-small {

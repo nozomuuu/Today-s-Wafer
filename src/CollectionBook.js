@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './CollectionBook.css';
 import StickerPopup from './StickerPopup';
 import stickerRevealSound from './sounds/sticker-reveal.mp3';
 import viewStickersSound from './sounds/view-stickers.mp3';
+import { StickerContext } from './App';
 
-function CollectionBook({ allStickers, ownedStickers, goBack }) {
+function CollectionBook({ goBack }) {
+    const { collectedStickers } = useContext(StickerContext); // Contextから最新のステッカー情報を取得
     const [cardIndexes, setCardIndexes] = useState([0, 1, 2]);
     const [selectedSticker, setSelectedSticker] = useState(null);
     const [stickerSlots, setStickerSlots] = useState([]);
@@ -18,20 +20,26 @@ function CollectionBook({ allStickers, ownedStickers, goBack }) {
         }
     };
 
-    useEffect(() => {
-        const savedSlots = JSON.parse(localStorage.getItem('stickerSlots')) || [];
-        const newOwnedStickers = ownedStickers.filter(sticker => 
-            !savedSlots.some(slot => slot.image === sticker.image)
-        ).map(sticker => ({ ...sticker, isNew: true }));
+    const updateStickerSlots = () => {
+        const updatedSlots = collectedStickers.map(sticker => ({
+            ...sticker,
+            isNew: sticker.isNew || false,
+        }));
 
-        const updatedSlots = [...savedSlots, ...newOwnedStickers];
         while (updatedSlots.length < 72) {
-            updatedSlots.push({ image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`, isNew: false });
+            updatedSlots.push({
+                image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`,
+                isNew: false,
+            });
         }
 
-        setStickerSlots(updatedSlots);
+        setStickerSlots(updatedSlots.slice(0, 72));
         localStorage.setItem('stickerSlots', JSON.stringify(updatedSlots));
-    }, [ownedStickers]);
+    };
+
+    useEffect(() => {
+        updateStickerSlots(); // collectedStickersの変化を反映
+    }, [collectedStickers]); // collectedStickersが更新されるたびに実行
 
     const cycleCards = (index) => {
         playSound(viewStickersAudio);
