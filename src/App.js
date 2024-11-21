@@ -2,7 +2,6 @@ import React, { useState, useEffect, createContext } from 'react';
 import './App.css';
 import waferClosed from './images/wafer1.webp';
 import waferOpened from './images/wafer2.webp';
-import stickersData from './stickersData';
 import CollectionBook from './CollectionBook';
 import openSound from './sounds/wafer-open.mp3';
 import revealSound from './sounds/sticker-reveal.mp3';
@@ -54,10 +53,26 @@ function App() {
     const [todayStickers, setTodayStickers] = useState([]);
     const [selectedSticker, setSelectedSticker] = useState(null);
     const [page, setPage] = useState("main");
+    const [currentWaferImage, setCurrentWaferImage] = useState(waferClosed);
+    const [stickersData, setStickersData] = useState([]);
 
     const openAudio = new Audio(openSound);
     const revealAudio = new Audio(revealSound);
     const viewStickersAudio = new Audio(viewStickersSound);
+
+    // Google Driveからステッカー情報を取得
+    useEffect(() => {
+        const fetchStickersData = async () => {
+            try {
+                const response = await fetch("https://<your-server-url>/get-stickers"); // サーバーのエンドポイント
+                const data = await response.json();
+                setStickersData(data);
+            } catch (error) {
+                console.error('Error fetching stickers data:', error);
+            }
+        };
+        fetchStickersData();
+    }, []);
 
     useEffect(() => {
         document.addEventListener('touchstart', handleFirstTap);
@@ -86,6 +101,15 @@ function App() {
     const openWafer = () => {
         playSound(openAudio);
         setIsOpened(true);
+        setCurrentWaferImage(waferOpened);
+
+        if (stickersData.length === 0) {
+            console.error("No stickers data available.");
+            setIsOpened(false);
+            setCurrentWaferImage(waferClosed);
+            return;
+        }
+
         const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
 
         const updatedStickers = [...collectedStickers];
@@ -98,6 +122,10 @@ function App() {
             setIsOpened(false);
             setSelectedSticker(stickerWithNewFlag);
             playSound(revealAudio);
+
+            setTimeout(() => {
+                setCurrentWaferImage(waferClosed);
+            }, 1000);
         }, 1500);
     };
 
@@ -108,10 +136,10 @@ function App() {
                     <div className="main-container">
                         <h1 className="title">Today's Wafer</h1>
                         <img 
-                            src={isOpened ? waferOpened : waferClosed} 
+                            src={currentWaferImage} 
                             alt="Wafer" 
                             className="wafer-image" 
-                            onClick={() => playSound(viewStickersAudio)} 
+                            onClick={openWafer} 
                         />
                         <p>Remaining: {remaining === Infinity ? "Unlimited" : remaining}</p>
                         <button onClick={openWafer} className="button open-wafer-button">
@@ -119,7 +147,7 @@ function App() {
                         </button>
                         <button 
                             onClick={() => {
-                                playSound(viewStickersAudio); // SE 再生
+                                playSound(viewStickersAudio);
                                 setPage("collection");
                             }} 
                             className="button collection-book-button"

@@ -20,12 +20,47 @@ function CollectionBook({ goBack }) {
         }
     };
 
-    const updateStickerSlots = () => {
-        const updatedSlots = collectedStickers.map(sticker => ({
-            ...sticker,
-            isNew: sticker.isNew || false,
-        }));
+    const loadStickerSlots = () => {
+        try {
+            const savedSlots = JSON.parse(localStorage.getItem('stickerSlots')) || [];
+            console.log('Loaded stickerSlots from localStorage:', savedSlots);
+            return savedSlots;
+        } catch (error) {
+            console.error('Error loading stickerSlots:', error);
+            return [];
+        }
+    };
 
+    const saveStickerSlots = (slots) => {
+        try {
+            console.log('Saving stickerSlots to localStorage:', slots);
+            localStorage.setItem('stickerSlots', JSON.stringify(slots));
+        } catch (error) {
+            console.error('Error saving stickerSlots:', error);
+        }
+    };
+
+    const updateStickerSlots = () => {
+        console.log('Updating stickerSlots...');
+        const savedSlots = loadStickerSlots();
+
+        // 新規ステッカーを確認
+        const newOwnedStickers = collectedStickers.filter(sticker =>
+            !savedSlots.some(slot => slot.image === sticker.image)
+        ).map(sticker => ({ ...sticker, isNew: true }));
+
+        // 既存スロットに追加
+        const updatedSlots = [...savedSlots];
+        newOwnedStickers.forEach(sticker => {
+            const index = updatedSlots.findIndex(slot => slot.image === `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`);
+            if (index !== -1) {
+                updatedSlots[index] = sticker;
+            } else {
+                updatedSlots.push(sticker);
+            }
+        });
+
+        // スロットを埋める
         while (updatedSlots.length < 72) {
             updatedSlots.push({
                 image: `${process.env.PUBLIC_URL}/images/stickers/wafer3.webp`,
@@ -34,12 +69,22 @@ function CollectionBook({ goBack }) {
         }
 
         setStickerSlots(updatedSlots.slice(0, 72));
-        localStorage.setItem('stickerSlots', JSON.stringify(updatedSlots));
+        saveStickerSlots(updatedSlots.slice(0, 72));
+        console.log('Updated stickerSlots:', updatedSlots);
     };
 
     useEffect(() => {
-        updateStickerSlots(); // collectedStickersの変化を反映
-    }, [collectedStickers]); // collectedStickersが更新されるたびに実行
+        const savedSlots = loadStickerSlots();
+        if (savedSlots.length === 0) {
+            updateStickerSlots();
+        } else {
+            setStickerSlots(savedSlots);
+        }
+    }, []);
+
+    useEffect(() => {
+        updateStickerSlots();
+    }, [collectedStickers]);
 
     const cycleCards = (index) => {
         playSound(viewStickersAudio);
@@ -61,7 +106,7 @@ function CollectionBook({ goBack }) {
                 slot.image === sticker.image ? { ...slot, isNew: false } : slot
             );
             setStickerSlots(updatedSlots);
-            localStorage.setItem('stickerSlots', JSON.stringify(updatedSlots));
+            saveStickerSlots(updatedSlots);
         }
     };
 
