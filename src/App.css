@@ -1,9 +1,9 @@
-body {
+＜App.css＞ body {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: #FFF5E5;
+  background: #fff5e5;
   margin: 0;
   font-family: Arial, sans-serif;
 }
@@ -11,7 +11,7 @@ body {
 .app {
   text-align: center;
   padding: 20px;
-  background-color: #FAEBD7;
+  background-color: #faebd7;
   border-radius: 15px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   width: 300px;
@@ -22,7 +22,7 @@ body {
 .title {
   font-size: 1.8em;
   margin-bottom: 10px;
-  color: #6B4226;
+  color: #6b4226;
 }
 
 .wafer-image {
@@ -40,8 +40,8 @@ body {
   padding: 12px 25px;
   margin: 10px;
   font-size: 1em;
-  color: #FFF;
-  background: linear-gradient(145deg, #6B4226, #8B5742);
+  color: #fff;
+  background: linear-gradient(145deg, #6b4226, #8b5742);
   border: none;
   border-radius: 25px;
   cursor: pointer;
@@ -50,7 +50,7 @@ body {
 }
 
 .button:hover {
-  background: linear-gradient(145deg, #8B5742, #6B4226);
+  background: linear-gradient(145deg, #8b5742, #6b4226);
   transform: translateY(-2px);
 }
 
@@ -59,7 +59,6 @@ body {
   grid-template-columns: repeat(5, 1fr);
   gap: 4px; /* 間隔の調整 */
   margin-top: 20px;
-  justify-content: center;
 }
 
 .sticker-small {
@@ -73,7 +72,7 @@ body {
   position: absolute;
   top: 5px;
   left: 5px;
-  background-color: #FF4081;
+  background-color: #ff4081;
   color: white;
   padding: 2px 5px;
   font-size: 10px;
@@ -114,7 +113,7 @@ body {
   position: absolute;
   top: 5px;
   left: 5px;
-  background-color: #FF4081;
+  background-color: #ff4081;
   color: white;
   padding: 2px 5px;
   font-size: 10px;
@@ -126,7 +125,7 @@ body {
 .close-popup-button {
   padding: 8px 16px;
   font-size: 14px;
-  background-color: #6B4226;
+  background-color: #6b4226;
   color: white;
   border: none;
   border-radius: 8px;
@@ -136,5 +135,5 @@ body {
 }
 
 .close-popup-button:hover {
-  background-color: #8B5742;
+  background-color: #8b5742;
 }

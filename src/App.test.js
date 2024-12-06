@@ -1,86 +1,65 @@
-import React, { useState } from 'react';
-import './App.css';
-import waferClosed from './images/stickers/wafer1.webp';
-import waferOpened from './images/stickers/wafer2.webp';
-import stickersData from './stickersData'; // すべてのステッカー情報を含む
-import CollectionBook from './CollectionBook';
-import stickerRevealSound from './sounds/sticker-reveal.mp3';
+import React from 'react';
+import { render, fireEvent } from '@testing-library/react';
+import App from './App';
+import stickersData from './stickersData';
 
-function App() {
-    const [isOpened, setIsOpened] = useState(false);
-    const [remaining, setRemaining] = useState(3);
-    const [collectedStickers, setCollectedStickers] = useState([]);
-    const [selectedSticker, setSelectedSticker] = useState(null);
-    const [page, setPage] = useState("main");
+jest.mock('./stickersData', () => [
+  { image: 'sticker1.png', id: 1 },
+  { image: 'sticker2.png', id: 2 }
+]);
 
-    const openWafer = () => {
-        if (remaining > 0) {
-            setIsOpened(true);
-            setRemaining(remaining - 1);
-            const newSticker = stickersData[Math.floor(Math.random() * stickersData.length)];
+jest.mock('./sounds/sticker-reveal.mp3', () => 'sticker-reveal-sound.mp3');
 
-            // collectedStickersが定義されているかを確認し、追加する
-            if (!collectedStickers || !collectedStickers.some(sticker => sticker.id === newSticker.id)) {
-                setCollectedStickers([...collectedStickers, newSticker]);
-            }
+describe('App Component', () => {
+  it('renders the main page and displays the title', () => {
+    const { getByText } = render(<App />);
+    expect(getByText("Today's Wafer")).toBeInTheDocument();
+  });
 
-            setTimeout(() => {
-                setIsOpened(false);
-                setSelectedSticker(newSticker); // ポップアップ表示
-                new Audio(stickerRevealSound).play(); // SEを再生
-            }, 1500);
-        }
-    };
+  it('allows the user to open a wafer and reveal a sticker', () => {
+    const { getByText, getByAltText } = render(<App />);
+    const openButton = getByText('Open a Wafer');
+    fireEvent.click(openButton);
 
-    const closeStickerDetail = () => setSelectedSticker(null);
+    const sticker = stickersData[0];
+    setTimeout(() => {
+      expect(getByAltText('Selected Sticker')).toHaveAttribute('src', sticker.image);
+    }, 1500);
+  });
 
-    return (
-        <div className="app">
-            {page === "main" && (
-                <div className="main-container">
-                    <h1 className="title">Today's Wafer</h1>
-                    <img
-                        src={isOpened ? waferOpened : waferClosed}
-                        alt="Wafer"
-                        className="wafer-image"
-                    />
-                    <p>Remaining: {remaining}</p>
-                    <button onClick={openWafer} className="button">
-                        {remaining > 0 ? 'Open a Wafer' : 'No More Wafers'}
-                    </button>
-                    <button onClick={() => setPage("collection")} className="button">
-                        CollectionBook
-                    </button>
-                    <div className="collected-stickers">
-                        {/* collectedStickersが配列かを確認してmapを使用 */}
-                        {Array.isArray(collectedStickers) && collectedStickers.map((sticker, index) => (
-                            <img
-                                key={index}
-                                src={sticker.image}
-                                alt={`Sticker ${index + 1}`}
-                                className="sticker-small"
-                                onClick={() => setSelectedSticker(sticker)}
-                            />
-                        ))}
-                    </div>
-                </div>
-            )}
-            {page === "collection" && (
-                <CollectionBook 
-                    collectedStickers={collectedStickers || []} // undefinedの場合に空配列を渡す
-                    goBack={() => setPage("main")}
-                />
-            )}
-            {selectedSticker && (
-                <div className="sticker-popup" onClick={closeStickerDetail}>
-                    <div className="popup-content">
-                        <img src={selectedSticker.image} alt="Selected Sticker" className="sticker-large" />
-                        <button onClick={closeStickerDetail} className="button">Close</button>
-                    </div>
-                </div>
-            )}
-        </div>
-    );
-}
+  it('disables opening more wafers when remaining is 0', () => {
+    const { getByText } = render(<App />);
+    const openButton = getByText('Open a Wafer');
 
-export default App;
+    for (let i = 0; i < 3; i += 1) {
+      fireEvent.click(openButton);
+    }
+
+    expect(getByText('No More Wafers')).toBeInTheDocument();
+    expect(openButton).toBeDisabled();
+  });
+
+  it('navigates to the CollectionBook page', () => {
+    const { getByText } = render(<App />);
+    const collectionButton = getByText('CollectionBook');
+    fireEvent.click(collectionButton);
+
+    expect(getByText('Back to Main')).toBeInTheDocument();
+  });
+
+  it('closes the sticker detail popup when the close button is clicked', () => {
+    const { getByAltText, getByRole, queryByRole } = render(<App />);
+    const openButton = getByAltText('Wafer');
+    fireEvent.click(openButton);
+
+    setTimeout(() => {
+      const stickerPopup = getByRole('dialog');
+      expect(stickerPopup).toBeInTheDocument();
+
+      const closeButton = getByRole('button', { name: 'Close' });
+      fireEvent.click(closeButton);
+
+      expect(queryByRole('dialog')).not.toBeInTheDocument();
+    }, 1500);
+  });
+});

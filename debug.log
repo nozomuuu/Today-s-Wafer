@@ -1,0 +1,3 @@
+Scopes: [ 'https://www.googleapis.com/auth/drive.readonly' ]
+Generated Auth URL: https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive.readonly&response_type=code&client_id=55079453609-6n9vc34pthgjb0587397u7r6993nt2og.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A3000
+Enter the code from that page here: 

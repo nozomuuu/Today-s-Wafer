@@ -1,0 +1,386 @@
+Server running at http://127.0.0.1:5005/
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-26T03:31:38.836Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-26T03:34:07.231Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-26T03:34:07.902Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-11-26T04:45:43.765Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-26T04:45:43.769Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-11-26T04:54:07.029Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-26T04:54:07.034Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-11-26T05:08:48.345Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-26T05:08:48.351Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-26T18:25:52.888Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-26T18:33:01.220Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-26T18:38:47.677Z"}
+{"level":"info","message":"Access Token and Refresh Token saved to token.json","timestamp":"2024-11-26T18:49:38.902Z"}
+{"level":"info","message":"Fetching stickers from folder:","timestamp":"2024-11-26T19:47:39.420Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-26T19:47:39.423Z"}
+{"level":"info","message":"Fetching stickers from folder:","timestamp":"2024-11-26T19:47:39.944Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-26T19:47:39.946Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-11-26T19:53:34.456Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-26T19:53:34.460Z"}
+{"level":"info","message":"Fetching stickers from folder:","timestamp":"2024-11-26T19:53:50.388Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-26T19:53:50.392Z"}
+{"level":"info","message":"Fetching stickers from folder:","timestamp":"2024-11-26T19:53:50.880Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-26T19:53:50.882Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-26T20:24:32.522Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-26T20:37:07.376Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-26T20:44:25.297Z"}
+{"level":"info","message":"Access Token and Refresh Token saved to token.json","timestamp":"2024-11-26T20:46:36.018Z"}
+{"level":"info","message":"Fetching stickers from folder:","timestamp":"2024-11-26T20:50:17.859Z"}
+{"level":"info","message":"Fetched 25 stickers successfully","timestamp":"2024-11-26T20:50:18.414Z"}
+{"level":"info","message":"Fetching stickers from folder:","timestamp":"2024-11-26T21:07:51.670Z"}
+{"level":"info","message":"Fetched 25 stickers successfully","timestamp":"2024-11-26T21:07:52.148Z"}
+{"level":"info","message":"Fetching stickers from folder:","timestamp":"2024-11-26T21:11:12.124Z"}
+{"level":"info","message":"Fetched 25 stickers successfully","timestamp":"2024-11-26T21:11:12.751Z"}
+{"level":"info","message":"Fetching stickers from folder:","timestamp":"2024-11-26T21:23:27.792Z"}
+{"level":"info","message":"Fetched 25 stickers successfully","timestamp":"2024-11-26T21:23:28.398Z"}
+{"level":"info","message":"Fetching stickers from folder:","timestamp":"2024-11-26T21:54:11.178Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-26T21:54:11.186Z"}
+{"level":"info","message":"Fetching stickers from folder:","timestamp":"2024-11-26T21:54:58.807Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-26T21:54:58.807Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-26T22:26:46.772Z"}
+{"level":"info","message":"Fetching stickers from folder: 1LV2apEIbG6pZU9btNLTBA4PKKWcDT__a","timestamp":"2024-11-26T22:28:09.317Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-26T22:28:09.325Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-27T04:57:19.709Z"}
+{"level":"info","message":"Fetching stickers from folder: 1LV2apEIbG6pZU9btNLTBA4PKKWcDT__a","timestamp":"2024-11-27T04:57:38.351Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-27T04:57:38.355Z"}
+{"level":"info","message":"Fetching stickers from folder: 1LV2apEIbG6pZU9btNLTBA4PKKWcDT__a","timestamp":"2024-11-27T04:57:39.025Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-27T04:57:39.027Z"}
+{"level":"info","message":"Fetching stickers from folder: 1LV2apEIbG6pZU9btNLTBA4PKKWcDT__a","timestamp":"2024-11-27T04:58:02.090Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-27T04:58:02.095Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-27T05:18:14.691Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-27T05:28:32.936Z"}
+{"level":"info","message":"Fetching stickers from folder: 1LV2apEIbG6pZU9btNLTBA4PKKWcDT__a","timestamp":"2024-11-27T05:34:00.830Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-27T05:34:00.834Z"}
+{"level":"info","message":"Fetching stickers from folder: 1LV2apEIbG6pZU9btNLTBA4PKKWcDT__a","timestamp":"2024-11-27T05:42:07.389Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-27T05:42:07.390Z"}
+{"level":"info","message":"Fetching stickers from folder: 1LV2apEIbG6pZU9btNLTBA4PKKWcDT__a","timestamp":"2024-11-27T05:42:07.715Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-27T05:42:07.719Z"}
+{"level":"info","message":"Fetching stickers from folder: 1LV2apEIbG6pZU9btNLTBA4PKKWcDT__a","timestamp":"2024-11-27T05:42:19.506Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-27T05:42:19.507Z"}
+{"level":"info","message":"Fetching stickers from folder: 1LV2apEIbG6pZU9btNLTBA4PKKWcDT__a","timestamp":"2024-11-27T05:44:30.017Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-27T05:44:30.018Z"}
+{"level":"info","message":"Fetching stickers from folder: 1LV2apEIbG6pZU9btNLTBA4PKKWcDT__a","timestamp":"2024-11-27T05:48:17.290Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-27T05:48:17.290Z"}
+{"level":"info","message":"Fetching stickers from folder: 1LV2apEIbG6pZU9btNLTBA4PKKWcDT__a","timestamp":"2024-11-27T05:48:21.077Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-27T05:48:21.078Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-27T06:07:46.924Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-27T06:21:36.353Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-27T06:33:37.583Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-27T06:34:06.801Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-27T06:51:31.100Z"}
+{"level":"info","message":"Fetching stickers from folder: 1LV2apEIbG6pZU9btNLTBA4PKKWcDT__a","timestamp":"2024-11-27T06:53:05.941Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-27T06:53:05.945Z"}
+{"level":"info","message":"Fetching stickers from folder: 1LV2apEIbG6pZU9btNLTBA4PKKWcDT__a","timestamp":"2024-11-27T06:54:35.839Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-27T06:54:35.840Z"}
+{"level":"info","message":"Fetching stickers from folder: 1LV2apEIbG6pZU9btNLTBA4PKKWcDT__a","timestamp":"2024-11-27T07:02:43.690Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-27T07:02:43.691Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-27T07:31:27.100Z"}
+{"level":"info","message":"Fetching stickers from folder: 1LV2apEIbG6pZU9btNLTBA4PKKWcDT__a","timestamp":"2024-11-27T07:32:42.243Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-27T07:32:42.246Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-27T07:50:01.822Z"}
+{"level":"info","message":"Fetching stickers from folder: 1LV2apEIbG6pZU9btNLTBA4PKKWcDT__a","timestamp":"2024-11-27T07:50:52.437Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-27T07:50:52.441Z"}
+{"level":"info","message":"Fetching stickers from folder: 1LV2apEIbG6pZU9btNLTBA4PKKWcDT__a","timestamp":"2024-11-27T07:54:58.844Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-27T07:54:58.848Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-27T08:05:00.595Z"}
+{"level":"info","message":"Fetching stickers from folder: 1LV2apEIbG6pZU9btNLTBA4PKKWcDT__a","timestamp":"2024-11-27T08:05:47.227Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-27T08:05:47.231Z"}
+{"level":"info","message":"Fetching stickers from folder: 1LV2apEIbG6pZU9btNLTBA4PKKWcDT__a","timestamp":"2024-11-27T08:25:14.533Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-27T08:25:14.535Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-27T08:35:44.875Z"}
+{"level":"info","message":"Fetching stickers from folder: 1LV2apEIbG6pZU9btNLTBA4PKKWcDT__a","timestamp":"2024-11-27T08:36:37.285Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-27T08:36:37.290Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-27T09:02:28.704Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-27T09:11:03.881Z"}
+{"level":"info","message":"Fetching stickers from folder: 1LV2apEIbG6pZU9btNLTBA4PKKWcDT__a","timestamp":"2024-11-27T09:20:21.906Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-27T09:20:21.910Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-27T09:31:40.449Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-27T09:32:26.263Z"}
+{"level":"info","message":"Fetching stickers from folder: 1LV2apEIbG6pZU9btNLTBA4PKKWcDT__a","timestamp":"2024-11-27T09:32:27.177Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-27T09:32:27.181Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-27T09:32:51.517Z"}
+{"level":"info","message":"Fetching stickers from folder: 1LV2apEIbG6pZU9btNLTBA4PKKWcDT__a","timestamp":"2024-11-27T09:33:43.026Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-27T09:33:43.029Z"}
+{"level":"info","message":"Fetching stickers from folder: 1LV2apEIbG6pZU9btNLTBA4PKKWcDT__a","timestamp":"2024-11-27T09:42:20.372Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-27T09:42:20.373Z"}
+{"level":"info","message":"Fetching stickers from folder: 1LV2apEIbG6pZU9btNLTBA4PKKWcDT__a","timestamp":"2024-11-27T09:42:28.500Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-27T09:42:28.503Z"}
+{"level":"info","message":"Fetching stickers from folder: 1LV2apEIbG6pZU9btNLTBA4PKKWcDT__a","timestamp":"2024-11-27T09:51:33.904Z"}
+{"level":"error","message":"Error fetching stickers:","timestamp":"2024-11-27T09:51:33.906Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-11-28T23:36:47.125Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-28T23:36:47.129Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-11-28T23:55:30.424Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-28T23:55:30.428Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-11-29T02:27:16.779Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-29T02:27:16.783Z"}
+{"level":"info","message":"Fetched stickers from Drive","timestamp":"2024-11-29T02:27:30.570Z"}
+{"level":"info","message":"Fetched stickers from Drive","timestamp":"2024-11-29T02:34:06.827Z"}
+{"level":"info","message":"Fetched stickers from Drive","timestamp":"2024-11-29T02:40:55.210Z"}
+{"level":"info","message":"Returning cached stickers","timestamp":"2024-11-29T02:44:05.149Z"}
+{"level":"info","message":"Fetched stickers from Drive","timestamp":"2024-11-29T02:47:15.146Z"}
+{"level":"info","message":"Fetched stickers from Drive","timestamp":"2024-11-29T02:54:48.340Z"}
+{"level":"info","message":"Returning cached stickers","timestamp":"2024-11-29T02:54:48.347Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-11-29T03:05:15.469Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-29T03:05:15.473Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-11-29T03:10:38.127Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-29T03:10:38.130Z"}
+{"level":"info","message":"Fetched stickers from Drive:","timestamp":"2024-11-29T03:11:16.654Z"}
+{"level":"info","message":"Returning cached stickers","timestamp":"2024-11-29T03:12:11.930Z"}
+{"level":"info","message":"Returning cached stickers","timestamp":"2024-11-29T03:12:26.753Z"}
+{"level":"info","message":"Returning cached stickers","timestamp":"2024-11-29T03:13:41.913Z"}
+{"level":"info","message":"Returning cached stickers","timestamp":"2024-11-29T03:13:52.789Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-11-29T03:25:03.934Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-29T03:25:03.936Z"}
+{"level":"info","message":"Fetched 25 stickers from Drive.","timestamp":"2024-11-29T03:25:07.906Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-11-29T03:54:14.431Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-29T03:54:14.434Z"}
+{"level":"info","message":"Fetched 25 stickers from Drive.","timestamp":"2024-11-29T03:54:17.457Z"}
+{"level":"info","message":"Returning cached stickers","timestamp":"2024-11-29T03:55:35.286Z"}
+{"level":"info","message":"Fetched 25 stickers from Drive.","timestamp":"2024-11-29T04:02:25.270Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-11-29T04:08:24.174Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-29T04:08:24.176Z"}
+{"level":"info","message":"Fetched 25 stickers from Drive.","timestamp":"2024-11-29T04:08:26.365Z"}
+{"level":"warn","message":"404 error for path: /get-downloaded-stickers","timestamp":"2024-11-29T04:08:26.379Z"}
+{"level":"info","message":"Returning cached stickers (25 items)","timestamp":"2024-11-29T04:09:30.657Z"}
+{"level":"warn","message":"404 error for path: /get-downloaded-stickers","timestamp":"2024-11-29T04:09:30.667Z"}
+{"level":"info","message":"Returning cached stickers (25 items)","timestamp":"2024-11-29T04:09:48.155Z"}
+{"level":"info","message":"Fetched 25 stickers from Drive.","timestamp":"2024-11-29T04:14:05.670Z"}
+{"level":"warn","message":"404 error for path: /get-downloaded-stickers","timestamp":"2024-11-29T04:14:05.681Z"}
+{"level":"info","message":"Fetched 25 stickers from Drive.","timestamp":"2024-11-29T05:08:39.544Z"}
+{"level":"warn","message":"404 error for path: /get-downloaded-stickers","timestamp":"2024-11-29T05:08:39.553Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-11-29T05:10:40.668Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-29T05:10:40.670Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-11-29T05:25:53.155Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-29T05:25:53.158Z"}
+{"level":"info","message":"Fetched 25 stickers from Drive.","timestamp":"2024-11-29T05:26:34.776Z"}
+{"level":"warn","message":"404 error for path: /get-downloaded-stickers","timestamp":"2024-11-29T05:26:34.798Z"}
+{"level":"info","message":"Fetched 25 stickers from Drive.","timestamp":"2024-11-29T05:37:58.201Z"}
+{"level":"info","message":"Returning cached stickers (25 items)","timestamp":"2024-11-29T05:39:51.070Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-11-29T05:44:49.407Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-29T05:44:49.410Z"}
+{"level":"info","message":"Fetched 25 stickers from Drive.","timestamp":"2024-11-29T05:48:43.843Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-11-29T08:11:08.071Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-29T08:11:08.075Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-11-29T08:13:04.038Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-29T08:13:04.041Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-11-29T08:13:59.477Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-29T08:13:59.479Z"}
+{"level":"info","message":"Fetched 25 stickers from Drive.","timestamp":"2024-11-29T08:15:51.387Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-11-29T09:40:12.137Z"}
+{"level":"warn","message":"Port 5005 is already in use. Retrying with a different port...","timestamp":"2024-11-29T09:40:12.140Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5006/","timestamp":"2024-11-29T09:40:12.141Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-11-29T09:42:06.910Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-29T09:42:06.913Z"}
+{"level":"info","message":"Fetched 25 stickers from Drive.","timestamp":"2024-11-29T09:44:10.896Z"}
+{"level":"info","message":"Health check performed","timestamp":"2024-11-29T09:44:10.923Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-11-29T09:54:37.363Z"}
+{"level":"warn","message":"Port 5005 is already in use. Attempting to free the port...","timestamp":"2024-11-29T09:54:37.366Z"}
+{"level":"info","message":"Port 5005 was occupied. Process 22986 terminated.","timestamp":"2024-11-29T09:54:37.422Z"}
+{"level":"warn","message":"Port 5005 is already in use. Attempting to free the port...","timestamp":"2024-11-29T09:54:37.423Z"}
+{"level":"error","message":"Error terminating process using the port: Command failed: lsof -t -i:5005","stack":"Error: Command failed: lsof -t -i:5005\n    at checkExecSyncError (node:child_process:890:11)\n    at execSync (node:child_process:962:15)\n    at Server.<anonymous> (/Users/shizhongxiwang/card-pack-app/server.js:153:37)\n    at Server.emit (node:events:517:28)\n    at emitErrorNT (node:net:1844:8)\n    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)","timestamp":"2024-11-29T09:54:37.479Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-11-29T10:01:53.037Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-29T10:01:53.040Z"}
+{"level":"info","message":"Cache cleared successfully","timestamp":"2024-11-29T10:02:14.773Z"}
+{"level":"info","message":"Fetched 25 stickers from Drive.","timestamp":"2024-11-29T10:02:19.213Z"}
+{"level":"info","message":"Health check performed","timestamp":"2024-11-29T10:02:24.483Z"}
+{"level":"info","message":"Cache cleared successfully","timestamp":"2024-11-29T10:06:38.813Z"}
+{"level":"info","message":"Fetched 25 stickers from Drive.","timestamp":"2024-11-29T10:06:39.317Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-11-29T13:14:23.771Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-29T13:14:23.774Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-11-29T20:32:35.772Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-29T20:32:35.775Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-11-29T20:34:41.297Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-29T20:34:41.300Z"}
+{"level":"info","message":"Fetched 25 stickers from Drive.","timestamp":"2024-11-29T20:35:12.661Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-11-29T21:36:35.236Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-11-29T21:36:35.239Z"}
+{"level":"info","message":"Fetched 25 stickers from Drive.","timestamp":"2024-11-29T21:37:14.421Z"}
+{"level":"info","message":"Proxying image: 1QpcG_YcCIW4Hq0z7rKKoUUHbxcRZMCTQ","timestamp":"2024-11-29T21:37:32.337Z"}
+{"level":"info","message":"Proxying image: 1QpcG_YcCIW4Hq0z7rKKoUUHbxcRZMCTQ","timestamp":"2024-11-29T21:40:14.269Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-01T00:31:47.409Z"}
+{"level":"warn","message":"Port 5005 is already in use. Attempting to free the port...","timestamp":"2024-12-01T00:31:47.411Z"}
+{"level":"info","message":"Port 5005 was occupied. Process 37895 terminated.","timestamp":"2024-12-01T00:31:47.473Z"}
+{"level":"warn","message":"Port 5005 is already in use. Attempting to free the port...","timestamp":"2024-12-01T00:31:47.473Z"}
+{"level":"error","message":"Error freeing port: Command failed: lsof -t -i:5005","stack":"Error: Command failed: lsof -t -i:5005\n    at checkExecSyncError (node:child_process:890:11)\n    at execSync (node:child_process:962:15)\n    at freePort (/Users/shizhongxiwang/card-pack-app/server.js:173:29)\n    at Server.<anonymous> (/Users/shizhongxiwang/card-pack-app/server.js:192:13)\n    at Server.emit (node:events:517:28)\n    at emitErrorNT (node:net:1844:8)\n    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)","timestamp":"2024-12-01T00:31:47.529Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-01T00:31:47.530Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-01T11:38:49.989Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-01T11:38:49.991Z"}
+{"level":"info","message":"Fetched 25 stickers from Drive.","timestamp":"2024-12-01T11:39:15.986Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-02T00:42:26.315Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-02T00:42:26.318Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-02T00:43:34.688Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-02T00:43:34.691Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-02T02:15:38.380Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-02T02:15:38.386Z"}
+{"level":"info","message":"Fetched 25 stickers from Drive.","timestamp":"2024-12-02T02:16:13.987Z"}
+{"level":"info","message":"Proxying image request for ID: <ã¹ããã«ã¼ID>","timestamp":"2024-12-02T02:16:34.907Z"}
+{"level":"error","message":"Failed to fetch image from Google Drive. Status: 404","timestamp":"2024-12-02T02:16:35.197Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-02T02:40:41.970Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-02T02:40:41.975Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-02T02:50:16.465Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-02T02:50:16.470Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-02T04:01:34.112Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-02T04:01:34.116Z"}
+{"level":"info","message":"Fetched 25 stickers from Drive.","timestamp":"2024-12-02T04:02:27.036Z"}
+{"level":"info","message":"Proxying image request for ID: 1QpcG_YcCIW4Hq0z7rKKoUUHbxcRZMCTQ","timestamp":"2024-12-02T04:02:58.440Z"}
+{"level":"error","message":"Failed to fetch image. Status: 303 for ID: 1QpcG_YcCIW4Hq0z7rKKoUUHbxcRZMCTQ","timestamp":"2024-12-02T04:02:58.882Z"}
+{"level":"info","message":"Fetched 25 stickers from Drive.","timestamp":"2024-12-02T04:11:58.025Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-02T04:13:28.380Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-02T04:13:28.385Z"}
+{"level":"info","message":"Fetched 25 stickers from Drive.","timestamp":"2024-12-02T04:13:57.740Z"}
+{"level":"info","message":"Proxying image request for ID: 1QpcG_YcCIW4Hq0z7rKKoUUHbxcRZMCTQ","timestamp":"2024-12-02T04:14:50.801Z"}
+{"level":"info","message":"Fetched 25 stickers from Drive.","timestamp":"2024-12-02T04:20:18.557Z"}
+{"level":"info","message":"Proxying image request for ID: 1QpcG_YcCIW4Hq0z7rKKoUUHbxcRZMCTQ","timestamp":"2024-12-02T04:20:35.834Z"}
+{"level":"warn","message":"No token.json found; authentication required.","timestamp":"2024-12-02T15:04:10.368Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-02T15:04:10.372Z"}
+{"level":"warn","message":"404 error for path: /oauth2callback","timestamp":"2024-12-02T15:06:31.354Z"}
+{"level":"warn","message":"No token.json found; authentication required.","timestamp":"2024-12-02T15:12:26.393Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-02T15:12:26.398Z"}
+{"level":"warn","message":"No token.json found; authentication required.","timestamp":"2024-12-02T15:22:43.943Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-02T15:22:43.947Z"}
+{"level":"info","message":"Access token successfully retrieved and saved to token.json","timestamp":"2024-12-02T15:23:24.540Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-02T15:33:24.137Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-02T15:33:24.142Z"}
+{"level":"info","message":"Fetched 25 stickers from Drive.","timestamp":"2024-12-02T15:35:55.991Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-02T15:46:14.964Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-02T15:46:14.970Z"}
+{"level":"info","message":"Proxying image request for ID: 1QpcG_YcCIW4Hq0z7rKKoUUHbxcRZMCTQ","timestamp":"2024-12-02T15:49:42.389Z"}
+{"level":"error","message":"Failed to fetch image. Status: 303 for ID: 1QpcG_YcCIW4Hq0z7rKKoUUHbxcRZMCTQ","timestamp":"2024-12-02T15:49:42.684Z"}
+{"level":"info","message":"Proxying image request for ID: 1QpcG_YcCIW4Hq0z7rKKoUUHbxcRZMCTQ","timestamp":"2024-12-02T15:53:02.930Z"}
+{"level":"error","message":"Failed to fetch image. Status: 303 for ID: 1QpcG_YcCIW4Hq0z7rKKoUUHbxcRZMCTQ","timestamp":"2024-12-02T15:53:03.222Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-02T16:01:43.079Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-02T16:01:43.084Z"}
+{"level":"info","message":"Proxying image request for ID: 1QpcG_YcCIW4Hq0z7rKKoUUHbxcRZMCTQ","timestamp":"2024-12-02T16:02:41.639Z"}
+{"level":"error","message":"Unexpected status: 303 for ID: 1QpcG_YcCIW4Hq0z7rKKoUUHbxcRZMCTQ","timestamp":"2024-12-02T16:02:41.960Z"}
+{"level":"info","message":"Cache cleared successfully","timestamp":"2024-12-02T16:03:09.944Z"}
+{"level":"info","message":"Fetched 25 stickers from Drive.","timestamp":"2024-12-02T16:03:15.039Z"}
+{"level":"info","message":"Proxying image request for ID: 1QpcG_YcCIW4Hq0z7rKKoUUHbxcRZMCTQ","timestamp":"2024-12-02T16:03:25.522Z"}
+{"level":"error","message":"Unexpected status: 303 for ID: 1QpcG_YcCIW4Hq0z7rKKoUUHbxcRZMCTQ","timestamp":"2024-12-02T16:03:25.772Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-03T01:43:01.039Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-03T01:43:01.043Z"}
+{"level":"info","message":"Proxying image request for ID: <ã¹ããã«ã¼ID>","timestamp":"2024-12-03T01:43:29.337Z"}
+{"level":"error","message":"Failed to fetch image. Status: 404 for ID: <ã¹ããã«ã¼ID>","timestamp":"2024-12-03T01:43:29.628Z"}
+{"level":"info","message":"Proxying image request for ID: <ã¹ããã«ã¼ID>","timestamp":"2024-12-03T02:00:55.777Z"}
+{"level":"error","message":"Failed to fetch image. Status: 404 for ID: <ã¹ããã«ã¼ID>","timestamp":"2024-12-03T02:00:56.052Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-03T02:13:54.117Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-03T02:13:54.123Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-03T02:16:44.749Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-03T02:16:44.754Z"}
+{"level":"info","message":"Proxying image request for ID: 1QpcG_YcCIW4Hq0z7rKKoUUHbxcRZMCTQ","timestamp":"2024-12-03T02:17:34.782Z"}
+{"level":"error","message":"Failed to fetch image. Status: 303 for ID: 1QpcG_YcCIW4Hq0z7rKKoUUHbxcRZMCTQ","timestamp":"2024-12-03T02:17:35.065Z"}
+{"level":"info","message":"Proxying image request for ID: 1QpcG_YcCIW4Hq0z7rKKoUUHbxcRZMCTQ","timestamp":"2024-12-03T02:20:29.667Z"}
+{"level":"error","message":"Failed to fetch image. Status: 303 for ID: 1QpcG_YcCIW4Hq0z7rKKoUUHbxcRZMCTQ","timestamp":"2024-12-03T02:20:29.912Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-03T02:22:47.376Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-03T02:22:47.380Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-03T02:26:31.991Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-03T02:26:31.996Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-03T02:50:27.570Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-03T02:50:27.575Z"}
+{"level":"info","message":"Proxying image request for ID: 1QpcG_YcCIW4Hq0z7rKKoUUHbxcRZMCTQ","timestamp":"2024-12-03T02:50:59.638Z"}
+{"level":"info","message":"Redirecting to: https://drive.usercontent.google.com/download?id=1QpcG_YcCIW4Hq0z7rKKoUUHbxcRZMCTQ","timestamp":"2024-12-03T02:50:59.912Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-03T02:56:33.737Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-03T02:56:33.740Z"}
+{"level":"info","message":"Proxying image request for ID: 1QpcG_YcCIW4Hq0z7rKKoUUHbxcRZMCTQ","timestamp":"2024-12-03T02:57:31.500Z"}
+{"level":"info","message":"Redirecting to: https://drive.usercontent.google.com/download?id=1QpcG_YcCIW4Hq0z7rKKoUUHbxcRZMCTQ","timestamp":"2024-12-03T02:57:31.776Z"}
+{"0":{"status":303,"url":"https://drive.google.com/uc?id=1QpcG_YcCIW4Hq0z7rKKoUUHbxcRZMCTQ"},"1":{"status":200,"url":"https://drive.usercontent.google.com/download?id=1QpcG_YcCIW4Hq0z7rKKoUUHbxcRZMCTQ"},"level":"info","message":"Redirection chain:","timestamp":"2024-12-03T02:57:34.022Z"}
+{"level":"info","message":"Proxying image request for ID: 1QpcG_YcCIW4Hq0z7rKKoUUHbxcRZMCTQ","timestamp":"2024-12-03T02:59:49.097Z"}
+{"level":"info","message":"Redirecting to: https://drive.usercontent.google.com/download?id=1QpcG_YcCIW4Hq0z7rKKoUUHbxcRZMCTQ","timestamp":"2024-12-03T02:59:49.384Z"}
+{"0":{"status":303,"url":"https://drive.google.com/uc?id=1QpcG_YcCIW4Hq0z7rKKoUUHbxcRZMCTQ"},"1":{"status":200,"url":"https://drive.usercontent.google.com/download?id=1QpcG_YcCIW4Hq0z7rKKoUUHbxcRZMCTQ"},"level":"info","message":"Redirection chain:","timestamp":"2024-12-03T02:59:51.748Z"}
+{"level":"info","message":"Proxying image request for ID: 1QpcG_YcCIW4Hq0z7rKKoUUHbxcRZMCTQ","timestamp":"2024-12-03T03:02:55.768Z"}
+{"level":"info","message":"Redirecting to: https://drive.usercontent.google.com/download?id=1QpcG_YcCIW4Hq0z7rKKoUUHbxcRZMCTQ","timestamp":"2024-12-03T03:02:56.000Z"}
+{"0":{"status":303,"url":"https://drive.google.com/uc?id=1QpcG_YcCIW4Hq0z7rKKoUUHbxcRZMCTQ"},"1":{"status":200,"url":"https://drive.usercontent.google.com/download?id=1QpcG_YcCIW4Hq0z7rKKoUUHbxcRZMCTQ"},"level":"info","message":"Redirection chain:","timestamp":"2024-12-03T03:02:58.532Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-03T03:14:50.688Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-03T03:14:50.692Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-03T03:37:17.273Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-03T03:37:17.277Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-03T03:38:10.308Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-03T03:38:10.313Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-03T03:49:17.674Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-03T03:49:17.679Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-03T03:50:56.427Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-03T03:50:56.431Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-03T03:54:15.933Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-03T03:54:15.937Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-03T04:13:01.267Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-03T04:13:01.272Z"}
+{"level":"info","message":"Port 5005 status:\nCOMMAND   PID           USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME\nnode    99459 shizhongxiwang   20u  IPv4 0x7e2fac84ecd24f46      0t0  TCP localhost:avt-profile-2 (LISTEN)\n","timestamp":"2024-12-03T04:13:01.345Z"}
+{"level":"info","message":"Proxying image request for ID: <Your_Image_ID>","timestamp":"2024-12-03T04:13:29.724Z"}
+{"0":{"status":404,"url":"https://drive.google.com/uc?id=<Your_Image_ID>"},"level":"info","message":"Redirection chain:","timestamp":"2024-12-03T04:13:30.070Z"}
+{"level":"error","message":"Failed to fetch image. Status: 404 for ID: <Your_Image_ID>","timestamp":"2024-12-03T04:13:30.070Z"}
+{"level":"info","message":"Proxying image request for ID: 1s4SguoNawoJvUMXoQJsZ6GZXWSrHrWWu","timestamp":"2024-12-03T04:59:28.583Z"}
+{"level":"info","message":"Redirecting to: https://drive.usercontent.google.com/download?id=1s4SguoNawoJvUMXoQJsZ6GZXWSrHrWWu","timestamp":"2024-12-03T04:59:28.846Z"}
+{"0":{"status":303,"url":"https://drive.google.com/uc?id=1s4SguoNawoJvUMXoQJsZ6GZXWSrHrWWu"},"1":{"status":200,"url":"https://drive.usercontent.google.com/download?id=1s4SguoNawoJvUMXoQJsZ6GZXWSrHrWWu"},"level":"info","message":"Redirection chain:","timestamp":"2024-12-03T04:59:31.999Z"}
+{"level":"info","message":"Proxying image request for ID: INVALID_ID","timestamp":"2024-12-03T05:05:41.450Z"}
+{"0":{"status":404,"url":"https://drive.google.com/uc?id=INVALID_ID"},"level":"info","message":"Redirection chain:","timestamp":"2024-12-03T05:05:41.715Z"}
+{"level":"error","message":"Failed to fetch image. Status: 404 for ID: INVALID_ID","timestamp":"2024-12-03T05:05:41.716Z"}
+{"level":"info","message":"Proxying image request for ID: <Another_Image_ID>","timestamp":"2024-12-03T05:06:00.046Z"}
+{"0":{"status":404,"url":"https://drive.google.com/uc?id=<Another_Image_ID>"},"level":"info","message":"Redirection chain:","timestamp":"2024-12-03T05:06:00.276Z"}
+{"level":"error","message":"Failed to fetch image. Status: 404 for ID: <Another_Image_ID>","timestamp":"2024-12-03T05:06:00.276Z"}
+{"level":"info","message":"Proxying image request for ID: <Another_Valid_Image_ID>","timestamp":"2024-12-03T05:11:36.047Z"}
+{"0":{"status":404,"url":"https://drive.google.com/uc?id=<Another_Valid_Image_ID>"},"level":"info","message":"Redirection chain:","timestamp":"2024-12-03T05:11:36.312Z"}
+{"level":"error","message":"Failed to fetch image. Status: 404 for ID: <Another_Valid_Image_ID>","timestamp":"2024-12-03T05:11:36.313Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-03T05:29:05.916Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-03T05:29:05.920Z"}
+{"level":"info","message":"Port 5005 status:\nCOMMAND  PID           USER   FD   TYPE            DEVICE SIZE/OFF NODE NAME\nnode    1922 shizhongxiwang   20u  IPv4 0x822f8650409dac3      0t0  TCP localhost:avt-profile-2 (LISTEN)\n","timestamp":"2024-12-03T05:29:05.981Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-03T05:29:48.564Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-03T05:29:48.568Z"}
+{"level":"info","message":"Port 5005 status:\nCOMMAND  PID           USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME\nnode    2382 shizhongxiwang   20u  IPv4 0x696f121cfca0e5b2      0t0  TCP localhost:avt-profile-2 (LISTEN)\n","timestamp":"2024-12-03T05:29:48.629Z"}
+{"level":"info","message":"Proxying image request for ID: 1s4SguoNawoJvUMXoQJsZ6GZXWSrHrWWu","timestamp":"2024-12-03T05:31:12.297Z"}
+{"level":"info","message":"Redirecting to: https://drive.usercontent.google.com/download?id=1s4SguoNawoJvUMXoQJsZ6GZXWSrHrWWu","timestamp":"2024-12-03T05:31:12.592Z"}
+{"0":{"status":303,"url":"https://drive.google.com/uc?id=1s4SguoNawoJvUMXoQJsZ6GZXWSrHrWWu"},"1":{"status":200,"url":"https://drive.usercontent.google.com/download?id=1s4SguoNawoJvUMXoQJsZ6GZXWSrHrWWu"},"level":"info","message":"Redirection chain:","timestamp":"2024-12-03T05:31:14.678Z"}
+{"level":"info","message":"Proxying image request for ID: 1cjJeeb7h4dFM-1rIUZNF5US790ueKSZt","timestamp":"2024-12-03T05:31:24.448Z"}
+{"level":"info","message":"Redirecting to: https://drive.usercontent.google.com/download?id=1cjJeeb7h4dFM-1rIUZNF5US790ueKSZt","timestamp":"2024-12-03T05:31:24.721Z"}
+{"0":{"status":303,"url":"https://drive.google.com/uc?id=1cjJeeb7h4dFM-1rIUZNF5US790ueKSZt"},"1":{"status":200,"url":"https://drive.usercontent.google.com/download?id=1cjJeeb7h4dFM-1rIUZNF5US790ueKSZt"},"level":"info","message":"Redirection chain:","timestamp":"2024-12-03T05:31:27.070Z"}
+{"level":"info","message":"Proxying image request for ID: INVALID_ID","timestamp":"2024-12-03T05:31:45.980Z"}
+{"0":{"status":404,"url":"https://drive.google.com/uc?id=INVALID_ID"},"level":"info","message":"Redirection chain:","timestamp":"2024-12-03T05:31:46.232Z"}
+{"level":"error","message":"Failed to fetch image. Status: 404 for ID: INVALID_ID","timestamp":"2024-12-03T05:31:46.232Z"}
+{"level":"info","message":"Proxying image request for ID: 1s4SguoNawoJvUMXoQJsZ6GZXWSrHrWWu","timestamp":"2024-12-03T05:40:07.105Z"}
+{"level":"info","message":"Redirecting to: https://drive.usercontent.google.com/download?id=1s4SguoNawoJvUMXoQJsZ6GZXWSrHrWWu","timestamp":"2024-12-03T05:40:07.357Z"}
+{"0":{"status":303,"url":"https://drive.google.com/uc?id=1s4SguoNawoJvUMXoQJsZ6GZXWSrHrWWu"},"1":{"status":200,"url":"https://drive.usercontent.google.com/download?id=1s4SguoNawoJvUMXoQJsZ6GZXWSrHrWWu"},"level":"info","message":"Redirection chain:","timestamp":"2024-12-03T05:40:09.660Z"}
+{"level":"info","message":"Proxying image request for ID: 1cjJeeb7h4dFM-1rIUZNF5US790ueKSZt","timestamp":"2024-12-03T05:40:09.705Z"}
+{"level":"info","message":"Redirecting to: https://drive.usercontent.google.com/download?id=1cjJeeb7h4dFM-1rIUZNF5US790ueKSZt","timestamp":"2024-12-03T05:40:09.940Z"}
+{"0":{"status":303,"url":"https://drive.google.com/uc?id=1cjJeeb7h4dFM-1rIUZNF5US790ueKSZt"},"1":{"status":200,"url":"https://drive.usercontent.google.com/download?id=1cjJeeb7h4dFM-1rIUZNF5US790ueKSZt"},"level":"info","message":"Redirection chain:","timestamp":"2024-12-03T05:40:12.819Z"}
+{"level":"info","message":"Proxying image request for ID: <Valid_Image_ID_1>","timestamp":"2024-12-03T05:52:57.770Z"}
+{"0":{"status":404,"url":"https://drive.google.com/uc?id=<Valid_Image_ID_1>"},"level":"info","message":"Redirection chain:","timestamp":"2024-12-03T05:52:58.047Z"}
+{"level":"error","message":"Failed to fetch image. Status: 404 for ID: <Valid_Image_ID_1>","timestamp":"2024-12-03T05:52:58.048Z"}
+{"level":"info","message":"Proxying image request for ID: <Valid_Image_ID_2>","timestamp":"2024-12-03T05:52:58.068Z"}
+{"0":{"status":404,"url":"https://drive.google.com/uc?id=<Valid_Image_ID_2>"},"level":"info","message":"Redirection chain:","timestamp":"2024-12-03T05:52:58.301Z"}
+{"level":"error","message":"Failed to fetch image. Status: 404 for ID: <Valid_Image_ID_2>","timestamp":"2024-12-03T05:52:58.302Z"}
+{"level":"info","message":"Proxying image request for ID: INVALID_ID","timestamp":"2024-12-03T05:52:58.317Z"}
+{"0":{"status":404,"url":"https://drive.google.com/uc?id=INVALID_ID"},"level":"info","message":"Redirection chain:","timestamp":"2024-12-03T05:52:58.545Z"}
+{"level":"error","message":"Failed to fetch image. Status: 404 for ID: INVALID_ID","timestamp":"2024-12-03T05:52:58.546Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-03T06:52:23.110Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-03T06:52:23.114Z"}
+{"level":"info","message":"Port 5005 status:\nCOMMAND  PID           USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME\nnode    4612 shizhongxiwang   20u  IPv4 0x743698330023e980      0t0  TCP localhost:avt-profile-2 (LISTEN)\n","timestamp":"2024-12-03T06:52:23.186Z"}
+{"level":"warn","message":"No token.json found; authentication required.","timestamp":"2024-12-03T06:53:59.989Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-03T06:53:59.993Z"}
+{"level":"info","message":"Port 5005 status:\nCOMMAND  PID           USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME\nnode    5091 shizhongxiwang   20u  IPv4 0x86a936e95b155ea2      0t0  TCP localhost:avt-profile-2 (LISTEN)\n","timestamp":"2024-12-03T06:54:00.063Z"}
+{"level":"warn","message":"No token.json found; authentication required.","timestamp":"2024-12-03T07:01:12.240Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-03T07:01:12.245Z"}
+{"level":"info","message":"Port 5005 status:\nCOMMAND  PID           USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME\nnode    6503 shizhongxiwang   20u  IPv4 0x7864f86aac860b95      0t0  TCP localhost:avt-profile-2 (LISTEN)\n","timestamp":"2024-12-03T07:01:12.309Z"}
+{"level":"info","message":"Redirecting to Google OAuth2 consent page","timestamp":"2024-12-03T07:01:26.518Z"}
+{"level":"info","message":"New token obtained and saved to token.json","timestamp":"2024-12-03T07:01:27.346Z"}
+{"level":"info","message":"Redirecting to Google OAuth2 consent page","timestamp":"2024-12-03T07:02:45.387Z"}
+{"level":"info","message":"Redirecting to Google OAuth2 consent page","timestamp":"2024-12-03T07:02:46.026Z"}
+{"level":"info","message":"New token obtained and saved to token.json","timestamp":"2024-12-03T07:02:46.763Z"}
+{"level":"info","message":"Redirecting to Google OAuth2 consent page","timestamp":"2024-12-03T07:05:33.769Z"}
+{"level":"info","message":"Redirecting to Google OAuth2 consent page","timestamp":"2024-12-03T07:05:34.265Z"}
+{"level":"info","message":"New token obtained and saved to token.json","timestamp":"2024-12-03T07:05:34.956Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-04T00:28:50.636Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-04T00:28:50.641Z"}
+{"level":"info","message":"Port 5005 status:\nCOMMAND  PID           USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME\nnode    7394 shizhongxiwang   20u  IPv4 0x55c487001c02cd0b      0t0  TCP localhost:avt-profile-2 (LISTEN)\n","timestamp":"2024-12-04T00:28:50.713Z"}
+{"level":"info","message":"Redirecting user to Google OAuth2 consent page: https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive.readonly&response_type=code&client_id=55079453609-6n9vc34pthgjb0587397u7r6993nt2og.apps.googleusercontent.com&redirect_uri=http%3A%2F%2F127.0.0.1%3A5005%2Foauth2callback","timestamp":"2024-12-04T00:29:07.188Z"}
+{"level":"info","message":"Redirecting user to Google OAuth2 consent page: https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive.readonly&response_type=code&client_id=55079453609-6n9vc34pthgjb0587397u7r6993nt2og.apps.googleusercontent.com&redirect_uri=http%3A%2F%2F127.0.0.1%3A5005%2Foauth2callback","timestamp":"2024-12-04T00:29:07.602Z"}
+{"level":"info","message":"New token obtained and saved to token.json","timestamp":"2024-12-04T00:29:08.099Z"}
+{"level":"info","message":"Redirecting user to Google OAuth2 consent page: https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive.readonly&response_type=code&client_id=55079453609-6n9vc34pthgjb0587397u7r6993nt2og.apps.googleusercontent.com&redirect_uri=http%3A%2F%2F127.0.0.1%3A5005%2Foauth2callback","timestamp":"2024-12-04T00:37:09.006Z"}
+{"level":"info","message":"New token obtained and saved to token.json","timestamp":"2024-12-04T00:41:33.887Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-04T01:23:35.427Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-04T01:23:35.431Z"}
+{"level":"info","message":"Port 5005 status:\nCOMMAND  PID           USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME\nnode    9889 shizhongxiwang   20u  IPv4 0xaa57619f9affa510      0t0  TCP localhost:avt-profile-2 (LISTEN)\n","timestamp":"2024-12-04T01:23:35.503Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-04T01:45:19.744Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-04T01:45:19.748Z"}
+{"level":"info","message":"Port 5005 status:\nCOMMAND   PID           USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME\nnode    16102 shizhongxiwang   20u  IPv4 0x13116fc254bb79c1      0t0  TCP localhost:avt-profile-2 (LISTEN)\n","timestamp":"2024-12-04T01:45:19.812Z"}
+{"level":"info","message":"Existing token loaded from token.json","timestamp":"2024-12-05T16:08:57.760Z"}
+{"level":"info","message":"Server running at http://127.0.0.1:5005/","timestamp":"2024-12-05T16:08:57.763Z"}
+{"level":"info","message":"Port 5005 status:\nCOMMAND   PID           USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME\nnode    34448 shizhongxiwang   20u  IPv4 0xfda736e08e416bc5      0t0  TCP localhost:avt-profile-2 (LISTEN)\n","timestamp":"2024-12-05T16:08:57.830Z"}

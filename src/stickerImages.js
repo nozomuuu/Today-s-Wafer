@@ -1,28 +1,19 @@
-const stickerImages = {
-    1: `${process.env.PUBLIC_URL}/images/sticker1.webp`,
-    2: `${process.env.PUBLIC_URL}/images/sticker2.webp`,
-    3: `${process.env.PUBLIC_URL}/images/sticker3.webp`,
-    4: `${process.env.PUBLIC_URL}/images/sticker4.webp`,
-    5: `${process.env.PUBLIC_URL}/images/sticker5.webp`,
-    6: `${process.env.PUBLIC_URL}/images/sticker6.webp`,
-    7: `${process.env.PUBLIC_URL}/images/sticker7.webp`,
-    8: `${process.env.PUBLIC_URL}/images/sticker8.webp`,
-    9: `${process.env.PUBLIC_URL}/images/sticker9.webp`,
-    10: `${process.env.PUBLIC_URL}/images/sticker10.webp`,
-    11: `${process.env.PUBLIC_URL}/images/sticker11.webp`,
-    12: `${process.env.PUBLIC_URL}/images/sticker12.webp`,
-    13: `${process.env.PUBLIC_URL}/images/sticker13.webp`,
-    14: `${process.env.PUBLIC_URL}/images/sticker14.webp`,
-    15: `${process.env.PUBLIC_URL}/images/sticker15.webp`,
-    16: `${process.env.PUBLIC_URL}/images/sticker16.webp`,
-    17: `${process.env.PUBLIC_URL}/images/sticker17.webp`,
-    18: `${process.env.PUBLIC_URL}/images/sticker18.webp`,
-    19: `${process.env.PUBLIC_URL}/images/sticker19.webp`,
-    20: `${process.env.PUBLIC_URL}/images/sticker20.webp`,
-    21: `${process.env.PUBLIC_URL}/images/sticker21.webp`,
-    22: `${process.env.PUBLIC_URL}/images/sticker22.webp`,
-    23: `${process.env.PUBLIC_URL}/images/sticker23.webp`,
-    24: `${process.env.PUBLIC_URL}/images/sticker24.webp`,
+import stickerData from './stickerImages.json';
+
+const GOOGLE_DRIVE_BASE_URL = "https://drive.google.com/uc?export=view&id=";
+
+// Sticker URLを取得する関数
+export const getStickerUrl = (stickerName) => {
+  const sticker = stickerData.find((sticker) => sticker.name === stickerName);
+  if (!sticker) {
+    console.error(`Sticker with name ${stickerName} not found.`);
+    return null;
+  }
+  return `${GOOGLE_DRIVE_BASE_URL}${sticker.id}`;
 };
 
-export default stickerImages;
+// デフォルトエクスポートとして全データを提供
+export default stickerData.map((sticker) => ({
+  ...sticker,
+  url: `${GOOGLE_DRIVE_BASE_URL}${sticker.id}`
+}));

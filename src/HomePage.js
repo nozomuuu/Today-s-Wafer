@@ -1,18 +1,23 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import './HomePage.css';
 
-function HomePage({ setPage }) {
-  return (
-    <div className="home-page">
-      <h1>Welcome to the Card Pack App</h1>
-      <button onClick={() => setPage('wafer')}>
-        <Link to="/wafer">Open a Wafer</Link>
-      </button>
-      <button onClick={() => setPage('collection')}>
-        <Link to="/collection">Collection Book</Link>
-      </button>
+const HomePage = () => (
+  <div className="home-page">
+    <h1>Welcome to the Card Pack App</h1>
+    <div className="button-container">
+      <Link to="/wafer" className="link">
+        <button className="home-button" type="button" aria-label="Open a Wafer">
+          Open a Wafer
+        </button>
+      </Link>
+      <Link to="/collection" className="link">
+        <button className="home-button" type="button" aria-label="Open Collection Book">
+          Collection Book
+        </button>
+      </Link>
     </div>
-  );
-}
+  </div>
+);
 
 export default HomePage;

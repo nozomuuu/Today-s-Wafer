@@ -1,128 +1,130 @@
 .collection-container {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 100px;
-    background: none;
-    z-index: 2;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 100px;
+  background: none;
+  z-index: 2;
 }
 
 .collection-book {
-    position: absolute;
-    top: 30px;
-    width: 300px;
-    padding: 20px;
-    background-color: #fdf3e7;
-    border-radius: 12px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s ease, background-color 0.3s ease;
-    overflow: hidden;
-    z-index: 3;
+  position: absolute;
+  top: 30px;
+  width: 300px;
+  padding: 20px;
+  background-color: #fdf3e7;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  transition:
+    transform 0.3s ease,
+    background-color 0.3s ease;
+  overflow: hidden;
+  z-index: 3;
 }
 
 .sticker-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
 }
 
 .sticker-item {
-    position: relative;
-    width: 60px;
-    height: 60px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  position: relative;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .sticker-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
 .new-label {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background-color: #ff8a65;
-    color: white;
-    font-size: 10px;
-    padding: 2px 5px;
-    border-radius: 3px;
-    font-weight: bold;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: #ff8a65;
+  color: white;
+  font-size: 10px;
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-weight: bold;
 }
 
 .collection-book:nth-child(1) {
-    background-color: #fdf3e7;
+  background-color: #fdf3e7;
 }
 
 .collection-book:nth-child(2) {
-    background-color: #f9e7d4;
+  background-color: #f9e7d4;
 }
 
 .collection-book:nth-child(3) {
-    background-color: #f5dcc1;
+  background-color: #f5dcc1;
 }
 
 .back-button {
-    position: relative;
-    margin-top: 550px;
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #a5673f;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-    z-index: 5;
+  position: relative;
+  margin-top: 550px;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #a5673f;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 5;
 }
 
 .back-button:hover {
-    background-color: #e67e22;
+  background-color: #e67e22;
 }
 
 .popup {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 10;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
 }
 
 .popup-content {
-    background-color: #fff0e0;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    text-align: center;
-    width: 200px;
-    max-width: 200px;
+  background-color: #fff0e0;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  width: 200px;
+  max-width: 200px;
 }
 
 .popup-image {
-    width: 100%;
-    height: auto;
-    margin-bottom: 10px;
+  width: 100%;
+  height: auto;
+  margin-bottom: 10px;
 }
 
 .close-popup-button {
-    padding: 8px 16px;
-    font-size: 14px;
-    background-color: #6B4226;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-top: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 8px 16px;
+  font-size: 14px;
+  background-color: #6b4226;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }

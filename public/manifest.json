@@ -1,21 +1,20 @@
 {
-    "short_name": "Today's Wafer",
-    "name": "Today's Wafer Collection App",
-    "icons": [
-      {
-        "src": "/icons/icon-192x192.webp",
-        "sizes": "192x192",
-        "type": "image/webp"
-      },
-      {
-        "src": "/icons/icon-512x512.webp",
-        "sizes": "512x512",
-        "type": "image/webp"
-      }
-    ],
-    "start_url": ".",
-    "display": "standalone",
-    "background_color": "#ffffff",
-    "theme_color": "#6B4226"
-  }
-  
+  "short_name": "CardPackApp",
+  "name": "Card Pack Application",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.webp",
+      "type": "image/webp",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icons/icon-512x512.webp",
+      "type": "image/webp",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff"
+}

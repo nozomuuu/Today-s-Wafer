@@ -23,3 +23,8 @@ yarn-debug.log*
 yarn-error.log*
 
 credentials.json
+.env
+.env.server
+# Local Netlify folder
+.netlify
+top-vial-442320-t0-4845cc4d8d3e.json

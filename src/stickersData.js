@@ -1,16 +1,13 @@
-const fetchStickers = async () => {
-    try {
-        const response = await fetch('http://localhost:5000/api/stickers');
-        if (!response.ok) throw new Error('Failed to fetch stickers');
-        const stickers = await response.json();
-        return stickers.map(sticker => ({
-            image: sticker.link,
-            isCollectible: true,
-        }));
-    } catch (error) {
-        console.error('Error fetching stickers:', error.message);
-        return [];
-    }
-};
+const stickersData = Array.from({ length: 24 }, (_, index) => {
+  const id = index + 1;
+  const googleDriveBaseUrl = 'https://drive.google.com/uc?id=';
+  const stickerId = `sticker${id}`; // Replace with the actual ID logic if needed.
 
-export default fetchStickers;
+  return {
+    id,
+    image: `${googleDriveBaseUrl}${stickerId}`,
+    isCollectible: true
+  };
+});
+
+export default stickersData;
